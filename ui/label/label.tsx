@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 /* eslint-disable react/require-default-props */
 import Box from "@mui/material/Box";
 import { Theme, useTheme } from "@mui/material/styles";
@@ -7,12 +8,23 @@ import { StyledLabel } from "./styles";
 
 interface LabelProps {
   children: ReactNode;
-  color?: string;
-  variant?: string;
+  color?:
+    | "primary"
+    | "default"
+    | "secondary"
+    | "info"
+    | "success"
+    | "warning"
+    | "error"
+    | "grey"
+    | "common"
+    | "divider"
+    | "action";
+  variant?: "outlined" | "filled" | "soft";
   startIcon?: ReactNode;
   endIcon?: ReactNode;
   sx?: SxProps<Theme>;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 const Label = forwardRef<HTMLSpanElement, LabelProps>(

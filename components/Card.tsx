@@ -29,7 +29,7 @@ const card = (
       <Typography variant="body2">
         well meaning and kindly.
         <br />
-        "a benevolent smile"
+        &quot;a benevolent smile&quot;
       </Typography>
     </CardContent>
     <CardActions>

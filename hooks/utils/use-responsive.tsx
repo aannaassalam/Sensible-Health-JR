@@ -1,4 +1,5 @@
-import { Breakpoint, useTheme } from "@mui/material/styles";
+/* eslint-disable react-hooks/rules-of-hooks */
+import { Breakpoint, Theme, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 // ----------------------------------------------------------------------
@@ -48,6 +49,6 @@ export function useWidth() {
       const matches = useMediaQuery(theme.breakpoints.up(key));
 
       return !output && matches ? key : output;
-    }, null as keyof Theme["breakpoints"] | null) || "xs"
+    }, null as Breakpoint | keyof Theme["breakpoints"] | null) || "xs"
   );
 }

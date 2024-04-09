@@ -1,5 +1,5 @@
-type Props = {};
+// type Props = {};
 
-export default function index({}: Props) {
+export default function index() {
   return <div>index</div>;
 }

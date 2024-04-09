@@ -8,10 +8,6 @@ import Typography from "@mui/material/Typography";
 import { Theme, alpha } from "@mui/material/styles";
 import React, { useState } from "react";
 
-interface AccountPopoverProps {
-  // You can define any additional props here
-}
-
 const MENU_OPTIONS = [
   {
     label: "Home",
@@ -27,7 +23,7 @@ const MENU_OPTIONS = [
   }
 ];
 
-const AccountPopover: React.FC<AccountPopoverProps> = () => {
+const AccountPopover: React.FC = () => {
   const [open, setOpen] = useState<HTMLElement | null>(null);
 
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {

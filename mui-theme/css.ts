@@ -25,7 +25,30 @@ interface BgGradientProps {
   color?: string;
 }
 
-export function bgBlur(props: BgBlurProps) {
+interface bgBlurReturn {
+  position: string;
+  backgroundImage: string;
+  "&:before": {
+    position: string;
+    top: number;
+    left: number;
+    zIndex: number;
+    content: string;
+    width: string;
+    height: string;
+    backdropFilter: string;
+    WebkitBackdropFilter: string;
+    backgroundColor: string;
+  };
+}
+
+interface bgBlurReturn2 {
+  backdropFilter: string;
+  WebkitBackdropFilter: string;
+  backgroundColor: string;
+}
+
+export function bgBlur(props: BgBlurProps): bgBlurReturn | bgBlurReturn2 {
   const color = props?.color || "#000000";
   const blur = props?.blur || 6;
   const opacity = props?.opacity || 0.8;
@@ -56,29 +79,6 @@ export function bgBlur(props: BgBlurProps) {
     backgroundColor: alpha(color, opacity)
   };
 }
-
-export const paper = ({ theme, bgcolor, dropdown }: PaperProps) => ({
-  ...bgBlur({
-    blur: 20,
-    opacity: 0.9,
-    color: theme.palette.background.paper,
-    ...(!!bgcolor && {
-      color: bgcolor
-    })
-  }),
-  backgroundImage: "url(/assets/cyan-blur.png), url(/assets/red-blur.png)",
-  backgroundRepeat: "no-repeat, no-repeat",
-  backgroundPosition: "top right, left bottom",
-  backgroundSize: "50%, 50%",
-  ...(theme.direction === "rtl" && {
-    backgroundPosition: "top left, right bottom"
-  }),
-  ...(dropdown && {
-    padding: theme.spacing(0.5),
-    // boxShadow: theme.customShadows.dropdown,
-    borderRadius: theme.shape.borderRadius * 1.25
-  })
-});
 
 export const menuItem = (theme: Theme) => ({
   ...theme.typography.body2,

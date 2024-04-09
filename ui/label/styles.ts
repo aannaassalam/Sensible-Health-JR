@@ -5,7 +5,18 @@ import { Theme, alpha, styled } from "@mui/material/styles";
 interface StyledLabelProps {
   theme: Theme;
   ownerState: {
-    color: string;
+    color:
+      | "primary"
+      | "default"
+      | "secondary"
+      | "info"
+      | "success"
+      | "warning"
+      | "error"
+      | "grey"
+      | "common"
+      | "divider"
+      | "action";
     variant: "filled" | "outlined" | "soft";
   };
 }
@@ -18,6 +29,7 @@ export const StyledLabel = styled(Box)(
     const outlinedVariant = ownerState.variant === "outlined";
 
     const softVariant = ownerState.variant === "soft";
+    console.log(theme.palette);
 
     const defaultStyle = {
       ...(ownerState.color === "default" && {
@@ -45,21 +57,23 @@ export const StyledLabel = styled(Box)(
     const colorStyle = {
       ...(ownerState.color !== "default" && {
         // FILLED
-        ...(filledVariant && {
-          color: theme.palette[ownerState.color].contrastText,
-          backgroundColor: theme.palette[ownerState.color].main
-        }),
+        ...(filledVariant &&
+          {
+            // color: theme.palette[ownerState.color].contrastText,
+            // backgroundColor: theme.palette[ownerState.color].main
+          }),
         // OUTLINED
         ...(outlinedVariant && {
-          backgroundColor: "transparent",
-          color: theme.palette[ownerState.color].main,
-          border: `2px solid ${theme.palette[ownerState.color].main}`
+          backgroundColor: "transparent"
+          // color: theme.palette[ownerState.color].main,
+          // border: `2px solid ${theme.palette[ownerState.color].main}`
         }),
         // SOFT
-        ...(softVariant && {
-          color: theme.palette[ownerState.color][lightMode ? "dark" : "light"],
-          backgroundColor: alpha(theme.palette[ownerState.color].main, 0.16)
-        })
+        ...(softVariant &&
+          {
+            // color: theme.palette[ownerState.color][lightMode ? "dark" : "light"],
+            // backgroundColor: alpha(theme.palette[ownerState.color].main, 0.16)
+          })
       })
     };
 

@@ -12,7 +12,7 @@ import Popover from "@mui/material/Popover";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
-import NotificationItem from "./NotificationItem";
+import NotificationItem, { Notification } from "./NotificationItem";
 
 export default function NotificationsPopover() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -87,7 +87,7 @@ export default function NotificationsPopover() {
               </ListSubheader>
             }
           >
-            {notifications?.slice(0, 2).map((notification) => (
+            {notifications?.slice(0, 2).map((notification: Notification) => (
               <NotificationItem
                 key={notification.id}
                 notification={notification}

@@ -89,6 +89,7 @@ export const action = {
 
 export const base = {
   primary,
+  default: primary,
   secondary,
   info,
   success,

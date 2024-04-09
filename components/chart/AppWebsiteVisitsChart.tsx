@@ -8,8 +8,12 @@ export interface AppWebsiteVisitsChartProps {
   title: string;
   subheader: string;
   chart: ChartProps;
-  [key: string]: any;
+  [key: string]: unknown;
 }
+
+// export interface ApexCustomSeries extends ApexNonAxisChartSeries {
+//   fill: string;
+// }
 
 const AppWebsiteVisitsChart = ({
   title,
@@ -18,7 +22,6 @@ const AppWebsiteVisitsChart = ({
   ...other
 }: AppWebsiteVisitsChartProps) => {
   const { labels, colors, series, options } = chart;
-
   const chartOptions = useChart({
     colors,
     plotOptions: {
@@ -27,7 +30,9 @@ const AppWebsiteVisitsChart = ({
       }
     },
     fill: {
-      type: series?.map((i) => i.fill)
+      type: series?.map((i) => {
+        return i.fill;
+      })
     },
     labels,
     xaxis: {
@@ -37,7 +42,7 @@ const AppWebsiteVisitsChart = ({
       shared: true,
       intersect: false,
       y: {
-        formatter: (value: number | undefined) => {
+        formatter: (value: number) => {
           if (typeof value !== "undefined") {
             return `${value.toFixed(0)} visits`;
           }

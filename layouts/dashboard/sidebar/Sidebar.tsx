@@ -7,7 +7,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { alpha } from "@mui/material/styles";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import { NAV } from "@/config/constants";
 import Scrollbar from "@/ui/scrollbar";
@@ -21,6 +21,7 @@ interface SidebarProps {
 
 export default function Sidebar({ openNav, onCloseNav }: SidebarProps) {
   const pathname = usePathname();
+  const ref = useRef(null);
   const upLg = useResponsive("up", "lg");
 
   useEffect(() => {
@@ -73,6 +74,7 @@ export default function Sidebar({ openNav, onCloseNav }: SidebarProps) {
           flexDirection: "column"
         }
       }}
+      ref={ref}
     >
       <Logo sx={{ mt: 3, ml: 4 }} />
 

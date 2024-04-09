@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable import/no-extraneous-dependencies */
-import { primaryColors } from "@/themes/_muiPalette";
+import { primary } from "@/themes/_muiPalette";
 import styled from "@emotion/styled";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -24,12 +24,12 @@ const DatepickerWrapper = styled(Box)`
     border-radius: 8px;
 
     fieldset {
-      border-color: ${primaryColors.border_primary};
+      border-color: ${primary.lighter};
     }
     .MuiFormControl-root {
       width: 100%;
       .MuiFormLabel-root {
-        color: ${primaryColors.textPrimaryColor};
+        color: ${primary.dark};
         font-size: 16px;
         font-weight: 400;
         line-height: 1.5;
@@ -39,7 +39,7 @@ const DatepickerWrapper = styled(Box)`
         }
       }
       .MuiInputBase-root {
-        color: ${primaryColors.textPrimaryColor};
+        color: ${primary.dark};
         font-size: 16px;
         font-weight: 400;
         line-height: 1.5;
@@ -79,7 +79,7 @@ const DatepickerWrapper = styled(Box)`
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: ${primaryColors.white};
+    background-color: ${primary.contrastText};
     z-index: 99;
 
     &.MuiFormControl-root {

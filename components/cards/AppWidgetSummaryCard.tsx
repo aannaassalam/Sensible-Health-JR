@@ -10,7 +10,7 @@ interface AppWidgetSummaryCardProps {
   icon?: ReactNode;
   color?: string;
   sx?: object;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 const AppWidgetSummaryCard: FC<AppWidgetSummaryCardProps> = ({

@@ -1,12 +1,16 @@
+/* eslint-disable react/require-default-props */
 import Box, { BoxProps } from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
 import Link from "next/link";
 import { forwardRef } from "react";
 
-interface LogoProps extends BoxProps {}
+interface LogoProps extends BoxProps {
+  disabledLink?: boolean;
+}
 
+// eslint-disable-next-line react/display-name
 const Logo = forwardRef<HTMLDivElement, LogoProps>(
-  ({ disabledLink = false, sx, ...other }, ref) => {
+  ({ disabledLink, sx, ...other }, ref) => {
     const theme = useTheme();
 
     const PRIMARY_LIGHT = theme.palette.primary.light;

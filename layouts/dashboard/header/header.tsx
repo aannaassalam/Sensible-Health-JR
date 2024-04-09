@@ -1,4 +1,3 @@
-import { bgBlur } from "@/themes/css";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -11,6 +10,7 @@ import { useResponsive } from "@/hooks/utils/use-responsive";
 import AccountPopover from "@/components/common/account-popover";
 import NotificationsPopover from "@/components/notification/NotificationsPopover";
 import { HEADER, NAV } from "@/config/constants";
+import { bgBlur } from "@/themes/css";
 
 // ----------------------------------------------------------------------
 

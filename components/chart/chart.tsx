@@ -3,8 +3,34 @@ import { Theme, alpha, styled } from "@mui/material/styles";
 import { memo } from "react";
 import ApexChart, { Props } from "react-apexcharts";
 
+export type customSeriesFill = {
+  fill: string;
+  name?: string;
+  type?: string;
+  color?: string;
+  group?: string;
+  zIndex?: number;
+  data:
+    | (number | null)[]
+    | {
+        x: any;
+        y: any;
+        fill?: ApexFill;
+        fillColor?: string;
+        strokeColor?: string;
+        meta?: any;
+        goals?: any;
+        barHeightOffset?: number;
+        columnWidthOffset?: number;
+      }[]
+    | [number, number | null][]
+    | [number, (number | null)[]][]
+    | number[][];
+};
+
 export interface ChartProps extends Props {
   theme?: Theme;
+  series: customSeriesFill[];
 }
 
 // ----------------------------------------------------------------------

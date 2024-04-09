@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import { forwardRef, memo } from "react";
+import { memo } from "react";
 
 import Box from "@mui/material/Box";
 import { Theme, alpha, styled } from "@mui/material/styles";
@@ -34,41 +34,40 @@ export const StyledScrollbar = styled(SimpleBar)(
 
 // ----------------------------------------------------------------------
 
-interface ScrollbarProps extends BoxProps {}
+type ScrollbarProps = Omit<BoxProps, "color">;
 
-const Scrollbar = forwardRef<HTMLDivElement, Omit<ScrollbarProps, "color">>(
-  ({ children, sx, ...other }, ref) => {
-    const userAgent =
-      typeof navigator === "undefined" ? "SSR" : navigator.userAgent;
+const Scrollbar = ({ children, sx, ref, ...other }: ScrollbarProps) => {
+  const userAgent =
+    typeof navigator === "undefined" ? "SSR" : navigator.userAgent;
 
-    const mobile =
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        userAgent
-      );
+  const mobile =
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      userAgent
+    );
 
-    if (mobile) {
-      return (
-        <Box ref={ref} sx={{ overflow: "auto", ...sx }} {...other}>
-          {children}
-        </Box>
-      );
-    }
-
+  if (mobile) {
     return (
-      <StyledRootScrollbar>
-        <StyledScrollbar
-          scrollableNodeProps={{
-            ref
-          }}
-          clickOnTrack={false}
-          sx={sx}
-          {...other}
-        >
-          {children}
-        </StyledScrollbar>
-      </StyledRootScrollbar>
+      <Box ref={ref} sx={{ overflow: "auto", ...sx }} {...other}>
+        {children}
+      </Box>
     );
   }
-);
+
+  return (
+    <StyledRootScrollbar>
+      <StyledScrollbar
+        scrollableNodeProps={{
+          ref
+        }}
+        clickOnTrack={false}
+        sx={sx}
+        {...other}
+      >
+        {children}
+      </StyledScrollbar>
+    </StyledRootScrollbar>
+  );
+};
+// );
 
 export default memo(Scrollbar);

@@ -1,9 +1,9 @@
-import { primaryColors } from "@/themes/_muiPalette";
+import { primary } from "@/themes/_muiPalette";
 import styled from "@emotion/styled";
 import Box from "@mui/material/Box";
 
 export const HeaderWrap = styled(Box)`
-  background: ${primaryColors.white};
+  background: ${primary.contrastText};
   box-shadow: 0px 4px 58px rgba(0, 0, 0, 0.07);
   .MuiToolbar-root {
     min-height: auto;
@@ -23,7 +23,7 @@ export const HeaderWrap = styled(Box)`
       min-width: 10px;
       height: 10px;
     }
-    .cart_icon{
+    .cart_icon {
       margin-right: 18px;
     }
   }
@@ -44,10 +44,10 @@ export const HeaderWrap = styled(Box)`
     a {
       margin-right: 45px;
       display: inline-block;
-      color: ${primaryColors.secondaryFont};
+      color: ${primary.light};
       font-size: 15px;
       &:hover {
-        color: ${primaryColors.primary};
+        color: ${primary.main};
       }
       &:last-child {
         margin-right: 0;
@@ -56,7 +56,7 @@ export const HeaderWrap = styled(Box)`
         margin-left: 0;
       }
       &.active {
-        color: ${primaryColors.primary};
+        color: ${primary.main};
       }
     }
   }

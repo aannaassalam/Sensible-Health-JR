@@ -1,4 +1,5 @@
 import AppWidgetSummaryCard from "@/components/cards/AppWidgetSummaryCard";
+import { customSeriesFill } from "@/components/chart/chart";
 
 import DashboardLayout from "@/layout/dashboard/DashboardLayout";
 import { Container, Grid, Typography } from "@mui/material";
@@ -88,6 +89,7 @@ export default function Home() {
                   {
                     name: "Team A",
                     type: "column",
+                    fill: "",
                     data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30]
                   },
                   {
@@ -99,9 +101,10 @@ export default function Home() {
                   {
                     name: "Team C",
                     type: "line",
+                    fill: "",
                     data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39]
                   }
-                ] as ApexAxisChartSeries
+                ] as customSeriesFill[]
               }}
             />
           </Grid>

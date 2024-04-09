@@ -31,10 +31,10 @@ export function responsiveFontSizes({ sm, md, lg }: ResponsiveFontSizesProps) {
 }
 
 export const inter = Inter({
+  display: "swap",
   subsets: ["latin"],
-  preload: true,
-  variable: "--font-inter",
-  display: "swap"
+  // preload: true,
+  variable: "--font-inter"
 });
 
 export const primaryFont = inter.style.fontFamily;

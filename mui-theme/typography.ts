@@ -1,6 +1,6 @@
 /* eslint-disable mui-path-imports/mui-path-imports */
 import { ThemeOptions } from "@mui/material";
-import { Inter } from "next/font/google";
+// import { Inter } from "next/font/google";
 
 interface ResponsiveFontSizesProps {
   sm: number;
@@ -30,14 +30,14 @@ export function responsiveFontSizes({ sm, md, lg }: ResponsiveFontSizesProps) {
   };
 }
 
-export const inter = Inter({
-  display: "swap",
-  subsets: ["latin"],
-  // preload: true,
-  variable: "--font-inter"
-});
+// export const inter = Inter({
+//   display: "swap",
+//   subsets: ["latin"],
+//   // preload: true,
+//   variable: "--font-inter"
+// });
 
-export const primaryFont = inter.style.fontFamily;
+export const primaryFont = "Inter, sans-serif";
 export const secondaryFont = "Barlow, sans-serif";
 
 export const typography: ThemeOptions["typography"] = {

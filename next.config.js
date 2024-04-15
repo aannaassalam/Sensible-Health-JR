@@ -26,14 +26,14 @@ module.exports = {
     NEXT_APP_ENCRYPTION_KEY: process.env.NEXT_APP_ENCRYPTION_KEY,
     NEXT_APP_TOKEN_NAME: process.env.NEXT_APP_TOKEN_NAME
   },
-  typescript: { ignoreBuildErrors: false },
-  async redirects() {
-    return [
-      {
-        source: "/",
-        destination: "/dashboard",
-        permanent: false
-      }
-    ];
-  }
+  typescript: { ignoreBuildErrors: false }
+  // async redirects() {
+  //   return [
+  //     {
+  //       source: "/",
+  //       destination: "/dashboard",
+  //       permanent: false
+  //     }
+  //   ];
+  // }
 };

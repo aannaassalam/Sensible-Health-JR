@@ -1,4 +1,3 @@
-import { IgetSignUpQuery } from "@/interface/apiresp.interfaces";
 import { userData } from "@/types/common.type";
 import axiosInstance from "../axiosInstance";
 import { endpoints } from "../endpoints";
@@ -8,6 +7,15 @@ export interface loginMutationPayload {
   password: string;
 }
 
+export interface signupMutationPayload {
+  email: string;
+  password: string;
+  company: string;
+  role: string;
+  manager_email: string;
+  name: string;
+}
+
 export const GetProfileDetails = async () => {
   return {
     status: 0,
@@ -15,10 +23,12 @@ export const GetProfileDetails = async () => {
   };
 };
 
-export const loginMutation = async (body: loginMutationPayload) => {
-  const res = await axiosInstance.post<IgetSignUpQuery>(
-    endpoints.auth.login,
-    body
-  );
+export const loginMutation = async (body: signupMutationPayload) => {
+  const res = await axiosInstance.post(endpoints.auth.login, body);
+  return res;
+};
+
+export const signupMutation = async (body: loginMutationPayload) => {
+  const res = await axiosInstance.post(endpoints.auth.signup, body);
   return res;
 };

@@ -6,6 +6,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
 import { Theme, alpha } from "@mui/material/styles";
+import { useRouter } from "next/router";
+import { destroyCookie } from "nookies";
 import React, { useState } from "react";
 
 const MENU_OPTIONS = [
@@ -25,6 +27,8 @@ const MENU_OPTIONS = [
 
 const AccountPopover: React.FC = () => {
   const [open, setOpen] = useState<HTMLElement | null>(null);
+
+  const router = useRouter();
 
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
     setOpen(event.currentTarget);
@@ -99,7 +103,12 @@ const AccountPopover: React.FC = () => {
         <MenuItem
           disableRipple
           disableTouchRipple
-          onClick={handleClose}
+          onClick={() => {
+            destroyCookie(null, "token");
+            destroyCookie(null, "user");
+            router.push("/auth/login");
+            handleClose();
+          }}
           sx={{ typography: "body2", color: "error.main", py: 1.5 }}
         >
           Logout

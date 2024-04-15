@@ -11,6 +11,7 @@ import AccountPopover from "@/components/common/account-popover";
 import NotificationsPopover from "@/components/notification/NotificationsPopover";
 import { HEADER, NAV } from "@/config/constants";
 import { bgBlur } from "@/themes/css";
+import MenuIcon from "@mui/icons-material/Menu";
 
 // ----------------------------------------------------------------------
 
@@ -27,7 +28,7 @@ export default function Header({ onOpenNav }: HeaderProps) {
     <>
       {!lgUp && (
         <IconButton onClick={onOpenNav} sx={{ mr: 1 }}>
-          icon
+          <MenuIcon />
         </IconButton>
       )}
 

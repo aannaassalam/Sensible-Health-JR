@@ -1,19 +1,22 @@
 const validationText = {
   success: {},
   error: {
-    enter_email: "Enter email",
-    email_format: "Email format is not correct",
+    enter_email: "Please enter email",
+    enter_manager_email: "Please enter manager email",
+    email_format: "Email format is incorrect",
     enter_password: "Enter password",
     passwordTooShort: "Password too short",
+    company_name: "Please enter your company name",
     isValidPass:
       "Password must include a number or symbol and be at least 8 characters long",
-    phone: "Enter phone",
+    phone: "Please enter phone number",
+    mobile: "Please enter mobile number",
     phoneMinDigit: "Enter minimum 10 digits",
     username: "Enter username",
     fullName: "Enter Full Name",
     surname: "Enter last name",
     firstName: "Enter first name",
-    name: "Enter name",
+    name: "Please enter name",
     pharmacyName: "Enter pharmacy name",
     file_size_exceed: "File size exceeded",
     not_a_valid_file: "File is not valid",
@@ -28,7 +31,13 @@ const validationText = {
     middleNames: "Enter middle name",
     passwordMatch: "Passwords must match",
     passwordText:
-      "Password must include at least one lowercase letter, one uppercase letter, one digit, one special character, and be at least 8 characters long"
+      "Password must include at least one lowercase letter, one uppercase letter, one digit, one special character, and be at least 8 characters long",
+    type_of_user: "Please select type of user.",
+    gender: "Please select gender.",
+    dob: "Please enter date of birth.",
+    employment_type: "Please select employment type.",
+    address: "Please enter address.",
+    role: "Please select a role."
   },
   warn: {},
   info: {}

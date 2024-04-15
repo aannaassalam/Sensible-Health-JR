@@ -79,6 +79,9 @@ export const MuiThemeOptions = (mode: PaletteMode): ThemeOptions => {
               backgroundColor: base.grey[800]
             }
           },
+          sizeMedium: {
+            minHeight: 45
+          },
           sizeLarge: {
             minHeight: 48
           }
@@ -105,6 +108,9 @@ export const MuiThemeOptions = (mode: PaletteMode): ThemeOptions => {
       MuiOutlinedInput: {
         styleOverrides: {
           root: {
+            [`&:hover .${outlinedInputClasses.notchedOutline}`]: {
+              borderColor: "#ccc"
+            },
             [`& .${outlinedInputClasses.notchedOutline}`]: {
               borderColor: alpha(base.grey[500], 0.24)
             }

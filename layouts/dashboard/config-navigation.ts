@@ -20,7 +20,7 @@ const navConfig: NavItem[] = [
   },
   {
     title: "Staff",
-    path: "/staff/list/",
+    path: "",
     icon: TocIcon,
     children: [
       {
@@ -28,35 +28,35 @@ const navConfig: NavItem[] = [
         path: "/staff/list",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Teams",
         path: "/staff/teams",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Archived ",
         path: "/staff/archived",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Document Hub",
         path: "/staff/document-hub",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "New",
         path: "/staff/new",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       }
     ],
     hasChild: true
@@ -71,28 +71,28 @@ const navConfig: NavItem[] = [
         path: "/clients/list",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Archived",
         path: "/clients/archived",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Expired Documents",
         path: "/clients/expired-documents",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "New",
         path: "/clients/new",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       }
     ],
     hasChild: true
@@ -107,21 +107,21 @@ const navConfig: NavItem[] = [
         path: "/invoices/list",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "List void",
         path: "/invoices/list-void",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Generate",
         path: "/invoices/generate",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       }
     ],
     hasChild: true
@@ -136,84 +136,84 @@ const navConfig: NavItem[] = [
         path: "/reports/activity",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Billing",
         path: "/reports/billing",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Fund Balances",
         path: "/reports/fund-balances",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Geolocation",
         path: "/reports/geolocation",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Performance",
         path: "/reports/performances",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Exception report",
         path: "/reports/exception-reports",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Timesheet",
         path: "/reports/timesheet",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "KPI",
         path: "/reports/kpi",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Competency",
         path: "/reports/competency",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Compliance",
         path: "/reports/compliance",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Qualification",
         path: "/reports/qualification",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Events",
         path: "/reports/events",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       }
     ],
     hasChild: true
@@ -228,42 +228,42 @@ const navConfig: NavItem[] = [
         path: "/account/settings",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Invoice Settings",
         path: "/account/invoice-settings",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Prices",
         path: "/account/prices",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Pay Items",
         path: "/account/pay-items",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Reminders",
         path: "/account/reminders",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       },
       {
         title: "Subscription",
         path: "/account/subscription",
         icon: SettingsIcon,
         children: [],
-        hasChild: true
+        hasChild: false
       }
     ],
     hasChild: true

@@ -1,5 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 // import EventListeners from "@/components/EventListener/EventListener";
+import EventListeners from "@/components/EventListener/EventListener";
 import { checkWindow } from "@/lib/functions/_helpers.lib";
 import { store } from "@/reduxtoolkit/store/store";
 import "@/styles/global.scss";
@@ -7,6 +8,8 @@ import MuiThemeProvider from "@/themes/MuiThemeProvider";
 import createEmotionCache from "@/themes/createEmotionCache";
 import { CacheProvider, EmotionCache } from "@emotion/react";
 import CssBaseline from "@mui/material/CssBaseline";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { AppContext, AppProps } from "next/app";
 import App from "next/app";
@@ -51,16 +54,18 @@ export default function CustomApp({
 
   return (
     <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <CacheProvider value={emotionCache}>
-          <MuiThemeProvider>
-            <CssBaseline />
-            <Toaster richColors position="bottom-left" />
-
-            <Component {...pageProps} />
-          </MuiThemeProvider>
-        </CacheProvider>
-      </QueryClientProvider>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <QueryClientProvider client={queryClient}>
+          <CacheProvider value={emotionCache}>
+            <MuiThemeProvider>
+              <CssBaseline />
+              <EventListeners />
+              <Toaster richColors position="bottom-left" />
+              <Component {...pageProps} />
+            </MuiThemeProvider>
+          </CacheProvider>
+        </QueryClientProvider>
+      </LocalizationProvider>
     </Provider>
   );
 }

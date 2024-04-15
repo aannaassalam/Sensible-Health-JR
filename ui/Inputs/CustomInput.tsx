@@ -4,15 +4,17 @@ import { Box } from "@mui/system";
 const CustomInput = (props: TextFieldProps) => {
   return (
     <Box>
-      <InputLabel
-        sx={{
-          fontSize: "14px",
-          marginBottom: "5px"
-        }}
-      >
-        {props.label}
-      </InputLabel>
-      <TextField {...props} label="" fullWidth size="small" />
+      {Boolean(props.label) && (
+        <InputLabel
+          sx={{
+            fontSize: "14px",
+            marginBottom: "5px"
+          }}
+        >
+          {props.label}
+        </InputLabel>
+      )}
+      <TextField {...props} label="" fullWidth />
     </Box>
   );
 };

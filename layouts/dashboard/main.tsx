@@ -13,6 +13,7 @@ const SPACING = 8;
 
 const Main: React.FC<MainProps> = ({ children, sx, ...other }) => {
   const lgUp = useResponsive("up", "lg") as boolean; // Adjust the type according to your needs
+  const xsUp = useResponsive("up", "xs") as boolean; // Adjust the type according to your needs
 
   return (
     <Box
@@ -22,11 +23,17 @@ const Main: React.FC<MainProps> = ({ children, sx, ...other }) => {
         minHeight: 1,
         display: "flex",
         flexDirection: "column",
+        backgroundColor: "#f0f0f0",
         py: `${HEADER.H_MOBILE + SPACING}px`,
         ...(lgUp && {
           px: 2,
           py: `${HEADER.H_DESKTOP + SPACING}px`,
           width: `calc(100% - ${NAV.WIDTH}px)`
+        }),
+        ...(xsUp && {
+          px: 2,
+          py: `${HEADER.H_DESKTOP + SPACING}px`
+          // width: `calc(100% - ${NAV.WIDTH}px)`
         }),
         ...sx
       }}

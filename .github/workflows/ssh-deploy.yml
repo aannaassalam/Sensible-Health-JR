@@ -21,7 +21,7 @@ jobs:
             ssh-add ~/.ssh/id_keyid
             git pull origin main
             git status
-            npm install
+            npm install --f
             rm -rf .next
             npm run build
             pm2 restart all

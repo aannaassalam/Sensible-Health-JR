@@ -1,0 +1,27 @@
+name: ShiftCare CI/CD
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH to server
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: w3novices.com
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script: |
+            cd /var/www/NextJS/shiftcare-jr
+            eval `ssh-agent -s`
+            ssh-add ~/.ssh/id_keyid
+            git pull origin main
+            git status
+            npm install
+            rm -rf .next
+            npm run build
+            pm2 restart all

@@ -72,3 +72,7 @@ export const globalCatchError = (error: AxiosError<BaseApiResponse>) => {
     variant: "error"
   });
 };
+
+export const roleParser = (role: string) => {
+  return role.replace("ROLE_", "").replaceAll("_", " ");
+};

@@ -15,16 +15,8 @@ import { bgGradient } from "@/themes/css";
 import CustomInput from "@/ui/Inputs/CustomInput";
 import styled from "@emotion/styled";
 import { yupResolver } from "@hookform/resolvers/yup";
-import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
-import PersonIcon from "@mui/icons-material/Person";
 import LoadingButton from "@mui/lab/LoadingButton";
-import {
-  FormHelperText,
-  FormLabel,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography
-} from "@mui/material";
+import { Typography } from "@mui/material";
 import Card from "@mui/material/Card";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -70,6 +62,10 @@ const StyledSignUpPage = styled(Box)`
       text-decoration: none;
     }
   }
+
+  .MuiButton-root {
+    letter-spacing: normal;
+  }
 `;
 
 const schema = yup.object().shape({
@@ -80,16 +76,16 @@ const schema = yup.object().shape({
     .trim()
     .email(validationText.error.email_format)
     .required(validationText.error.enter_email),
-  password: yup.string().trim().required(validationText.error.enter_password),
-  role: yup.string().required(validationText.error.role),
-  manager_email: yup.string().when("role", {
-    is: "employee",
-    then: yup
-      .string()
-      .trim()
-      .email(validationText.error.email_format)
-      .required(validationText.error.enter_email)
-  })
+  password: yup.string().trim().required(validationText.error.enter_password)
+  // role: yup.string().required(validationText.error.role),
+  // manager_email: yup.string().when("role", {
+  //   is: "employee",
+  //   then: yup
+  //     .string()
+  //     .trim()
+  //     .email(validationText.error.email_format)
+  //     .required(validationText.error.enter_email)
+  // })
 });
 
 export default function LoginView() {
@@ -104,9 +100,9 @@ export default function LoginView() {
       email: "",
       password: "",
       name: "",
-      company: "",
-      role: "business",
-      manager_email: ""
+      company: ""
+      // role: "business",
+      // manager_email: ""
     }
   });
 
@@ -275,7 +271,7 @@ export default function LoginView() {
                   />
                 )}
               />
-              <Controller
+              {/* <Controller
                 control={control}
                 name="role"
                 render={({
@@ -336,7 +332,7 @@ export default function LoginView() {
                     />
                   )}
                 />
-              )}
+              )} */}
 
               <LoadingButton
                 fullWidth

@@ -79,10 +79,15 @@ export const MuiThemeOptions = (mode: PaletteMode): ThemeOptions => {
               backgroundColor: base.grey[800]
             }
           },
+          sizeSmall: {
+            letterSpacing: "normal"
+          },
           sizeMedium: {
+            letterSpacing: "normal",
             minHeight: 45
           },
           sizeLarge: {
+            letterSpacing: "normal",
             minHeight: 48
           }
         }

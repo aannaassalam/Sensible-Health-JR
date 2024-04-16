@@ -49,6 +49,10 @@ const StyledLoginPage = styled(Box)`
       text-decoration: none;
     }
   }
+
+  .MuiButton-root {
+    letter-spacing: normal;
+  }
 `;
 
 const schema = yup.object().shape({
@@ -79,7 +83,7 @@ export default function LoginView() {
     onSuccess: (data: any) => {
       setCookieClient("token", data.jwtToken);
       delete data.jwtToken;
-      setCookieClient("üser", JSON.stringify(data));
+      setCookieClient("user", JSON.stringify(data));
       router.push("/");
     }
   });
@@ -150,58 +154,35 @@ export default function LoginView() {
 
           <Box component="form" onSubmit={handleSubmit(handleLogin)}>
             <Stack spacing={3}>
-              <Controller
+              <CustomInput
+                label="Email Address"
                 control={control}
                 name="email"
-                render={({
-                  field: { value, onChange },
-                  fieldState: { invalid, error }
-                }) => (
-                  <CustomInput
-                    label="Email Address"
-                    type="email"
-                    size="small"
-                    value={value}
-                    onChange={onChange}
-                    error={invalid}
-                    helperText={error?.message}
-                  />
-                )}
+                type="email"
+                size="small"
               />
-
-              <Controller
+              <CustomInput
                 name="password"
                 control={control}
-                render={({
-                  field: { value, onChange },
-                  fieldState: { invalid, error }
-                }) => (
-                  <CustomInput
-                    label="Password"
-                    size="small"
-                    value={value}
-                    onChange={onChange}
-                    error={invalid}
-                    helperText={error?.message}
-                    type={showPassword ? "text" : "password"}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={() => setShowPassword(!showPassword)}
-                            edge="end"
-                          >
-                            {showPassword ? (
-                              <VisibilityOffIcon fontSize="small" />
-                            ) : (
-                              <RemoveRedEyeIcon fontSize="small" />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      )
-                    }}
-                  />
-                )}
+                label="Password"
+                size="small"
+                type={showPassword ? "text" : "password"}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? (
+                          <VisibilityOffIcon fontSize="small" />
+                        ) : (
+                          <RemoveRedEyeIcon fontSize="small" />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
               />
 
               <Stack

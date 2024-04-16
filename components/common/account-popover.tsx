@@ -1,3 +1,5 @@
+import { UserData } from "@/interface/common.interface";
+import { getCookie } from "@/lib/functions/storage.lib";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -13,20 +15,23 @@ import React, { useState } from "react";
 const MENU_OPTIONS = [
   {
     label: "Home",
-    icon: "eva:home-fill"
+    icon: "eva:home-fill",
+    path: "/"
   },
   {
     label: "Profile",
-    icon: "eva:person-fill"
-  },
-  {
-    label: "Settings",
-    icon: "eva:settings-2-fill"
+    icon: "eva:person-fill",
+    path: "/user/profile"
   }
+  // {
+  //   label: "Settings",
+  //   icon: "eva:settings-2-fill"
+  // }
 ];
 
 const AccountPopover: React.FC = () => {
   const [open, setOpen] = useState<HTMLElement | null>(null);
+  const user: UserData = JSON.parse(getCookie("user") || "{}");
 
   const router = useRouter();
 
@@ -34,7 +39,10 @@ const AccountPopover: React.FC = () => {
     setOpen(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = (path: string) => {
+    if (path) {
+      router.push(path);
+    }
     setOpen(null);
   };
 
@@ -62,7 +70,7 @@ const AccountPopover: React.FC = () => {
               `solid 2px ${theme.palette.background.default}`
           }}
         >
-          A
+          {user?.name?.charAt(0)}
         </Avatar>
       </IconButton>
 
@@ -82,18 +90,22 @@ const AccountPopover: React.FC = () => {
         }}
       >
         <Box sx={{ my: 1.5, px: 2 }}>
-          <Typography variant="subtitle2" noWrap>
-            User
+          <Typography
+            variant="subtitle2"
+            sx={{ textTransform: "capitalize" }}
+            noWrap
+          >
+            {user?.name}
           </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
-            email
+            {user?.email}
           </Typography>
         </Box>
 
         <Divider sx={{ borderStyle: "dashed" }} />
 
         {MENU_OPTIONS.map((option) => (
-          <MenuItem key={option.label} onClick={handleClose}>
+          <MenuItem key={option.label} onClick={() => handleClose(option.path)}>
             {option.label}
           </MenuItem>
         ))}
@@ -104,9 +116,9 @@ const AccountPopover: React.FC = () => {
           disableRipple
           disableTouchRipple
           onClick={() => {
-            destroyCookie(null, "token");
-            destroyCookie(null, "user");
-            router.push("/auth/login");
+            destroyCookie(null, "token", {});
+            destroyCookie(null, "user", {});
+            router.push("/auth/signin");
             handleClose();
           }}
           sx={{ typography: "body2", color: "error.main", py: 1.5 }}

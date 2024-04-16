@@ -11,8 +11,8 @@ export interface signupMutationPayload {
   email: string;
   password: string;
   company: string;
-  role: string;
-  manager_email: string;
+  // role: string;
+  // manager_email: string;
   name: string;
 }
 
@@ -25,10 +25,10 @@ export const GetProfileDetails = async () => {
 
 export const loginMutation = async (body: signupMutationPayload) => {
   const res = await axiosInstance.post(endpoints.auth.login, body);
-  return res;
+  return res.data;
 };
 
 export const signupMutation = async (body: loginMutationPayload) => {
   const res = await axiosInstance.post(endpoints.auth.signup, body);
-  return res;
+  return res.data;
 };

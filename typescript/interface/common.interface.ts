@@ -80,28 +80,24 @@ export interface BaseApiResponse {
 
 export type ActiveInactiveStatus = "Inactive" | "Active";
 
+export type IRole = {
+  id: number;
+  name: string;
+};
+
 export type UserData = {
-  first_name: string;
-  last_name: string;
-  fullName: string;
-  role: string;
-  countryCode: string;
-  phone: string;
+  name: string;
   email: string;
-  password: string;
-  profile_image: string;
-  workspace_name: string;
-  workspace_slug: string;
-  isEmailVerified: boolean;
-  isFreeUser: boolean;
-  otp: string;
-  signupType: string;
-  signupCompleted: boolean;
-  status: ActiveInactiveStatus;
-  isDeleted: boolean;
-  _id: string;
-  createdAt: string;
-  updatedAt: string;
+  address: string;
+  company: string;
+  dateOfBirth: string;
+  employmentType: string;
+  gender: string;
+  mobileNo: string;
+  phoneNo: string;
+  role: IRole[];
+  salutation: string;
+  typeOfUser: string;
 } | null;
 
 export {};

@@ -10,6 +10,9 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 import { NAV } from "@/config/constants";
+import { UserData } from "@/interface/common.interface";
+import { roleParser } from "@/lib/functions/_helpers.lib";
+import { getCookie } from "@/lib/functions/storage.lib";
 import Scrollbar from "@/ui/scrollbar";
 import navConfig from "../config-navigation";
 import SidebarItem from "./SidebarItem";
@@ -23,6 +26,7 @@ export default function Sidebar({ openNav, onCloseNav }: SidebarProps) {
   const pathname = usePathname();
   const ref = useRef(null);
   const upLg = useResponsive("up", "lg");
+  const user: UserData = JSON.parse(getCookie("user") || "{}");
 
   useEffect(() => {
     if (openNav) {
@@ -44,13 +48,15 @@ export default function Sidebar({ openNav, onCloseNav }: SidebarProps) {
         bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12)
       }}
     >
-      <Avatar src="" alt="photoURL" />
+      <Avatar src="" alt="photoURL">
+        {user?.name?.charAt(0)}
+      </Avatar>
 
       <Box sx={{ ml: 2 }}>
-        <Typography variant="subtitle2">user</Typography>
+        <Typography variant="subtitle2">{user?.name}</Typography>
 
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          role
+          {roleParser(user?.role?.[0].name || "")}
         </Typography>
       </Box>
     </Box>

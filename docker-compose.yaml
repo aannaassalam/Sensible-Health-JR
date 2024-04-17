@@ -3,7 +3,7 @@ version: "3.8"
 services:
   app:
     image: aannaassalam/shiftcare-jr:latest
-    platform: linux/amd64/v8
+    platform: linux/amd64
     build:
       context: .
       dockerfile: Dockerfile

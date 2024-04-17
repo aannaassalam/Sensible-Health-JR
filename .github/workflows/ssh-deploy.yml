@@ -2,7 +2,7 @@ name: vps-deploy
 
 on:
   push:
-    branches: ["master"]
+    branches: ["main"]
 
 env:
   REGISTRY: dockerhub.io

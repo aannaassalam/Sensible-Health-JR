@@ -1,33 +1,12 @@
-version: "3"
+version: "3.8"
 
 services:
-  #React Nextjs Node Service
-
-  node:
-    image: webskittersdocker/node18:latest
-
-    container_name: procell-ui-NextJS
-
-    restart: unless-stopped
-
-    working_dir: /home/wtsadmin/myapp
-
-    environment:
-      - NODE_ENV=production
-
-    volumes:
-      - ./:/home/wtsadmin/myapp
-
+  app:
+    image: aannaassalam/shiftcare-jr:latest
+    platform: linux/amd64/v8
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "14001:14001"
-    command: >
-      sh -c "npm i --force &&
-             npm run build &&
-             npm start"
-
-#Docker Networks
-
-networks:
-  default:
-    external:
-      name: webskitters
+    restart: always

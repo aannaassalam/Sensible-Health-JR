@@ -39,7 +39,7 @@ const AccountPopover: React.FC = () => {
     setOpen(event.currentTarget);
   };
 
-  const handleClose = (path: string) => {
+  const handleClose = (e?: any, r?: any, path?: string) => {
     if (path) {
       router.push(path);
     }
@@ -77,7 +77,7 @@ const AccountPopover: React.FC = () => {
       <Popover
         open={!!open}
         anchorEl={open}
-        onClose={handleClose}
+        onClose={(e, r) => handleClose(e, r)}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
         PaperProps={{
@@ -105,7 +105,10 @@ const AccountPopover: React.FC = () => {
         <Divider sx={{ borderStyle: "dashed" }} />
 
         {MENU_OPTIONS.map((option) => (
-          <MenuItem key={option.label} onClick={() => handleClose(option.path)}>
+          <MenuItem
+            key={option.label}
+            onClick={() => handleClose(null, null, option.path)}
+          >
             {option.label}
           </MenuItem>
         ))}

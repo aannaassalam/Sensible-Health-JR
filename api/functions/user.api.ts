@@ -23,12 +23,12 @@ export const GetProfileDetails = async () => {
   };
 };
 
-export const loginMutation = async (body: signupMutationPayload) => {
+export const loginMutation = async (body: loginMutationPayload) => {
   const res = await axiosInstance.post(endpoints.auth.login, body);
   return res.data;
 };
 
-export const signupMutation = async (body: loginMutationPayload) => {
+export const signupMutation = async (body: signupMutationPayload) => {
   const res = await axiosInstance.post(endpoints.auth.signup, body);
   return res.data;
 };

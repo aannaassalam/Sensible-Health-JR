@@ -31,7 +31,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { useMutation } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { SyntheticEvent, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 import * as yup from "yup";
 
 const StyledBox = styled(Box)`
@@ -130,7 +130,7 @@ const schema = yup.object().shape({
 export default function Index() {
   const [salutation, setSalutation] = useState(true);
 
-  const { control, handleSubmit, watch, setValue } = useForm<IStaffPost>({
+  const methods = useForm<IStaffPost>({
     resolver: yupResolver(schema),
     defaultValues: {
       salutation: "",
@@ -141,7 +141,7 @@ export default function Index() {
       typeOfUser: "",
       role: "",
       gender: "",
-      dateOfBirth: null,
+      dateOfBirth: "",
       employmentType: "",
       address: ""
     }
@@ -194,380 +194,336 @@ export default function Index() {
             />
           </Stack>
           <Divider />
-          <Grid container spacing={2}>
-            <Grid item lg={3}>
-              <Typography variant="body1">Name:</Typography>
-            </Grid>
-            <Grid item lg={9}>
-              <FormControlLabel
-                control={<Checkbox size="small" />}
-                label="Use Salutation"
-                checked={salutation}
-                onChange={(e: SyntheticEvent<Element, Event>, checked) => {
-                  setSalutation(checked);
-                  setValue("salutation", "");
-                }}
-              />
-              <Grid container spacing={2}>
-                <Grid item lg={2}>
-                  {
+          <FormProvider {...methods}>
+            <Grid container spacing={2}>
+              <Grid item lg={3}>
+                <Typography variant="body1">Name:</Typography>
+              </Grid>
+              <Grid item lg={9}>
+                <FormControlLabel
+                  control={<Checkbox size="small" />}
+                  label="Use Salutation"
+                  checked={salutation}
+                  onChange={(e: SyntheticEvent<Element, Event>, checked) => {
+                    setSalutation(checked);
+                    methods.setValue("salutation", "");
+                  }}
+                />
+                <Grid container spacing={2}>
+                  <Grid item lg={2}>
                     <Controller
-                      control={control}
+                      control={methods.control}
                       name="salutation"
                       render={({
                         field: { value, onChange },
                         fieldState: { invalid, error }
                       }) => (
-                        <Select
-                          fullWidth
-                          displayEmpty
-                          renderValue={
-                            value !== "" ? undefined : () => "Select Salutation"
-                          }
-                          value={value}
-                          onChange={onChange}
-                          disabled={!salutation}
-                          defaultValue={salutation ? salutation_list[0] : ""}
-                        >
-                          {salutation_list.map((_salutation) => (
-                            <MenuItem value={_salutation} key={_salutation}>
-                              {_salutation}
-                            </MenuItem>
-                          ))}
-                        </Select>
+                        <Box>
+                          <Select
+                            fullWidth
+                            displayEmpty
+                            renderValue={
+                              value !== ""
+                                ? undefined
+                                : () => "Select Salutation"
+                            }
+                            value={value}
+                            onChange={onChange}
+                            disabled={!salutation}
+                            defaultValue={salutation ? salutation_list[0] : ""}
+                          >
+                            {salutation_list.map((_salutation) => (
+                              <MenuItem value={_salutation} key={_salutation}>
+                                {_salutation}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                          {invalid && (
+                            <FormHelperText sx={{ color: "#FF5630" }}>
+                              {error?.message}
+                            </FormHelperText>
+                          )}
+                        </Box>
                       )}
                     />
-                  }
-                </Grid>
-                <Grid item lg={10}>
-                  <Controller
-                    control={control}
-                    name="name"
-                    render={({
-                      field: { value, onChange },
-                      fieldState: { error, invalid }
-                    }) => (
-                      <CustomInput
-                        fullWidth
-                        placeholder="Enter Name"
-                        value={value}
-                        onChange={onChange}
-                        error={invalid}
-                        helperText={error?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid item lg={3}>
-              <Typography variant="body1">Email:</Typography>
-            </Grid>
-            <Grid item lg={9}>
-              <Controller
-                control={control}
-                name="email"
-                render={({
-                  field: { value, onChange },
-                  fieldState: { error, invalid }
-                }) => (
-                  <CustomInput
-                    fullWidth
-                    placeholder="Enter Email"
-                    value={value}
-                    onChange={onChange}
-                    error={invalid}
-                    helperText={error?.message}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <EmailIcon fontSize="small" />
-                        </InputAdornment>
-                      )
-                    }}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item lg={3}>
-              <Typography variant="body1">Contact:</Typography>
-            </Grid>
-            <Grid item lg={9}>
-              <Grid container spacing={2}>
-                <Grid item lg={6}>
-                  <Controller
-                    control={control}
-                    name="phoneNo"
-                    render={({
-                      field: { value, onChange },
-                      fieldState: { error, invalid }
-                    }) => (
-                      <CustomInput
-                        fullWidth
-                        type="number"
-                        placeholder="Enter Mobile Number"
-                        value={value}
-                        onChange={onChange}
-                        error={invalid}
-                        helperText={error?.message}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <PhoneIphoneIcon fontSize="small" />
-                            </InputAdornment>
-                          )
-                        }}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item lg={6}>
-                  <Controller
-                    control={control}
-                    name="mobileNo"
-                    render={({
-                      field: { value, onChange },
-                      fieldState: { error, invalid }
-                    }) => (
-                      <CustomInput
-                        fullWidth
-                        type="number"
-                        placeholder="Enter Phone Number"
-                        value={value}
-                        onChange={onChange}
-                        error={invalid}
-                        helperText={error?.message}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <PhoneIcon fontSize="small" />
-                            </InputAdornment>
-                          )
-                        }}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item lg={6}>
-                  <Controller
-                    control={control}
-                    name="typeOfUser"
-                    render={({
-                      field: { value, onChange },
-                      fieldState: { error, invalid }
-                    }) => (
-                      <>
-                        <ToggleButtonGroup
-                          value={value}
-                          exclusive
-                          onChange={(e, newValue) =>
-                            handleToggle(e, newValue, onChange)
-                          }
-                        >
-                          <ToggleButton value="carer">
-                            <Typography variant="body1">Carer</Typography>
-                          </ToggleButton>
-                          <ToggleButton value="Office_user">
-                            <Typography variant="body1">Office User</Typography>
-                          </ToggleButton>
-                        </ToggleButtonGroup>
-                        {invalid && (
-                          <FormHelperText sx={{ color: "#FF5630" }}>
-                            {error?.message}
-                          </FormHelperText>
-                        )}
-                      </>
-                    )}
-                  />
-                </Grid>
-                <Grid item lg={6}>
-                  {watch("typeOfUser") === "Office_user" && (
-                    <Stack direction="row" alignItems="center" spacing={3}>
-                      <Typography variant="body1">Role:</Typography>
-                      <Controller
-                        control={control}
-                        name="role"
-                        render={({
-                          field: { value, onChange },
-                          fieldState: { error, invalid }
-                        }) => (
-                          <Box>
-                            <Select
-                              sx={{ width: "200px" }}
-                              displayEmpty
-                              renderValue={
-                                value !== "" ? undefined : () => "Select Role"
-                              }
-                              value={value}
-                              onChange={onChange}
-                              defaultValue={""}
-                            >
-                              {roles_list.map((_salutation) => (
-                                <MenuItem value={_salutation} key={_salutation}>
-                                  {_salutation}
-                                </MenuItem>
-                              ))}
-                            </Select>
-
-                            {invalid && (
-                              <FormHelperText sx={{ color: "#FF5630" }}>
-                                {error?.message}
-                              </FormHelperText>
-                            )}
-                          </Box>
-                        )}
-                      />
-                    </Stack>
-                  )}
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid item lg={6}>
-              <Grid container>
-                <Grid item lg={6.15}>
-                  <Typography>Gender:</Typography>
-                </Grid>
-                <Grid item lg={5.85}>
-                  <Controller
-                    control={control}
-                    name="gender"
-                    render={({
-                      field: { value, onChange },
-                      fieldState: { error, invalid }
-                    }) => (
-                      <Box>
-                        <Select
-                          fullWidth
-                          displayEmpty
-                          renderValue={
-                            value !== "" ? undefined : () => "Select Gender"
-                          }
-                          value={value}
-                          onChange={onChange}
-                          defaultValue={""}
-                        >
-                          {gender_list.map((_salutation) => (
-                            <MenuItem value={_salutation} key={_salutation}>
-                              {_salutation}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                        {invalid && (
-                          <FormHelperText sx={{ color: "#FF5630" }}>
-                            {error?.message}
-                          </FormHelperText>
-                        )}
-                      </Box>
-                    )}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid item lg={6}>
-              <Grid container>
-                <Grid
-                  item
-                  lg={3}
-                  sx={{ display: "flex", alignItems: "center" }}
-                >
-                  <Typography>Date of Birth:</Typography>
-                </Grid>
-                <Grid item lg={9}>
-                  <Controller
-                    control={control}
-                    name="dateOfBirth"
-                    render={({
-                      field: { value, onChange },
-                      fieldState: { error, invalid }
-                    }) => (
-                      <Box>
-                        <DatePicker
-                          sx={{ width: "100%" }}
-                          className="date-picker"
-                          value={value}
-                          onChange={onChange}
-                          maxDate={dayjs().subtract(18, "years")}
-                        />
-                        {invalid && (
-                          <FormHelperText sx={{ color: "#FF5630" }}>
-                            {error?.message}
-                          </FormHelperText>
-                        )}
-                      </Box>
-                    )}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid item lg={3}>
-              <Typography variant="body1">Employment Type:</Typography>
-            </Grid>
-            <Grid item lg={9}>
-              <Controller
-                control={control}
-                name="employmentType"
-                render={({
-                  field: { value, onChange },
-                  fieldState: { error, invalid }
-                }) => (
-                  <Box>
-                    <Select
+                  </Grid>
+                  <Grid item lg={10}>
+                    <CustomInput
                       fullWidth
-                      displayEmpty
-                      renderValue={
-                        value !== ""
-                          ? undefined
-                          : () => "Select Employment Type"
-                      }
-                      value={value}
-                      onChange={onChange}
-                      defaultValue={""}
-                    >
-                      {employment_list.map((_salutation) => (
-                        <MenuItem value={_salutation} key={_salutation}>
-                          {_salutation}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {invalid && (
-                      <FormHelperText sx={{ color: "#FF5630" }}>
-                        {error?.message}
-                      </FormHelperText>
+                      name="name"
+                      placeholder="Enter Name"
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item lg={3}>
+                <Typography variant="body1">Email:</Typography>
+              </Grid>
+              <Grid item lg={9}>
+                <CustomInput
+                  fullWidth
+                  name="email"
+                  placeholder="Enter Email"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <EmailIcon fontSize="small" />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              </Grid>
+              <Grid item lg={3}>
+                <Typography variant="body1">Contact:</Typography>
+              </Grid>
+              <Grid item lg={9}>
+                <Grid container spacing={2}>
+                  <Grid item lg={6}>
+                    <CustomInput
+                      fullWidth
+                      name="phoneNo"
+                      type="number"
+                      placeholder="Enter Mobile Number"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <PhoneIphoneIcon fontSize="small" />
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                  </Grid>
+                  <Grid item lg={6}>
+                    <CustomInput
+                      fullWidth
+                      name="mobileNo"
+                      type="number"
+                      placeholder="Enter Phone Number"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <PhoneIcon fontSize="small" />
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                  </Grid>
+                  <Grid item lg={6}>
+                    <Controller
+                      control={methods.control}
+                      name="typeOfUser"
+                      render={({
+                        field: { value, onChange },
+                        fieldState: { error, invalid }
+                      }) => (
+                        <>
+                          <ToggleButtonGroup
+                            value={value}
+                            exclusive
+                            onChange={(e, newValue) =>
+                              handleToggle(e, newValue, onChange)
+                            }
+                          >
+                            <ToggleButton value="carer">
+                              <Typography variant="body1">Carer</Typography>
+                            </ToggleButton>
+                            <ToggleButton value="Office_user">
+                              <Typography variant="body1">
+                                Office User
+                              </Typography>
+                            </ToggleButton>
+                          </ToggleButtonGroup>
+                          {invalid && (
+                            <FormHelperText sx={{ color: "#FF5630" }}>
+                              {error?.message}
+                            </FormHelperText>
+                          )}
+                        </>
+                      )}
+                    />
+                  </Grid>
+                  <Grid item lg={6}>
+                    {methods.watch("typeOfUser") === "Office_user" && (
+                      <Stack direction="row" alignItems="center" spacing={3}>
+                        <Typography variant="body1">Role:</Typography>
+                        <Controller
+                          control={methods.control}
+                          name="role"
+                          render={({
+                            field: { value, onChange },
+                            fieldState: { error, invalid }
+                          }) => (
+                            <Box>
+                              <Select
+                                sx={{ width: "200px" }}
+                                displayEmpty
+                                renderValue={
+                                  value !== "" ? undefined : () => "Select Role"
+                                }
+                                value={value}
+                                onChange={onChange}
+                                defaultValue={""}
+                              >
+                                {roles_list.map((_salutation) => (
+                                  <MenuItem
+                                    value={_salutation}
+                                    key={_salutation}
+                                  >
+                                    {_salutation}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+
+                              {invalid && (
+                                <FormHelperText sx={{ color: "#FF5630" }}>
+                                  {error?.message}
+                                </FormHelperText>
+                              )}
+                            </Box>
+                          )}
+                        />
+                      </Stack>
                     )}
-                  </Box>
-                )}
-              />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item lg={6}>
+                <Grid container>
+                  <Grid item lg={6.15}>
+                    <Typography>Gender:</Typography>
+                  </Grid>
+                  <Grid item lg={5.85}>
+                    <Controller
+                      control={methods.control}
+                      name="gender"
+                      render={({
+                        field: { value, onChange },
+                        fieldState: { error, invalid }
+                      }) => (
+                        <Box>
+                          <Select
+                            fullWidth
+                            displayEmpty
+                            renderValue={
+                              value !== "" ? undefined : () => "Select Gender"
+                            }
+                            value={value}
+                            onChange={onChange}
+                            defaultValue={""}
+                          >
+                            {gender_list.map((_salutation) => (
+                              <MenuItem value={_salutation} key={_salutation}>
+                                {_salutation}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                          {invalid && (
+                            <FormHelperText sx={{ color: "#FF5630" }}>
+                              {error?.message}
+                            </FormHelperText>
+                          )}
+                        </Box>
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item lg={6}>
+                <Grid container>
+                  <Grid
+                    item
+                    lg={3}
+                    sx={{ display: "flex", alignItems: "center" }}
+                  >
+                    <Typography>Date of Birth:</Typography>
+                  </Grid>
+                  <Grid item lg={9}>
+                    <Controller
+                      control={methods.control}
+                      name="dateOfBirth"
+                      render={({
+                        field: { value, onChange },
+                        fieldState: { error, invalid }
+                      }) => (
+                        <Box>
+                          <DatePicker
+                            sx={{ width: "100%" }}
+                            className="date-picker"
+                            value={value}
+                            onChange={onChange}
+                            maxDate={dayjs()
+                              .subtract(18, "years")
+                              .toISOString()}
+                          />
+                          {invalid && (
+                            <FormHelperText sx={{ color: "#FF5630" }}>
+                              {error?.message}
+                            </FormHelperText>
+                          )}
+                        </Box>
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item lg={3}>
+                <Typography variant="body1">Employment Type:</Typography>
+              </Grid>
+              <Grid item lg={9}>
+                <Controller
+                  control={methods.control}
+                  name="employmentType"
+                  render={({
+                    field: { value, onChange },
+                    fieldState: { error, invalid }
+                  }) => (
+                    <Box>
+                      <Select
+                        fullWidth
+                        displayEmpty
+                        renderValue={
+                          value !== ""
+                            ? undefined
+                            : () => "Select Employment Type"
+                        }
+                        value={value}
+                        onChange={onChange}
+                        defaultValue={""}
+                      >
+                        {employment_list.map((_salutation) => (
+                          <MenuItem value={_salutation} key={_salutation}>
+                            {_salutation}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      {invalid && (
+                        <FormHelperText sx={{ color: "#FF5630" }}>
+                          {error?.message}
+                        </FormHelperText>
+                      )}
+                    </Box>
+                  )}
+                />
+              </Grid>
+              <Grid item lg={3}>
+                <Typography variant="body1">Address:</Typography>
+              </Grid>
+              <Grid item lg={9}>
+                <CustomInput
+                  fullWidth
+                  name="address"
+                  placeholder="Enter Address"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LocationOnIcon fontSize="small" />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              </Grid>
             </Grid>
-            <Grid item lg={3}>
-              <Typography variant="body1">Address:</Typography>
-            </Grid>
-            <Grid item lg={9}>
-              <Controller
-                control={control}
-                name="address"
-                render={({
-                  field: { value, onChange },
-                  fieldState: { error, invalid }
-                }) => (
-                  <CustomInput
-                    fullWidth
-                    placeholder="Enter Address"
-                    value={value}
-                    onChange={onChange}
-                    error={invalid}
-                    helperText={error?.message}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <LocationOnIcon fontSize="small" />
-                        </InputAdornment>
-                      )
-                    }}
-                  />
-                )}
-              />
-            </Grid>
-          </Grid>
+          </FormProvider>
           <Divider />
           <Stack
             direction="row"
@@ -581,7 +537,7 @@ export default function Index() {
             </Button>
             <Button
               variant="contained"
-              onClick={handleSubmit(onSubmit)}
+              onClick={methods.handleSubmit(onSubmit)}
               disabled={isPending}
             >
               Create

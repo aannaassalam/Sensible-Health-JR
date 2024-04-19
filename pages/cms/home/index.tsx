@@ -22,7 +22,7 @@ export default function index() {
             <Card>
               <CardContent>
                 <Box component="form" noValidate autoComplete="off">
-                  <Box mt={3}>
+                  {/* <Box mt={3}>
                     <CustomInput
                       required
                       id="outlined-required"
@@ -40,7 +40,7 @@ export default function index() {
                       defaultValue="Hello World"
                       fullWidth
                     />
-                  </Box>
+                  </Box> */}
                 </Box>
               </CardContent>
             </Card>

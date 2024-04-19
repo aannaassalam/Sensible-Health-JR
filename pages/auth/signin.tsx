@@ -23,7 +23,7 @@ import { alpha, useTheme } from "@mui/material/styles";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 import * as yup from "yup";
 // ----------------------------------------------------------------------
 
@@ -69,7 +69,7 @@ export default function LoginView() {
 
   const router = useRouter();
 
-  const { handleSubmit, control } = useForm({
+  const methods = useForm({
     resolver: yupResolver(schema),
     // mode: "all",
     defaultValues: {
@@ -152,63 +152,65 @@ export default function LoginView() {
 
           {/* <Divider sx={{ my: 3 }} /> */}
 
-          <Box component="form" onSubmit={handleSubmit(handleLogin)}>
-            <Stack spacing={3}>
-              <CustomInput
-                label="Email Address"
-                control={control}
-                name="email"
-                type="email"
-                size="small"
-              />
-              <CustomInput
-                name="password"
-                control={control}
-                label="Password"
-                size="small"
-                type={showPassword ? "text" : "password"}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                      >
-                        {showPassword ? (
-                          <VisibilityOffIcon fontSize="small" />
-                        ) : (
-                          <RemoveRedEyeIcon fontSize="small" />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              />
-
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                className="more-info"
-              >
-                <FormControlLabel
-                  control={<Checkbox defaultChecked />}
-                  label="Remember me"
+          <Box component="form" onSubmit={methods.handleSubmit(handleLogin)}>
+            <FormProvider {...methods}>
+              <Stack spacing={3}>
+                <CustomInput
+                  name="email"
+                  label="Email Address"
+                  type="email"
+                  size="small"
                 />
-                <Link href="/auth/forgot-password">Forgot your password?</Link>
-              </Stack>
+                <CustomInput
+                  label="Password"
+                  name="password"
+                  size="small"
+                  type={showPassword ? "text" : "password"}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                        >
+                          {showPassword ? (
+                            <VisibilityOffIcon fontSize="small" />
+                          ) : (
+                            <RemoveRedEyeIcon fontSize="small" />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                />
 
-              <LoadingButton
-                fullWidth
-                size="large"
-                type="submit"
-                variant="contained"
-                color="primary"
-                loading={isPending}
-              >
-                Sign In
-              </LoadingButton>
-            </Stack>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  className="more-info"
+                >
+                  <FormControlLabel
+                    control={<Checkbox defaultChecked />}
+                    label="Remember me"
+                  />
+                  <Link href="/auth/forgot-password">
+                    Forgot your password?
+                  </Link>
+                </Stack>
+
+                <LoadingButton
+                  fullWidth
+                  size="large"
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  loading={isPending}
+                >
+                  Sign In
+                </LoadingButton>
+              </Stack>
+            </FormProvider>
           </Box>
         </Card>
       </Stack>

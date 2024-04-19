@@ -24,7 +24,7 @@ import {
 } from "@mui/material";
 import { Box, Container, Stack } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 import * as yup from "yup";
 
 const StyledPaper = styled(Paper)`
@@ -123,7 +123,7 @@ const schema = yup.object().shape({
 export default function Index() {
   const user: UserData = JSON.parse(getCookie("user") || "{}");
 
-  const { handleSubmit, control } = useForm({
+  const methods = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
       name: user?.name,
@@ -163,68 +163,69 @@ export default function Index() {
         </StyledPaper>
         <StyledForm>
           <Typography variant="h5">Edit Details</Typography>
-          <Grid container spacing={4}>
-            <Grid item lg={6}>
-              <CustomInput
-                control={control}
-                name="name"
-                type="text"
-                label="Full Name"
-                size="small"
-              />
+          <FormProvider {...methods}>
+            <Grid container spacing={4}>
+              <Grid item lg={6}>
+                <CustomInput
+                  name="name"
+                  type="text"
+                  label="Full Name"
+                  size="small"
+                />
+              </Grid>
+              <Grid item lg={6}>
+                <Controller
+                  name="dob"
+                  control={methods.control}
+                  render={({
+                    field: { value, onChange },
+                    fieldState: { invalid, error }
+                  }) => (
+                    <Box>
+                      <FormLabel
+                        sx={{
+                          fontSize: "14px",
+                          display: "block",
+                          marginBottom: "5px"
+                        }}
+                      >
+                        Date of Birth
+                      </FormLabel>
+                      <DatePicker
+                        value={value}
+                        onChange={onChange}
+                        slotProps={{
+                          textField: { size: "small", fullWidth: true }
+                        }}
+                      />
+                      {invalid && (
+                        <FormHelperText>{error?.message}</FormHelperText>
+                      )}
+                    </Box>
+                  )}
+                />
+              </Grid>
+              <Grid item lg={6}>
+                <CustomInput
+                  name="mobileNo"
+                  type="text"
+                  label="Mobile"
+                  size="small"
+                />
+              </Grid>
+              <Grid item lg={6}>
+                <CustomInput
+                  name="phoneNo"
+                  type="text"
+                  label="Phone"
+                  size="small"
+                />
+              </Grid>
+              <Grid item lg={12}>
+                {/* <CustomInput type="text" label="Account Owner" size="small" /> */}
+              </Grid>
             </Grid>
-            <Grid item lg={6}>
-              <Controller
-                render={({
-                  field: { value, onChange },
-                  fieldState: { invalid, error }
-                }) => (
-                  <Box>
-                    <FormLabel
-                      sx={{
-                        fontSize: "14px",
-                        display: "block",
-                        marginBottom: "5px"
-                      }}
-                    >
-                      Date of Birth
-                    </FormLabel>
-                    <DatePicker
-                      value={value}
-                      onChange={onChange}
-                      slotProps={{
-                        textField: { size: "small", fullWidth: true }
-                      }}
-                    />
-                    {invalid && (
-                      <FormHelperText>{error?.message}</FormHelperText>
-                    )}
-                  </Box>
-                )}
-              />
-            </Grid>
-            <Grid item lg={6}>
-              <CustomInput
-                control={control}
-                name="mobileNo"
-                type="text"
-                label="Mobile"
-                size="small"
-              />
-            </Grid>
-            <Grid item lg={6}>
-              <CustomInput
-                control={control}
-                name="phoneNo"
-                type="text"
-                label="Phone"
-                size="small"
-              />
-            </Grid>
-            <Grid item lg={12}>
-              {/* <CustomInput type="text" label="Account Owner" size="small" /> */}
-            </Grid>
-          </Grid>
+          </FormProvider>
           <Divider />
           <Stack
             direction="row"

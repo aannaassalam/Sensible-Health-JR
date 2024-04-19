@@ -25,7 +25,7 @@ import { alpha, useTheme } from "@mui/material/styles";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Controller, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import * as yup from "yup";
 // ----------------------------------------------------------------------
 
@@ -93,7 +93,7 @@ export default function LoginView() {
 
   const router = useRouter();
 
-  const { handleSubmit, watch, control } = useForm({
+  const methods = useForm({
     resolver: yupResolver(schema),
     // mode: "all",
     defaultValues: {
@@ -176,102 +176,55 @@ export default function LoginView() {
             maxWidth: 420
           }}
         >
-          <Box component="form" onSubmit={handleSubmit(handleSignup)}>
-            <Stack spacing={3}>
-              <Controller
-                control={control}
-                name="name"
-                render={({
-                  field: { value, onChange },
-                  fieldState: { invalid, error }
-                }) => (
-                  <CustomInput
-                    label="Full name"
-                    placeholder="Enter your full name"
-                    size="small"
-                    type="text"
-                    value={value}
-                    onChange={onChange}
-                    error={invalid}
-                    helperText={error?.message}
-                  />
-                )}
-              />
-              <Controller
-                control={control}
-                name="email"
-                render={({
-                  field: { value, onChange },
-                  fieldState: { invalid, error }
-                }) => (
-                  <CustomInput
-                    label="Email Address"
-                    placeholder="Enter you email address"
-                    type="email"
-                    size="small"
-                    value={value}
-                    onChange={onChange}
-                    error={invalid}
-                    helperText={error?.message}
-                  />
-                )}
-              />
-              <Controller
-                control={control}
-                name="company"
-                render={({
-                  field: { value, onChange },
-                  fieldState: { invalid, error }
-                }) => (
-                  <CustomInput
-                    label="Company Name"
-                    type="text"
-                    placeholder="Enter your company name"
-                    size="small"
-                    value={value}
-                    onChange={onChange}
-                    error={invalid}
-                    helperText={error?.message}
-                  />
-                )}
-              />
+          <Box component="form" onSubmit={methods.handleSubmit(handleSignup)}>
+            <FormProvider {...methods}>
+              <Stack spacing={3}>
+                <CustomInput
+                  name="name"
+                  label="Full name"
+                  placeholder="Enter your full name"
+                  size="small"
+                  type="text"
+                />
+                <CustomInput
+                  label="Email Address"
+                  name="email"
+                  placeholder="Enter you email address"
+                  type="email"
+                  size="small"
+                />
+                <CustomInput
+                  label="Company Name"
+                  type="text"
+                  name="company"
+                  placeholder="Enter your company name"
+                  size="small"
+                />
 
-              <Controller
-                name="password"
-                control={control}
-                render={({
-                  field: { value, onChange },
-                  fieldState: { invalid, error }
-                }) => (
-                  <CustomInput
-                    label="Password"
-                    size="small"
-                    placeholder="********"
-                    value={value}
-                    onChange={onChange}
-                    error={invalid}
-                    helperText={error?.message}
-                    type={showPassword ? "text" : "password"}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={() => setShowPassword(!showPassword)}
-                            edge="end"
-                          >
-                            {showPassword ? (
-                              <VisibilityOffIcon fontSize="small" />
-                            ) : (
-                              <RemoveRedEyeIcon fontSize="small" />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      )
-                    }}
-                  />
-                )}
-              />
-              {/* <Controller
+                <CustomInput
+                  label="Password"
+                  name="password"
+                  size="small"
+                  placeholder="********"
+                  type={showPassword ? "text" : "password"}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                        >
+                          {showPassword ? (
+                            <VisibilityOffIcon fontSize="small" />
+                          ) : (
+                            <RemoveRedEyeIcon fontSize="small" />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                />
+                {/* <Controller
                 control={control}
                 name="role"
                 render={({
@@ -334,17 +287,18 @@ export default function LoginView() {
                 />
               )} */}
 
-              <LoadingButton
-                fullWidth
-                size="large"
-                type="submit"
-                variant="contained"
-                color="primary"
-                loading={isPending}
-              >
-                Sign Up
-              </LoadingButton>
-            </Stack>
+                <LoadingButton
+                  fullWidth
+                  size="large"
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  loading={isPending}
+                >
+                  Sign Up
+                </LoadingButton>
+              </Stack>
+            </FormProvider>
           </Box>
         </Card>
       </Stack>

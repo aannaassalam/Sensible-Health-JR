@@ -1,27 +1,19 @@
 import { InputLabel, TextField, TextFieldProps } from "@mui/material";
 import { Box } from "@mui/system";
-import {
-  Control,
-  Controller,
-  FieldPath,
-  FieldValues,
-  UseControllerProps
-} from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 
-type CustomInputProps<T extends TextFieldProps> = {
-  control?: Control<T>;
-  name: FieldPath<T>;
-} & UseControllerProps;
+type CustomInputProps = {
+  name: string;
+} & TextFieldProps;
 
-function CustomInput<T extends TextFieldProps>(props: CustomInputProps<T>) {
+function CustomInput(props: CustomInputProps) {
+  const { control } = useFormContext();
+
   return (
     <Controller
+      control={control}
       name={props.name}
-      control={props?.control || null}
-      render={({
-        field: { value, onChange },
-        fieldState: { invalid, error }
-      }) => (
+      render={({ field, fieldState: { invalid, error } }) => (
         <Box>
           {Boolean(props.label) && (
             <InputLabel
@@ -35,10 +27,9 @@ function CustomInput<T extends TextFieldProps>(props: CustomInputProps<T>) {
           )}
           <TextField
             {...props}
+            {...field}
             label=""
             fullWidth
-            value={value}
-            onChange={onChange}
             error={invalid}
             helperText={error?.message}
           />

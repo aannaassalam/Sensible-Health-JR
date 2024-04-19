@@ -117,7 +117,7 @@ function NotificationItem({ notification }: NotificationItemProps) {
               icon="eva:clock-outline"
               sx={{ mr: 0.5, width: 16, height: 16 }}
             /> */}
-            {notification.createdAt}
+            {notification.createdAt.toDateString()}
           </Typography>
         }
       />

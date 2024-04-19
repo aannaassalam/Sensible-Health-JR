@@ -36,6 +36,4 @@ jobs:
           username: ${{secrets.SSH_USERNAME}}
           password: ${{ secrets.SSH_PASS }}
           script: |
-            cd ${{ secrets.REMOTE_WORK_DIR }}
-            docker-compose pull
-            docker-compose up -d
+            whoami

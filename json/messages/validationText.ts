@@ -2,6 +2,9 @@ const validationText = {
   success: {},
   error: {
     enter_email: "Please enter email",
+    currentPassword: "Please enter Current Password",
+    newPassword: "Please enter New Password",
+    confirmPassword: "Please enter Confirm Password",
     enter_manager_email: "Please enter manager email",
     email_format: "Email format is incorrect",
     enter_password: "Enter password",

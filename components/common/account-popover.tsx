@@ -1,5 +1,8 @@
+import useUser from "@/hooks/react-query/useUser";
+import { useAppDispatch } from "@/hooks/redux/useAppDispatch";
 import { UserData } from "@/interface/common.interface";
 import { getCookie } from "@/lib/functions/storage.lib";
+import { logout } from "@/reduxtoolkit/slices/userSlice";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -31,7 +34,9 @@ const MENU_OPTIONS = [
 
 const AccountPopover: React.FC = () => {
   const [open, setOpen] = useState<HTMLElement | null>(null);
-  const user: UserData = JSON.parse(getCookie("user") || "{}");
+  const user = useUser();
+
+  const dispatch = useAppDispatch();
 
   const router = useRouter();
 
@@ -70,7 +75,7 @@ const AccountPopover: React.FC = () => {
               `solid 2px ${theme.palette.background.default}`
           }}
         >
-          {user?.name?.charAt(0)}
+          {user?.data?.data?.name?.charAt(0)}
         </Avatar>
       </IconButton>
 
@@ -95,10 +100,10 @@ const AccountPopover: React.FC = () => {
             sx={{ textTransform: "capitalize" }}
             noWrap
           >
-            {user?.name}
+            {user?.data?.data?.name}
           </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
-            {user?.email}
+            {user?.data?.data?.email}
           </Typography>
         </Box>
 
@@ -119,8 +124,7 @@ const AccountPopover: React.FC = () => {
           disableRipple
           disableTouchRipple
           onClick={() => {
-            destroyCookie(null, "token", {});
-            destroyCookie(null, "user", {});
+            dispatch(logout());
             router.push("/auth/signin");
             handleClose();
           }}

@@ -31,7 +31,7 @@ export const userSlice = createSlice({
       destroyCookie(null, "user", { path: "/" });
       destroyCookie(null, process.env.NEXT_APP_TOKEN_NAME!, { path: "/" });
 
-      window.location.href = "/auth/login";
+      window.location.href = "/auth/signin";
     }
   },
   extraReducers: {}

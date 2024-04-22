@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { GetProfileDetails } from "@/api/functions/user.api";
+import { GetProfileDetails, getProfile } from "@/api/functions/user.api";
 import { logout, setLoginData } from "@/reduxtoolkit/slices/userSlice";
 import { useQuery } from "@tanstack/react-query";
 import { parseCookies } from "nookies";
@@ -15,8 +15,8 @@ const useUser = () => {
 
   const profileDetails = useQuery({
     queryKey: ["userdetails"],
-    queryFn: GetProfileDetails,
-    enabled: !!token && userData === null
+    queryFn: getProfile,
+    enabled: !!token
     // onSuccess(data) {
     //   if (data?.data?.status === 401) {
     //     dispatch(logout());
@@ -34,7 +34,7 @@ const useUser = () => {
       if (profileDetails?.data?.status === 401) {
         dispatch(logout());
       } else {
-        dispatch(setLoginData(profileDetails?.data?.data?.data));
+        dispatch(setLoginData(profileDetails?.data?.data));
       }
     }
   }, [profileDetails?.status, profileDetails?.data]);

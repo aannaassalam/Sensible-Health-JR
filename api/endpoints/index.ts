@@ -10,8 +10,13 @@ export const mediaUrl = (url: string) => {
 
 export const endpoints = {
   auth: {
-    signup: "/auth/signup",
-    login: "/auth/signin"
+    signup: "/auth/register",
+    login: "/auth/signin",
+    set_password: "/auth/set-password",
+    forgot_password: "/auth/forgot-password",
+    reset_password: "/auth/reset-password",
+    change_password: "/auth/change-password",
+    profile: "/user/profile"
   },
   cms: {
     about: "/aboutpolicy/details",
@@ -24,5 +29,9 @@ export const endpoints = {
 
 export const sucessNotificationEndPoints = [
   endpoints.auth.signup,
-  endpoints.auth.login
+  endpoints.auth.login,
+  endpoints.auth.set_password,
+  endpoints.auth.forgot_password,
+  endpoints.auth.reset_password,
+  endpoints.auth.change_password
 ];

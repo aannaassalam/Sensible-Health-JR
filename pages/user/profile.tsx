@@ -26,6 +26,13 @@ import { Box, Container, Stack } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import * as yup from "yup";
+import useUser from "@/hooks/react-query/useUser";
+import { useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
+import {
+  changePasswordMutation,
+  changePasswordPayload
+} from "@/api/functions/user.api";
 
 const StyledPaper = styled(Paper)`
   border-radius: 16px;
@@ -38,7 +45,7 @@ const StyledPaper = styled(Paper)`
   height: 290px;
   margin-bottom: 24px;
 
-  > div {
+  .inner-box {
     height: 100%;
     background: linear-gradient(rgba(0, 75, 80, 0.8), rgba(0, 75, 80, 0.8)),
       url(https://api-prod-minimal-v510.vercel.app/assets/images/cover/cover_4.jpg);
@@ -120,24 +127,56 @@ const schema = yup.object().shape({
   phoneNo: yup.string().trim().required(validationText.error.phone)
 });
 
+const changePasswordSchema = yup.object().shape({
+  currentPassword: yup.string().required(validationText.error.currentPassword),
+  newPassword: yup.string().required(validationText.error.newPassword),
+  reEnteredPassword: yup.string().required(validationText.error.confirmPassword)
+});
+
 export default function Index() {
-  const user: UserData = JSON.parse(getCookie("user") || "{}");
+  const user = useUser();
 
   const methods = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema)
+  });
+
+  const passwordMethods = useForm({
+    resolver: yupResolver(changePasswordSchema),
     defaultValues: {
-      name: user?.name,
-      dob: user?.dateOfBirth,
-      mobileNo: user?.mobileNo,
-      phoneNo: user?.phoneNo
+      currentPassword: "",
+      newPassword: "",
+      reEnteredPassword: ""
     }
   });
 
+  useEffect(() => {
+    if (!user.isLoading) {
+      methods.setValue("name", user?.data?.data?.name);
+      methods.setValue("dob", user?.data?.data?.dateOfBirth);
+      methods.setValue("mobileNo", user?.data?.data?.mobileNo);
+      methods.setValue("phoneNo", user?.data?.data?.phoneNo);
+    }
+  }, [user.isLoading]);
+
+  const { mutate: passwordMutate, isPending } = useMutation({
+    mutationFn: changePasswordMutation,
+    onSuccess: () =>
+      passwordMethods.reset({
+        currentPassword: "",
+        newPassword: "",
+        reEnteredPassword: ""
+      })
+  });
+
+  const onPasswordSubmit = (data: changePasswordPayload) => {
+    passwordMutate(data);
+  };
+
   return (
-    <DashboardLayout>
+    <DashboardLayout isLoading={user.isLoading}>
       <Container fixed>
         <StyledPaper elevation={0}>
-          <Box>
+          <Box className="inner-box">
             <Stack direction="row" className="info">
               <Badge
                 overlap="circular"
@@ -146,16 +185,16 @@ export default function Index() {
                 component="label"
               >
                 <Avatar src="https://api-prod-minimal-v510.vercel.app/assets/images/avatar/avatar_25.jpg">
-                  {user?.name}
+                  {user?.data?.data?.name}
                 </Avatar>
                 <VisuallyHiddenInput type="file" />
               </Badge>
               <List disablePadding>
                 <ListItem disableGutters className="name">
-                  {user?.name}
+                  {user?.data?.data?.name}
                 </ListItem>
                 <ListItem disableGutters>
-                  {roleParser(user?.role?.[0].name || "")}
+                  {roleParser(user?.data?.data?.role?.[0].name || "")}
                 </ListItem>
               </List>
             </Stack>
@@ -165,7 +204,7 @@ export default function Index() {
           <Typography variant="h5">Edit Details</Typography>
           <FormProvider {...methods}>
             <Grid container spacing={4}>
-              <Grid item lg={6}>
+              <Grid item lg={6} md={6} sm={6} xs={12}>
                 <CustomInput
                   name="name"
                   type="text"
@@ -173,7 +212,7 @@ export default function Index() {
                   size="small"
                 />
               </Grid>
-              <Grid item lg={6}>
+              <Grid item lg={6} md={6} sm={6} xs={12}>
                 <Controller
                   name="dob"
                   control={methods.control}
@@ -205,7 +244,7 @@ export default function Index() {
                   )}
                 />
               </Grid>
-              <Grid item lg={6}>
+              <Grid item lg={6} md={6} sm={6} xs={12}>
                 <CustomInput
                   name="mobileNo"
                   type="text"
@@ -213,7 +252,7 @@ export default function Index() {
                   size="small"
                 />
               </Grid>
-              <Grid item lg={6}>
+              <Grid item lg={6} md={6} sm={6} xs={12}>
                 <CustomInput
                   name="phoneNo"
                   type="text"
@@ -221,9 +260,9 @@ export default function Index() {
                   size="small"
                 />
               </Grid>
-              <Grid item lg={12}>
-                {/* <CustomInput type="text" label="Account Owner" size="small" /> */}
-              </Grid>
+              {/* <Grid item lg={12}> */}
+              {/* <CustomInput type="text" label="Account Owner" size="small" /> */}
+              {/* </Grid> */}
             </Grid>
           </FormProvider>
           <Divider />
@@ -243,14 +282,34 @@ export default function Index() {
         </StyledForm>
         <StyledForm>
           <Typography variant="h5">Change Password</Typography>
-          <Grid container spacing={3}>
-            <Grid item lg={12}>
-              {/* <CustomInput type="text" label="New Password" size="small" /> */}
+          <FormProvider {...passwordMethods}>
+            <Grid container spacing={3}>
+              <Grid item lg={12}>
+                <CustomInput
+                  type="text"
+                  label="Current Password"
+                  size="small"
+                  name="currentPassword"
+                />
+              </Grid>
+              <Grid item lg={12}>
+                <CustomInput
+                  type="text"
+                  label="New Password"
+                  size="small"
+                  name="newPassword"
+                />
+              </Grid>
+              <Grid item lg={12}>
+                <CustomInput
+                  type="text"
+                  label="Confirm Password"
+                  size="small"
+                  name="reEnteredPassword"
+                />
+              </Grid>
             </Grid>
-            <Grid item lg={12}>
-              {/* <CustomInput type="text" label="Confirm Password" size="small" /> */}
-            </Grid>
-          </Grid>
+          </FormProvider>
           <Divider />
           <Stack
             direction="row"
@@ -258,7 +317,12 @@ export default function Index() {
             justifyContent="flex-end"
             gap={2}
           >
-            <LoadingButton variant="contained" size="small">
+            <LoadingButton
+              variant="contained"
+              size="small"
+              onClick={passwordMethods.handleSubmit(onPasswordSubmit)}
+              loading={isPending}
+            >
               Save
             </LoadingButton>
           </Stack>

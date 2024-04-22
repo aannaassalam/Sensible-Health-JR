@@ -81,7 +81,7 @@ export default function LoginView() {
   const { mutate, isPending } = useMutation({
     mutationFn: loginMutation,
     onSuccess: (data: any) => {
-      setCookieClient("token", data.jwtToken);
+      setCookieClient(process.env.NEXT_APP_TOKEN_NAME!, data.jwtToken);
       delete data.jwtToken;
       setCookieClient("user", JSON.stringify(data));
       router.push("/");

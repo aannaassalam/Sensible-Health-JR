@@ -1,43 +1,33 @@
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import Box from "@mui/material/Box";
-import { useState } from "react";
-import {
-  signupMutation,
-  signupMutationPayload
-} from "@/api/functions/user.api";
-import Logo from "@/components/logo/logo";
-import { useAppSelector } from "@/hooks/redux/useAppSelector";
-import validationText from "@/json/messages/validationText";
-import { setCookieClient } from "@/lib/functions/storage.lib";
-import { bgGradient } from "@/themes/css";
-import CustomInput from "@/ui/Inputs/CustomInput";
-import styled from "@emotion/styled";
-import { yupResolver } from "@hookform/resolvers/yup";
-import LoadingButton from "@mui/lab/LoadingButton";
-import { Typography } from "@mui/material";
-import Card from "@mui/material/Card";
-import IconButton from "@mui/material/IconButton";
-import InputAdornment from "@mui/material/InputAdornment";
-import Stack from "@mui/material/Stack";
-import { alpha, useTheme } from "@mui/material/styles";
-import { useMutation } from "@tanstack/react-query";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { Card, IconButton, InputAdornment, Typography } from "@mui/material";
+import { Box, Stack, styled } from "@mui/system";
+import React, { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import CustomInput from "@/ui/Inputs/CustomInput";
+import { LoadingButton } from "@mui/lab";
 import * as yup from "yup";
-// ----------------------------------------------------------------------
+import { yupResolver } from "@hookform/resolvers/yup";
+import validationText from "@/json/messages/validationText";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import { useMutation } from "@tanstack/react-query";
+import { setCookieClient } from "@/lib/functions/storage.lib";
+import { useRouter } from "next/router";
+import {
+  setPasswordMutation,
+  setPasswordPayload
+} from "@/api/functions/user.api";
+import { bgGradient } from "@/themes/css";
+import { alpha, useTheme } from "@mui/material/styles";
+import Logo from "@/components/logo/logo";
 
-const StyledSignUpPage = styled(Box)`
+const StyledVerifyPage = styled(Box)`
   min-height: 100vh;
   padding-top: 80px;
   padding-bottom: 40px;
 
-  h6 {
+  h2 {
+    margin-top: 40px;
     margin-bottom: 40px;
-    a {
-      color: inherit;
-    }
   }
 
   .MuiToggleButton-root {
@@ -68,57 +58,49 @@ const StyledSignUpPage = styled(Box)`
 `;
 
 const schema = yup.object().shape({
-  name: yup.string().trim().required(validationText.error.fullName),
-  company: yup.string().trim().required(validationText.error.company_name),
-  email: yup
+  password: yup.string().trim().required(validationText.error.enter_password),
+  reEnteredPassword: yup
     .string()
     .trim()
-    .email(validationText.error.email_format)
-    .required(validationText.error.enter_email)
-  // role: yup.string().required(validationText.error.role),
-  // manager_email: yup.string().when("role", {
-  //   is: "employee",
-  //   then: yup
-  //     .string()
-  //     .trim()
-  //     .email(validationText.error.email_format)
-  //     .required(validationText.error.enter_email)
-  // })
+    .required(validationText.error.enter_password)
 });
 
-export default function LoginView() {
-  const { isLoggedIn } = useAppSelector((s) => s.userSlice);
+export default function Index() {
   const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
+  const theme = useTheme();
 
   const methods = useForm({
     resolver: yupResolver(schema),
     // mode: "all",
     defaultValues: {
-      email: "",
-      name: "",
-      company: ""
+      password: "",
+      reEnteredPassword: ""
       // role: "business",
       // manager_email: ""
     }
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: signupMutation,
-    onSuccess: () => {
-      methods.reset();
+    mutationFn: setPasswordMutation,
+    onSuccess: (data: any) => {
+      setCookieClient(process.env.NEXT_APP_TOKEN_NAME!, data.jwtToken);
+      delete data.jwtToken;
+      setCookieClient("user", JSON.stringify(data));
+      router.push("/auth/signin");
     }
   });
 
-  const theme = useTheme();
-
-  const handleSignup = (data: signupMutationPayload) => {
-    mutate(data);
+  const onSubmit = (data: Omit<setPasswordPayload, "verificationToken">) => {
+    mutate({
+      ...data,
+      verificationToken: router.query.token as string
+    });
   };
 
   return (
-    <StyledSignUpPage
+    <StyledVerifyPage
       sx={{
         ...bgGradient({
           color: alpha(theme.palette.background.default, 0.4),
@@ -133,12 +115,11 @@ export default function LoginView() {
           left: { xs: 16, md: 24 }
         }}
       />
-
       <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
-        <Typography variant="h2">Create a new account</Typography>
-        <Typography variant="h6">
+        <Typography variant="h2">Setup Password</Typography>
+        {/* <Typography variant="h6">
           Or <Link href="/auth/signin">sign in to your account</Link>
-        </Typography>
+        </Typography> */}
         <Card
           sx={{
             p: 5,
@@ -146,29 +127,39 @@ export default function LoginView() {
             maxWidth: 420
           }}
         >
-          <Box component="form" onSubmit={methods.handleSubmit(handleSignup)}>
+          <Box component="form" onSubmit={methods.handleSubmit(onSubmit)}>
             <FormProvider {...methods}>
               <Stack spacing={3}>
                 <CustomInput
-                  name="name"
-                  label="Full name"
-                  placeholder="Enter your full name"
-                  size="small"
-                  type="text"
-                />
-                <CustomInput
-                  label="Email Address"
-                  name="email"
-                  placeholder="Enter you email address"
-                  type="email"
+                  name="password"
+                  label="Password"
+                  placeholder="********"
+                  type="password"
                   size="small"
                 />
+
                 <CustomInput
-                  label="Company Name"
-                  type="text"
-                  name="company"
-                  placeholder="Enter your company name"
+                  label="Confirm Password"
+                  name="reEnteredPassword"
                   size="small"
+                  placeholder="********"
+                  type={showPassword ? "text" : "password"}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                        >
+                          {showPassword ? (
+                            <VisibilityOffIcon fontSize="small" />
+                          ) : (
+                            <RemoveRedEyeIcon fontSize="small" />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
                 />
                 {/* <Controller
                 control={control}
@@ -241,13 +232,13 @@ export default function LoginView() {
                   color="primary"
                   loading={isPending}
                 >
-                  Sign Up
+                  Set Password
                 </LoadingButton>
               </Stack>
             </FormProvider>
           </Box>
         </Card>
       </Stack>
-    </StyledSignUpPage>
+    </StyledVerifyPage>
   );
 }

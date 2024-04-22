@@ -16,6 +16,7 @@ import { getCookie } from "@/lib/functions/storage.lib";
 import Scrollbar from "@/ui/scrollbar";
 import navConfig from "../config-navigation";
 import SidebarItem from "./SidebarItem";
+import useUser from "@/hooks/react-query/useUser";
 
 interface SidebarProps {
   openNav: boolean;
@@ -26,7 +27,7 @@ export default function Sidebar({ openNav, onCloseNav }: SidebarProps) {
   const pathname = usePathname();
   const ref = useRef(null);
   const upLg = useResponsive("up", "lg");
-  const user: UserData = JSON.parse(getCookie("user") || "{}");
+  const user = useUser();
 
   useEffect(() => {
     if (openNav) {
@@ -49,14 +50,14 @@ export default function Sidebar({ openNav, onCloseNav }: SidebarProps) {
       }}
     >
       <Avatar src="" alt="photoURL">
-        {user?.name?.charAt(0)}
+        {user?.data?.data?.name?.charAt(0)}
       </Avatar>
 
       <Box sx={{ ml: 2 }}>
-        <Typography variant="subtitle2">{user?.name}</Typography>
+        <Typography variant="subtitle2">{user?.data?.data?.name}</Typography>
 
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {roleParser(user?.role?.[0].name || "")}
+          {roleParser(user?.data?.data?.role?.[0].name || "")}
         </Typography>
       </Box>
     </Box>

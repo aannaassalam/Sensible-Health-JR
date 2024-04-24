@@ -16,11 +16,15 @@ export function middleware(request: NextRequest) {
   ) {
     const url = request.nextUrl.clone();
     url.pathname = "/auth/signin";
-    return NextResponse.redirect(url);
+    const response = NextResponse.redirect(url);
+    response.headers.set("x-middleware-cache", "no-cache");
+    return response;
   } else if (has_token && request.nextUrl.pathname.startsWith("/auth/s")) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
-    return NextResponse.redirect(url);
+    const response = NextResponse.redirect(url);
+    response.headers.set("x-middleware-cache", "no-cache");
+    return response;
   } else {
     return NextResponse.next();
   }

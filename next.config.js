@@ -19,8 +19,8 @@ module.exports = {
     buildActivityPosition: "bottom-right"
   },
   compiler: {
-    removeConsole: process.env.NODE_ENV === "production",
-    styledComponents: true
+    removeConsole: false
+    // removeConsole: process.env.NODE_ENV === "production"
   },
   env: {
     NEXT_APP_BASE_URL: process.env.NEXT_APP_BASE_URL,

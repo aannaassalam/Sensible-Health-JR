@@ -85,9 +85,9 @@ export default function Index() {
   const { mutate, isPending } = useMutation({
     mutationFn: setPasswordMutation,
     onSuccess: (data: any) => {
-      setCookieClient(process.env.NEXT_APP_TOKEN_NAME!, data.jwtToken);
-      delete data.jwtToken;
-      setCookieClient("user", JSON.stringify(data));
+      // setCookieClient(process.env.NEXT_APP_TOKEN_NAME!, data.jwtToken);
+      // delete data.jwtToken;
+      // setCookieClient("user", JSON.stringify(data));
       router.push("/auth/signin");
     }
   });

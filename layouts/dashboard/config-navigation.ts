@@ -63,7 +63,7 @@ const navConfig: NavItem[] = [
   },
   {
     title: "Clients",
-    path: "/clients/list/",
+    path: "/clients/list",
     icon: TocIcon,
     children: [
       {
@@ -99,7 +99,7 @@ const navConfig: NavItem[] = [
   },
   {
     title: "Invoices",
-    path: "/invoices/list/",
+    path: "/invoices/list",
     icon: TocIcon,
     children: [
       {
@@ -128,7 +128,7 @@ const navConfig: NavItem[] = [
   },
   {
     title: "Reports",
-    path: "/reports/activity/",
+    path: "/reports/activity",
     icon: TocIcon,
     children: [
       {
@@ -220,7 +220,7 @@ const navConfig: NavItem[] = [
   },
   {
     title: "Account",
-    path: "/account/settings/",
+    path: "/account/settings",
     icon: TocIcon,
     children: [
       {

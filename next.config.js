@@ -4,12 +4,12 @@ const path = require("path");
 
 module.exports = {
   reactStrictMode: true,
-  trailingSlash: true,
+  trailingSlash: false,
   sassOptions: {
     includePaths: [path.join(__dirname, "styles")]
   },
   images: {
-    domains: ["career-utility.dedicateddevelopers.us"]
+    domains: ["http://192.168.99.14:8080"]
   },
   swcMinify: true,
   compress: true,
@@ -19,7 +19,8 @@ module.exports = {
     buildActivityPosition: "bottom-right"
   },
   compiler: {
-    removeConsole: process.env.NODE_ENV === "production"
+    removeConsole: process.env.NODE_ENV === "production",
+    styledComponents: true
   },
   env: {
     NEXT_APP_BASE_URL: process.env.NEXT_APP_BASE_URL,

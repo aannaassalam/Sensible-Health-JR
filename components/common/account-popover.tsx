@@ -85,12 +85,23 @@ const AccountPopover: React.FC = () => {
         onClose={(e, r) => handleClose(e, r)}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
-        PaperProps={{
-          sx: {
+        sx={{
+          ".MuiPaper-root": {
+            boxShadow:
+              " rgba(145, 158, 171, 0.2) 0px 5px 5px -3px, rgba(145, 158, 171, 0.14) 0px 8px 10px 1px, rgba(145, 158, 171, 0.12) 0px 3px 14px 2px",
             p: 0,
             mt: 1,
             ml: 0.75,
-            width: 200
+            width: 200,
+            outline: 0,
+            padding: 0,
+            marginTop: 2,
+            marginLeft: "6px",
+            minWidth: 4,
+            minHeight: 4,
+            maxWidth: "calc(100% - 32px)",
+            maxHeight: "calc(100% - 32px)",
+            borderRadius: "8px"
           }
         }}
       >
@@ -125,8 +136,7 @@ const AccountPopover: React.FC = () => {
           disableTouchRipple
           onClick={() => {
             dispatch(logout());
-            router.push("/auth/signin");
-            handleClose();
+            handleClose(null, null, "/auth/signin");
           }}
           sx={{ typography: "body2", color: "error.main", py: 1.5 }}
         >

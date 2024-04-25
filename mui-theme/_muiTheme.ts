@@ -127,6 +127,14 @@ export const MuiThemeOptions = (mode: PaletteMode): ThemeOptions => {
           elevation: 0
         }
       },
+      MuiTableCell: {
+        styleOverrides: {
+          head: {
+            color: "#637381",
+            backgroundColor: "#F4F6F8"
+          }
+        }
+      },
       // MuiTableCell: {
       //   styleOverrides: {
       //     head: {

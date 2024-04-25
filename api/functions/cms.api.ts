@@ -11,3 +11,8 @@ export const faqQuery = () => {
   const res = axiosInstance.get(endpoints.cms.faq);
   return res;
 };
+
+export const getRoles = async () => {
+  const res = await axiosInstance.get(endpoints.roles.all);
+  return res.data;
+};

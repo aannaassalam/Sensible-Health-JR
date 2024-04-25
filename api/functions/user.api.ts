@@ -28,6 +28,12 @@ export interface changePasswordPayload {
 }
 
 export type forgotPasswordPayload = Omit<loginMutationPayload, "password">;
+export interface updateProfilePayload {
+  name: string;
+  dateOfBirth: string;
+  mobileNo: string;
+  phoneNo: string;
+}
 
 export const GetProfileDetails = async () => {
   return {
@@ -74,6 +80,16 @@ export const changePasswordMutation = async (body: changePasswordPayload) => {
 };
 
 export const getProfile = async () => {
-  const res = await axiosInstance.get(endpoints.auth.profile);
+  const res = await axiosInstance.get(endpoints.user.profile);
   return res;
+};
+
+export const updateProfilePhoto = async (body: FormData) => {
+  const res = await axiosInstance.post(endpoints.user.profile_photo, body);
+  return res.data;
+};
+
+export const updateProfileDetails = async (body: updateProfilePayload) => {
+  const res = await axiosInstance.put(endpoints.user.update, body);
+  return res.data;
 };

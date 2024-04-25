@@ -1,3 +1,4 @@
+import { getRoles } from "@/api/functions/cms.api";
 import { addStaff } from "@/api/functions/staff.api";
 import { IStaffPost } from "@/interface/staff.interfaces";
 import validationText from "@/json/messages/validationText";
@@ -10,6 +11,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PhoneIcon from "@mui/icons-material/Phone";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
+import { LoadingButton } from "@mui/lab";
 import {
   Button,
   Checkbox,
@@ -28,7 +30,7 @@ import {
 } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { SyntheticEvent, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
@@ -36,8 +38,8 @@ import * as yup from "yup";
 
 const StyledBox = styled(Box)`
   padding: 20px 10px;
-  h2 {
-    margin-bottom: 30px;
+  h4 {
+    margin-bottom: 40px;
   }
   .inner-container {
     padding: 10px 20px;
@@ -111,15 +113,12 @@ const schema = yup.object().shape({
   mobileNo: yup.string().trim().required(validationText.error.mobile),
   phoneNo: yup.string().trim().required(validationText.error.phone),
   typeOfUser: yup.string().trim().required(validationText.error.type_of_user),
-  role: yup
-    .string()
-    .trim()
-    .when("typeOfUser", {
-      is: "Office_user",
-      then: yup.string().trim().required(validationText.error.role)
-    }),
+  role: yup.number().when("typeOfUser", {
+    is: "office_user",
+    then: yup.number().required(validationText.error.role)
+  }),
   gender: yup.string().trim().required(validationText.error.gender),
-  dateOfBirth: yup.date().required(validationText.error.dob),
+  dateOfBirth: yup.date().nullable().required(validationText.error.dob),
   employmentType: yup
     .string()
     .trim()
@@ -130,7 +129,12 @@ const schema = yup.object().shape({
 export default function Index() {
   const [salutation, setSalutation] = useState(true);
 
-  const methods = useForm<IStaffPost>({
+  const { data: roles, isLoading } = useQuery({
+    queryKey: ["roles"],
+    queryFn: getRoles
+  });
+
+  const methods = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
       salutation: "",
@@ -139,9 +143,9 @@ export default function Index() {
       mobileNo: "",
       phoneNo: "",
       typeOfUser: "",
-      role: "",
+      role: -1,
       gender: "",
-      dateOfBirth: "",
+      dateOfBirth: null,
       employmentType: "",
       address: ""
     }
@@ -162,14 +166,15 @@ export default function Index() {
   });
 
   const onSubmit = (data: IStaffPost) => {
-    data.dateOfBirth = dayjs(data.dateOfBirth).format("DDMMYY");
+    // data.dateOfBirth = dayjs(data.dateOfBirth).toISOString();
+    data.roleIds = data.typeOfUser === "carer" ? [7] : [data.role];
     mutate(data);
   };
 
   return (
     <DashboardLayout>
       <StyledBox>
-        <Typography variant="h2">Add New Staff</Typography>
+        <Typography variant="h4">Add New Staff</Typography>
         <Box className="inner-container">
           <Stack
             direction="row"
@@ -327,7 +332,7 @@ export default function Index() {
                             <ToggleButton value="carer">
                               <Typography variant="body1">Carer</Typography>
                             </ToggleButton>
-                            <ToggleButton value="Office_user">
+                            <ToggleButton value="office_user">
                               <Typography variant="body1">
                                 Office User
                               </Typography>
@@ -343,7 +348,7 @@ export default function Index() {
                     />
                   </Grid>
                   <Grid item lg={6}>
-                    {methods.watch("typeOfUser") === "Office_user" && (
+                    {methods.watch("typeOfUser") === "office_user" && (
                       <Stack direction="row" alignItems="center" spacing={3}>
                         <Typography variant="body1">Role:</Typography>
                         <Controller
@@ -364,14 +369,20 @@ export default function Index() {
                                 onChange={onChange}
                                 defaultValue={""}
                               >
-                                {roles_list.map((_salutation) => (
-                                  <MenuItem
-                                    value={_salutation}
-                                    key={_salutation}
-                                  >
-                                    {_salutation}
-                                  </MenuItem>
-                                ))}
+                                {roles.map(
+                                  (role: { id: number; name: string }) => (
+                                    <MenuItem
+                                      value={role.id}
+                                      key={role.id}
+                                      sx={{ textTransform: "capitalize" }}
+                                    >
+                                      {role.name
+                                        .replace("ROLE_", "")
+                                        .replaceAll("_", " ")
+                                        .toLowerCase()}
+                                    </MenuItem>
+                                  )
+                                )}
                               </Select>
 
                               {invalid && (
@@ -451,9 +462,7 @@ export default function Index() {
                             className="date-picker"
                             value={value}
                             onChange={onChange}
-                            maxDate={dayjs()
-                              .subtract(18, "years")
-                              .toISOString()}
+                            maxDate={dayjs().subtract(18, "years")}
                           />
                           {invalid && (
                             <FormHelperText sx={{ color: "#FF5630" }}>
@@ -535,16 +544,20 @@ export default function Index() {
             <Button variant="outlined" disabled={isPending}>
               Cancel
             </Button>
-            <Button
+            <LoadingButton
               variant="contained"
               onClick={methods.handleSubmit(onSubmit)}
-              disabled={isPending}
+              loading={isPending}
             >
               Create
-              {isPending && (
-                <CircularProgress color="inherit" sx={{ marginLeft: "5px" }} />
-              )}
-            </Button>
+              {/* {isPending && (
+                <CircularProgress
+                  color="inherit"
+                  sx={{ marginLeft: "5px" }}
+                  size={10}
+                />
+              )} */}
+            </LoadingButton>
           </Stack>
         </Box>
       </StyledBox>

@@ -15,15 +15,23 @@ export const endpoints = {
     set_password: "/auth/set-password",
     forgot_password: "/auth/forgot-password",
     reset_password: "/auth/reset-password",
-    change_password: "/auth/change-password",
-    profile: "/user/profile"
+    change_password: "/auth/change-password"
   },
   cms: {
     about: "/aboutpolicy/details",
     faq: "/faq/all"
   },
   staff: {
-    new: "/user"
+    new: "/user/add",
+    list: "/user"
+  },
+  user: {
+    profile: "/user/profile",
+    profile_photo: "/user/profile/photo",
+    update: "/user/profile/update"
+  },
+  roles: {
+    all: "/roles/all"
   }
 };
 
@@ -33,5 +41,8 @@ export const sucessNotificationEndPoints = [
   endpoints.auth.set_password,
   endpoints.auth.forgot_password,
   endpoints.auth.reset_password,
-  endpoints.auth.change_password
+  endpoints.auth.change_password,
+  endpoints.user.profile_photo,
+  endpoints.user.update,
+  endpoints.staff.new
 ];

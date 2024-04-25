@@ -27,12 +27,17 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import * as yup from "yup";
 import useUser from "@/hooks/react-query/useUser";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
 import {
   changePasswordMutation,
-  changePasswordPayload
+  changePasswordPayload,
+  updateProfileDetails,
+  updateProfilePayload,
+  updateProfilePhoto
 } from "@/api/functions/user.api";
+import moment from "moment";
+import dayjs, { Dayjs } from "dayjs";
 
 const StyledPaper = styled(Paper)`
   border-radius: 16px;
@@ -53,25 +58,38 @@ const StyledPaper = styled(Paper)`
     background-size: cover;
     background-position: center center;
     .info {
-      @media (min-width: 900px) {
-        left: 24px;
-        bottom: 24px;
-        z-index: 10;
-        padding-top: 0;
-        position: absolute;
+      left: 24px;
+      bottom: 24px;
+      z-index: 10;
+      padding-top: 0;
+      position: absolute;
+      @media (max-width: 900px) {
+        padding-top: 65px;
+        flex-direction: column;
+        position: static;
       }
       .MuiBadge-badge {
         height: auto;
         padding: 7px 6px 6px 7px;
         border-radius: 50%;
         cursor: pointer;
+        @media (max-width: 900px) {
+          right: 46.5%;
+          padding: 5px 4px 4px 5px;
+          svg {
+            width: 0.8em;
+            height: 0.8em;
+          }
+        }
       }
       .MuiAvatar-root {
         border: 2px solid rgb(255, 255, 255);
         margin-inline: auto;
-        @media (min-width: 900px) {
-          height: 128px;
-          width: 128px;
+        height: 128px;
+        width: 128px;
+        @media (max-width: 900px) {
+          width: 64px;
+          height: 64px;
         }
       }
       ul {
@@ -87,11 +105,15 @@ const StyledPaper = styled(Paper)`
           font-weight: 700;
           color: #fff;
           padding: 0;
+          display: block;
           @media (min-width: 600px) {
             font-size: 1.5rem;
           }
           @media (min-width: 1200px) {
             font-size: 2rem;
+          }
+          @media (max-width: 900px) {
+            text-align: center;
           }
         }
         li:not(.name) {
@@ -101,6 +123,10 @@ const StyledPaper = styled(Paper)`
           line-height: 1.57143;
           font-size: 1rem;
           opacity: 0.48;
+          display: block;
+          @media (max-width: 900px) {
+            text-align: center;
+          }
         }
       }
     }
@@ -122,7 +148,10 @@ const StyledForm = styled(Box)`
 
 const schema = yup.object().shape({
   name: yup.string().trim().required(validationText.error.fullName),
-  dob: yup.date().required(validationText.error.dob),
+  dateOfBirth: yup
+    .date()
+    .typeError(validationText.error.dob)
+    .required(validationText.error.dob),
   mobileNo: yup.string().trim().required(validationText.error.mobile),
   phoneNo: yup.string().trim().required(validationText.error.phone)
 });
@@ -133,10 +162,15 @@ const changePasswordSchema = yup.object().shape({
   reEnteredPassword: yup.string().required(validationText.error.confirmPassword)
 });
 
+interface localUpdateProfileType
+  extends Omit<updateProfilePayload, "dateOfBirth"> {
+  dateOfBirth: Dayjs;
+}
+
 export default function Index() {
   const user = useUser();
 
-  const methods = useForm({
+  const methods = useForm<localUpdateProfileType>({
     resolver: yupResolver(schema)
   });
 
@@ -152,9 +186,14 @@ export default function Index() {
   useEffect(() => {
     if (!user.isLoading) {
       methods.setValue("name", user?.data?.data?.name);
-      methods.setValue("dob", user?.data?.data?.dateOfBirth);
-      methods.setValue("mobileNo", user?.data?.data?.mobileNo);
-      methods.setValue("phoneNo", user?.data?.data?.phoneNo);
+      methods.setValue(
+        "dateOfBirth",
+        user?.data?.data?.dateOfBirth
+          ? dayjs(user?.data?.data?.dateOfBirth)
+          : null
+      );
+      methods.setValue("mobileNo", user?.data?.data?.mobileNo || "");
+      methods.setValue("phoneNo", user?.data?.data?.phoneNo || "");
     }
   }, [user.isLoading]);
 
@@ -168,13 +207,44 @@ export default function Index() {
       })
   });
 
+  const { mutate, isPending: isProfileUpdating } = useMutation({
+    mutationFn: updateProfileDetails,
+    onSuccess: () => {
+      user.refetch();
+    }
+  });
+
+  const { mutate: profilePhotoMutate, isPending: isPhotoUpdatePending } =
+    useMutation({
+      mutationFn: updateProfilePhoto,
+      onSuccess: () => {
+        user.refetch();
+      }
+    });
+
   const onPasswordSubmit = (data: changePasswordPayload) => {
     passwordMutate(data);
   };
 
+  const updatePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const formData = new FormData();
+      formData.append("file", e.target.files[0]);
+      profilePhotoMutate(formData);
+    }
+  };
+
+  const onSubmit = (data: localUpdateProfileType) => {
+    const date = dayjs(data.dateOfBirth).toISOString();
+    mutate({
+      ...data,
+      dateOfBirth: date
+    });
+  };
+
   return (
     <DashboardLayout isLoading={user.isLoading}>
-      <Container fixed>
+      <Container>
         <StyledPaper elevation={0}>
           <Box className="inner-box">
             <Stack direction="row" className="info">
@@ -184,10 +254,10 @@ export default function Index() {
                 badgeContent={<CameraAltIcon fontSize="small" />}
                 component="label"
               >
-                <Avatar src="https://api-prod-minimal-v510.vercel.app/assets/images/avatar/avatar_25.jpg">
-                  {user?.data?.data?.name}
+                <Avatar src={user?.data?.data.photoDownloadURL}>
+                  {user?.data?.data?.name.charAt(0)}
                 </Avatar>
-                <VisuallyHiddenInput type="file" />
+                <VisuallyHiddenInput type="file" onChange={updatePhoto} />
               </Badge>
               <List disablePadding>
                 <ListItem disableGutters className="name">
@@ -214,7 +284,7 @@ export default function Index() {
               </Grid>
               <Grid item lg={6} md={6} sm={6} xs={12}>
                 <Controller
-                  name="dob"
+                  name="dateOfBirth"
                   control={methods.control}
                   render={({
                     field: { value, onChange },
@@ -238,7 +308,15 @@ export default function Index() {
                         }}
                       />
                       {invalid && (
-                        <FormHelperText>{error?.message}</FormHelperText>
+                        <FormHelperText
+                          sx={{
+                            color: "#FF5630",
+                            marginTop: "4px",
+                            marginInline: "14px"
+                          }}
+                        >
+                          {error?.message}
+                        </FormHelperText>
                       )}
                     </Box>
                   )}
@@ -247,7 +325,7 @@ export default function Index() {
               <Grid item lg={6} md={6} sm={6} xs={12}>
                 <CustomInput
                   name="mobileNo"
-                  type="text"
+                  type="number"
                   label="Mobile"
                   size="small"
                 />
@@ -255,7 +333,7 @@ export default function Index() {
               <Grid item lg={6} md={6} sm={6} xs={12}>
                 <CustomInput
                   name="phoneNo"
-                  type="text"
+                  type="number"
                   label="Phone"
                   size="small"
                 />
@@ -272,10 +350,27 @@ export default function Index() {
             justifyContent="flex-end"
             gap={2}
           >
-            <Button variant="outlined" size="small">
+            <Button
+              variant="outlined"
+              size="small"
+              disabled={isProfileUpdating}
+              onClick={() =>
+                methods.reset({
+                  name: user?.data?.data?.name,
+                  dateOfBirth: dayjs(user?.data?.data?.dateOfBirth) || null,
+                  mobileNo: user?.data?.data?.mobileNo || "",
+                  phoneNo: user?.data?.data?.phoneNo || ""
+                })
+              }
+            >
               Discard
             </Button>
-            <LoadingButton variant="contained" size="small">
+            <LoadingButton
+              variant="contained"
+              size="small"
+              onClick={methods.handleSubmit(onSubmit)}
+              loading={isProfileUpdating}
+            >
               Save Changes
             </LoadingButton>
           </Stack>

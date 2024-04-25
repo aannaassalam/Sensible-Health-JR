@@ -28,6 +28,7 @@ axiosInstance.interceptors.response.use(
   (res: AxiosResponse) => {
     // only show success notification on this routes
     if (sucessNotificationEndPoints.includes(res.config.url as string)) {
+      console.log(res.status);
       if (res?.status !== 200) {
         globalCatchWarning(res);
       } else {

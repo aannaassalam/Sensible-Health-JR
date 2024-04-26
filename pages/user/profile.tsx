@@ -164,7 +164,7 @@ const changePasswordSchema = yup.object().shape({
 
 interface localUpdateProfileType
   extends Omit<updateProfilePayload, "dateOfBirth"> {
-  dateOfBirth: Dayjs;
+  dateOfBirth: Dayjs | null;
 }
 
 export default function Index() {

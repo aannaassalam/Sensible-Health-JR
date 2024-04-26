@@ -14,6 +14,10 @@ export default function UserTableToolbar({
   numSelected,
   filterName,
   onFilterName
+}: {
+  numSelected: number;
+  filterName: string;
+  onFilterName: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
     <Toolbar

@@ -1,11 +1,19 @@
-import { forwardRef } from "react";
+import { ReactNode, forwardRef } from "react";
 
 import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
 
 import { StyledLabel } from "./StyledLabel";
+import { BoxProps } from "@mui/system";
 
 // ----------------------------------------------------------------------
+
+interface LabelProps extends BoxProps {
+  variant: "filled" | "outlined" | "soft";
+  color: "default" | "error" | "success" | "warning";
+  startIcon: any;
+  endIcon: any;
+}
 
 const Label = forwardRef(
   (
@@ -17,7 +25,7 @@ const Label = forwardRef(
       endIcon,
       sx,
       ...other
-    },
+    }: LabelProps,
     ref
   ) => {
     const theme = useTheme();

@@ -2,7 +2,7 @@ import { Box, styled } from "@mui/system";
 import { Paper, Typography } from "@mui/material";
 import React, { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import DashboardLayout from "@/layout/dashboard/DashboardLayout.tsx";
+import DashboardLayout from "@/layout/dashboard/DashboardLayout";
 import { getStaffList } from "@/api/functions/staff.api";
 import { IStaff } from "@/interface/staff.interfaces";
 import DataGridTable from "@/components/Table/DataGridTable";

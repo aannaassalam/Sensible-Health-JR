@@ -363,9 +363,9 @@ export default function Index() {
                                 sx={{ width: "200px" }}
                                 displayEmpty
                                 renderValue={
-                                  value !== "" ? undefined : () => "Select Role"
+                                  value ? undefined : () => "Select Role"
                                 }
-                                value={value}
+                                value={value.toString()}
                                 onChange={onChange}
                                 defaultValue={""}
                               >

@@ -13,7 +13,7 @@ import TablePagination from "@mui/material/TablePagination";
 import Scrollbar from "@/ui/scrollbar";
 
 import TableNoData from "./DataTableComponents/table-no-data";
-import UserTableRow from "./DataTableComponents/user-table-row";
+import UserTableRow from "../../pages/staff/staff-table-row";
 import UserTableHead, {
   HeadLabelType
 } from "./DataTableComponents/user-table-head";

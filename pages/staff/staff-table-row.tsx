@@ -12,10 +12,12 @@ import IconButton from "@mui/material/IconButton";
 
 import Label from "@/ui/label/label";
 import Iconify from "@/components/Iconify/Iconify";
+import { useRouter } from "next/router";
 
 // ----------------------------------------------------------------------
 
-export default function UserTableRow({
+export default function StaffTableRow({
+  id,
   name,
   gender,
   role,
@@ -26,6 +28,7 @@ export default function UserTableRow({
   selected,
   handleClick
 }: {
+  id: number;
   name: string;
   gender: string;
   role: string;
@@ -37,12 +40,19 @@ export default function UserTableRow({
   handleClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   const [open, setOpen] = useState<HTMLElement | null>(null);
+  const router = useRouter();
 
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
     setOpen(event.currentTarget);
   };
 
-  const handleCloseMenu = () => {
+  const handleCloseMenu = (
+    event: React.MouseEvent<HTMLElement>,
+    path?: string
+  ) => {
+    if (path) {
+      router.push(path);
+    }
     setOpen(null);
   };
 
@@ -95,6 +105,10 @@ export default function UserTableRow({
           sx: { width: 140 }
         }}
       >
+        <MenuItem onClick={(e) => handleCloseMenu(e, `/staff/${id}/view`)}>
+          <Iconify icon="eva:file-text-outline" sx={{ mr: 2 }} />
+          View
+        </MenuItem>
         <MenuItem onClick={handleCloseMenu}>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           Edit

@@ -11,7 +11,7 @@ import {
 } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
-import assest from "json/assest";
+import assets from "@/json/assets";
 import React, { useState } from "react";
 
 const DatepickerWrapper = styled(Box)`
@@ -50,7 +50,7 @@ const DatepickerWrapper = styled(Box)`
 
           padding: 10px 12.5px;
           padding-right: 0;
-          background: url(${assest.logo_img}) center right no-repeat;
+          background: url(${assets.logo_img}) center right no-repeat;
         }
 
         .MuiButtonBase-root {

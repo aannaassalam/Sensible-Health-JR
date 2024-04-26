@@ -1,4 +1,4 @@
-import assest from "@/json/assest";
+import assets from "@/json/assets";
 import Image, { ImageProps } from "next/image";
 import { useEffect, useState } from "react";
 
@@ -15,7 +15,7 @@ const CustomNextImage = (props: ImageProps) => {
       {...rest}
       src={imgSrc}
       onError={() => {
-        setImgSrc(assest.logo_img);
+        setImgSrc(assets.logo_img);
       }}
     />
   );

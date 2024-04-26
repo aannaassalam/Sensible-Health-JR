@@ -20,7 +20,7 @@ const navConfig: NavItem[] = [
   },
   {
     title: "Staff",
-    path: "",
+    path: "/staff/list",
     icon: TocIcon,
     children: [
       {

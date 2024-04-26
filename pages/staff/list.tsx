@@ -8,7 +8,7 @@ import { IStaff } from "@/interface/staff.interfaces";
 import DataGridTable from "@/components/Table/DataGridTable";
 import SimpleBar from "simplebar-react";
 import DataTable from "@/components/Table/DataTable";
-import UserTableRow from "@/components/Table/DataTableComponents/user-table-row";
+import UserTableRow from "pages/staff/staff-table-row";
 import Loader from "@/ui/Loader/Loder";
 
 const StyledUserPage = styled(Box)`
@@ -86,7 +86,17 @@ export default function Index() {
             loading={isLoading}
           />
         </Paper> */}
-        <DataTable columns={columns} RowComponent={UserTableRow} data={data} />
+        <DataTable
+          columns={columns}
+          RowComponent={UserTableRow}
+          data={data.map((_data: IStaff) => ({
+            ..._data,
+            role: _data.rolesName[0]
+              .replace("ROLE_", "")
+              .replaceAll("_", " ")
+              .toLowerCase()
+          }))}
+        />
         {/* </SimpleBar> */}
       </StyledUserPage>
     </DashboardLayout>

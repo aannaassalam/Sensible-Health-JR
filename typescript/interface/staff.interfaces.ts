@@ -22,9 +22,11 @@ export interface IStaff {
   phoneNo: string;
   typeOfUser: string;
   roleIds: number[];
+  rolesName: string[];
   gender: string;
   dateOfBirth: string;
   employmentType: string;
+  photoDownloadURL: string;
   address: string;
   languagesSpoken: string[];
   teamName: string;

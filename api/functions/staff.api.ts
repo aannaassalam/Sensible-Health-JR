@@ -11,3 +11,8 @@ export const getStaffList = async () => {
   const res = await axiosInstance.get(endpoints.staff.list);
   return res.data;
 };
+
+export const getStaff = async (id: string) => {
+  const res = await axiosInstance.get(`${endpoints.staff.getStaff}/${id}`);
+  return res.data;
+};

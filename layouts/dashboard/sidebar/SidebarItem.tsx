@@ -20,9 +20,18 @@ interface SidebarItemProps {
 
 function SidebarItem({ item }: SidebarItemProps) {
   const pathname = usePathname();
-  const active = item?.path === pathname;
-  const [open, setOpen] = useState(false);
+  const active = item?.path?.includes(pathname.split("/")[1]);
+  const [open, setOpen] = useState(active);
   const router = useRouter();
+
+  const active_sx = {
+    color: "primary.main",
+    fontWeight: "fontWeightSemiBold",
+    bgcolor: (theme: Theme) => alpha(theme.palette.primary.main, 0.08),
+    "&:hover": {
+      bgcolor: (theme: Theme) => alpha(theme.palette.primary.main, 0.16)
+    }
+  };
 
   const sx = {
     minHeight: 44,
@@ -30,15 +39,8 @@ function SidebarItem({ item }: SidebarItemProps) {
     typography: "body2",
     color: "text.secondary",
     textTransform: "capitalize",
-    fontWeight: "fontWeightMedium",
-    ...(active && {
-      color: "primary.main",
-      fontWeight: "fontWeightSemiBold",
-      bgcolor: (theme: Theme) => alpha(theme.palette.primary.main, 0.08),
-      "&:hover": {
-        bgcolor: (theme: Theme) => alpha(theme.palette.primary.main, 0.16)
-      }
-    })
+    fontWeight: "fontWeightMedium"
+    // ...(active && active_sx)
   };
 
   const handleClick = (item: NavItem) => {
@@ -51,7 +53,10 @@ function SidebarItem({ item }: SidebarItemProps) {
 
   return (
     <>
-      <ListItemButton sx={sx} onClick={() => handleClick(item)}>
+      <ListItemButton
+        sx={{ ...sx, ...(active && active_sx) }}
+        onClick={() => handleClick(item)}
+      >
         <Box component="span" sx={{ width: 24, height: 24, mr: 2 }}>
           {item.icon && createElement(item.icon)}
         </Box>
@@ -77,20 +82,23 @@ function SidebarItem({ item }: SidebarItemProps) {
       {item?.children?.length ? (
         <Collapse in={open} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            {item?.children?.map((_item) => (
-              <ListItemButton
-                onClick={() => {
-                  router.push(_item?.path as string);
-                }}
-                sx={{ ...sx, pl: 4 }}
-                key={_item.path}
-              >
-                <Box component="span" sx={{ width: 24, height: 24, mr: 2 }}>
-                  {_item.icon && createElement(_item.icon)}
-                </Box>
-                <Box component="span">{_item?.title} </Box>
-              </ListItemButton>
-            ))}
+            {item?.children?.map((_item) => {
+              const link_active = _item?.path === pathname;
+              return (
+                <ListItemButton
+                  onClick={() => {
+                    router.push(_item?.path as string);
+                  }}
+                  sx={{ ...sx, pl: 4, ...(link_active && active_sx) }}
+                  key={_item.path}
+                >
+                  <Box component="span" sx={{ width: 24, height: 24, mr: 2 }}>
+                    {_item.icon && createElement(_item.icon)}
+                  </Box>
+                  <Box component="span">{_item?.title}</Box>
+                </ListItemButton>
+              );
+            })}
           </List>
         </Collapse>
       ) : null}

@@ -23,7 +23,8 @@ export const endpoints = {
   },
   staff: {
     new: "/user/add",
-    list: "/user"
+    list: "/user/employees/by-company/active",
+    getStaff: "/user"
   },
   user: {
     profile: "/user/profile",

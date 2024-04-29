@@ -30,7 +30,7 @@ const StyledUserPage = styled(Box)`
 `;
 
 export default function Index() {
-  const { data, isLoading } = useQuery({
+  const { data = [], isLoading } = useQuery({
     queryKey: ["user_list"],
     queryFn: getStaffList
   });
@@ -89,7 +89,7 @@ export default function Index() {
         <DataTable
           columns={columns}
           RowComponent={UserTableRow}
-          data={data.map((_data: IStaff) => ({
+          data={data?.map((_data: IStaff) => ({
             ..._data,
             role: _data.rolesName[0]
               .replace("ROLE_", "")

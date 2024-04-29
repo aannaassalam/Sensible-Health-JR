@@ -1,9 +1,14 @@
-import { getStaff } from "@/api/functions/staff.api";
+import { getStaff, getStaffSettings } from "@/api/functions/staff.api";
 import Iconify from "@/components/Iconify/Iconify";
+import Compliance from "@/components/staff-compliance/compliance";
 import Details from "@/components/staff-details/details";
+import Notes from "@/components/staff-notes/notes";
+import Settings from "@/components/staff-settings/settings";
+import { IStaff } from "@/interface/staff.interfaces";
 import assets from "@/json/assets";
 import DashboardLayout from "@/layout/dashboard/DashboardLayout";
 import Loader from "@/ui/Loader/Loder";
+import StyledPaper from "@/ui/Paper/Paper";
 import styled from "@emotion/styled";
 import {
   Avatar,
@@ -14,7 +19,7 @@ import {
   Typography
 } from "@mui/material";
 import { Box, Stack } from "@mui/system";
-import { useQuery } from "@tanstack/react-query";
+import { useIsFetching, useQueries, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
@@ -32,14 +37,38 @@ const StyledViewPage = styled(Grid)`
   }
 `;
 
+interface QueryResult {
+  staff: IStaff;
+  compliance: any;
+}
+
 export default function Index() {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const { id } = useParams();
-
-  const { data, isLoading } = useQuery({
-    queryKey: ["staff", id],
-    queryFn: () => getStaff(id as string)
+  const isLoading = useIsFetching({
+    predicate: (query) => query.state.status === "pending"
   });
+
+  const data: QueryResult = useQueries({
+    queries: [
+      {
+        queryKey: ["staff", id],
+        queryFn: () => getStaff(id as string)
+      },
+      {
+        queryKey: ["staff-settings", id],
+        queryFn: () => getStaffSettings(id as string)
+      }
+    ],
+    combine: (results) => {
+      return {
+        staff: results[0].data,
+        compliance: results[1].data
+      };
+    }
+  });
+
+  console.log(data);
 
   const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl((prev) => (prev ? null : event.currentTarget));
@@ -55,7 +84,8 @@ export default function Index() {
 
   return (
     <DashboardLayout>
-      <Box sx={{ padding: "0px 10px 20px 10px" }}>
+      <></>
+      {/* <Box sx={{ padding: "0px 10px 20px 10px" }}>
         <Link href="/staff/list" className="back-link">
           <Iconify
             icon="eva:arrow-back-fill"
@@ -71,14 +101,14 @@ export default function Index() {
           direction="row"
           justifyContent="space-between"
           alignItems="center"
-          sx={{ marginTop: "10px" }}
+          sx={{ marginTop: "20px" }}
         >
           <Stack direction="row" alignItems="center" gap={2}>
             <Avatar
-              src={data.photoDownloadURL || assets.nurse_placeholder}
+              src={data?.staff?.photoDownloadURL || assets.nurse_placeholder}
             ></Avatar>
             <Typography variant="h4">
-              {data.name}
+              {data?.staff?.name}
               <Typography variant="body1" display="inline-block" ml={1}>
                 Details
               </Typography>
@@ -170,10 +200,39 @@ export default function Index() {
       </Box>
       <StyledViewPage container spacing={4}>
         <Grid item md={8} sm={12} xs={12}>
-          <Details staff={data} />
+          <Grid container spacing={4}>
+            <Grid item lg={12} md={12} sm={12} xs={12}>
+              <Details staff={data.staff} />
+            </Grid>
+            <Grid item lg={12} md={12} sm={12} xs={12}>
+              <Compliance />
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item md={4} sm={12} xs={12}></Grid>
-      </StyledViewPage>
+        <Grid item md={4} sm={12} xs={12}>
+          <Grid container spacing={4}>
+            <Grid item lg={12} md={12} sm={12} xs={12}>
+              <StyledPaper>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  gap={1}
+                >
+                  <Typography variant="h5">Login</Typography>
+                  <Typography variant="body2">a few seconds ago</Typography>
+                </Stack>
+              </StyledPaper>
+            </Grid>
+            <Grid item lg={12} md={12} sm={12} xs={12}>
+              <Settings />
+            </Grid>
+            <Grid item lg={12} md={12} sm={12} xs={12}>
+              <Notes />
+            </Grid>
+          </Grid>
+        </Grid>
+      </StyledViewPage> */}
     </DashboardLayout>
   );
 }

@@ -24,7 +24,11 @@ export const endpoints = {
   staff: {
     new: "/user/add",
     list: "/user/employees/by-company/active",
-    getStaff: "/user"
+    getStaff: "/user",
+    update_profile_photo: "/user/photo",
+    get_staff_settings: "/employeeSettings/employees",
+    staff_note: "/",
+    staff_compliance: "/"
   },
   user: {
     profile: "/user/profile",
@@ -45,5 +49,6 @@ export const sucessNotificationEndPoints = [
   endpoints.auth.change_password,
   endpoints.user.profile_photo,
   endpoints.user.update,
-  endpoints.staff.new
+  endpoints.staff.new,
+  endpoints.staff.update_profile_photo
 ];

@@ -13,7 +13,7 @@ export interface NavItem {
 const navConfig: NavItem[] = [
   {
     title: "Scheduler",
-    path: "/scheduler",
+    path: "/",
     icon: DashboardIcon,
     children: [],
     hasChild: false

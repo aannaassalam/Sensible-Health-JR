@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useRef, useState } from "react";
 
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
@@ -38,6 +38,7 @@ export default function DataTable({
   columns: HeadLabelType[];
   RowComponent: React.ElementType;
 }) {
+  const ref = useRef(null);
   const [page, setPage] = useState(0);
 
   const [order, setOrder] =
@@ -124,7 +125,7 @@ export default function DataTable({
         onFilterName={handleFilterByName}
       />
 
-      <Scrollbar>
+      <Scrollbar ref={ref}>
         <TableContainer sx={{ overflow: "unset" }}>
           <Table sx={{ minWidth: 800 }}>
             <UserTableHead

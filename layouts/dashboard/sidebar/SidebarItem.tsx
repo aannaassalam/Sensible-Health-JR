@@ -20,7 +20,10 @@ interface SidebarItemProps {
 
 function SidebarItem({ item }: SidebarItemProps) {
   const pathname = usePathname();
-  const active = item?.path?.includes(pathname.split("/")[1]);
+  const active =
+    pathname === "/"
+      ? item.path === pathname
+      : item?.path?.includes(pathname.split("/")[1]);
   const [open, setOpen] = useState(active);
   const router = useRouter();
 

@@ -82,15 +82,6 @@ const salutation_list = [
   "They"
 ];
 
-const roles_list = [
-  "Admin",
-  "Coordinator",
-  "HR",
-  "OfficeSupport",
-  "Ops",
-  "Kiosk"
-];
-
 const gender_list = [
   "Male",
   "Female",
@@ -201,10 +192,10 @@ export default function Index() {
           <Divider />
           <FormProvider {...methods}>
             <Grid container spacing={2}>
-              <Grid item lg={3}>
+              <Grid item lg={3} md={12} sm={12} xs={12}>
                 <Typography variant="body1">Name:</Typography>
               </Grid>
-              <Grid item lg={9}>
+              <Grid item lg={9} md={12} sm={12} xs={12}>
                 <FormControlLabel
                   control={<Checkbox size="small" />}
                   label="Use Salutation"
@@ -215,7 +206,7 @@ export default function Index() {
                   }}
                 />
                 <Grid container spacing={2}>
-                  <Grid item lg={2}>
+                  <Grid item lg={2} md={3} sm={5} xs={12}>
                     <Controller
                       control={methods.control}
                       name="salutation"
@@ -252,7 +243,7 @@ export default function Index() {
                       )}
                     />
                   </Grid>
-                  <Grid item lg={10}>
+                  <Grid item lg={10} md={12} sm={12} xs={12}>
                     <CustomInput
                       fullWidth
                       name="name"
@@ -261,10 +252,10 @@ export default function Index() {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item lg={3}>
+              <Grid item lg={3} md={12} sm={12} xs={12}>
                 <Typography variant="body1">Email:</Typography>
               </Grid>
-              <Grid item lg={9}>
+              <Grid item lg={9} md={12} sm={12} xs={12}>
                 <CustomInput
                   fullWidth
                   name="email"
@@ -278,12 +269,12 @@ export default function Index() {
                   }}
                 />
               </Grid>
-              <Grid item lg={3}>
+              <Grid item lg={3} md={12} sm={12} xs={12}>
                 <Typography variant="body1">Contact:</Typography>
               </Grid>
-              <Grid item lg={9}>
+              <Grid item lg={9} md={12} sm={12} xs={12}>
                 <Grid container spacing={2}>
-                  <Grid item lg={6}>
+                  <Grid item lg={6} md={12} sm={12} xs={12}>
                     <CustomInput
                       fullWidth
                       name="phoneNo"
@@ -298,7 +289,7 @@ export default function Index() {
                       }}
                     />
                   </Grid>
-                  <Grid item lg={6}>
+                  <Grid item lg={6} md={12} sm={12} xs={12}>
                     <CustomInput
                       fullWidth
                       name="mobileNo"
@@ -313,7 +304,7 @@ export default function Index() {
                       }}
                     />
                   </Grid>
-                  <Grid item lg={6}>
+                  <Grid item lg={6} md={12} sm={12} xs={12}>
                     <Controller
                       control={methods.control}
                       name="typeOfUser"
@@ -347,7 +338,7 @@ export default function Index() {
                       )}
                     />
                   </Grid>
-                  <Grid item lg={6}>
+                  <Grid item lg={6} md={12} sm={12} xs={12}>
                     {methods.watch("typeOfUser") === "office_user" && (
                       <Stack direction="row" alignItems="center" spacing={3}>
                         <Typography variant="body1">Role:</Typography>
@@ -360,7 +351,10 @@ export default function Index() {
                           }) => (
                             <Box>
                               <Select
-                                sx={{ width: "200px" }}
+                                sx={{
+                                  width: "200px",
+                                  textTransform: "capitalize"
+                                }}
                                 displayEmpty
                                 renderValue={
                                   value ? undefined : () => "Select Role"
@@ -398,12 +392,12 @@ export default function Index() {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item lg={6}>
-                <Grid container>
-                  <Grid item lg={6.15}>
+              <Grid item lg={6} md={12} sm={12} xs={12}>
+                <Grid container spacing={{ lg: 0, md: 2, sm: 2, xs: 2 }}>
+                  <Grid item lg={6.15} md={12} sm={12} xs={12}>
                     <Typography>Gender:</Typography>
                   </Grid>
-                  <Grid item lg={5.85}>
+                  <Grid item lg={5.85} md={12} sm={12} xs={12}>
                     <Controller
                       control={methods.control}
                       name="gender"
@@ -439,16 +433,19 @@ export default function Index() {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item lg={6}>
-                <Grid container>
+              <Grid item lg={6} md={12} sm={12} xs={12}>
+                <Grid container spacing={{ lg: 0, md: 2, sm: 2, xs: 2 }}>
                   <Grid
                     item
                     lg={3}
+                    md={12}
+                    sm={12}
+                    xs={12}
                     sx={{ display: "flex", alignItems: "center" }}
                   >
                     <Typography>Date of Birth:</Typography>
                   </Grid>
-                  <Grid item lg={9}>
+                  <Grid item lg={9} md={12} sm={12} xs={12}>
                     <Controller
                       control={methods.control}
                       name="dateOfBirth"
@@ -475,10 +472,10 @@ export default function Index() {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item lg={3}>
+              <Grid item lg={3} md={12} sm={12} xs={12}>
                 <Typography variant="body1">Employment Type:</Typography>
               </Grid>
-              <Grid item lg={9}>
+              <Grid item lg={9} md={12} sm={12} xs={12}>
                 <Controller
                   control={methods.control}
                   name="employmentType"
@@ -514,10 +511,10 @@ export default function Index() {
                   )}
                 />
               </Grid>
-              <Grid item lg={3}>
+              <Grid item lg={3} md={12} sm={12} xs={12}>
                 <Typography variant="body1">Address:</Typography>
               </Grid>
-              <Grid item lg={9}>
+              <Grid item lg={9} md={12} sm={12} xs={12}>
                 <CustomInput
                   fullWidth
                   name="address"

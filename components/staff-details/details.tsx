@@ -114,22 +114,22 @@ const schema = yup.object().shape({
 
 export default function Details({ staff }: { staff: IStaff }) {
   const [edit, setEdit] = useState(false);
-  const [salutation, setSalutation] = useState(Boolean(staff.salutation));
+  const [salutation, setSalutation] = useState(Boolean(staff?.salutation));
 
   const { id } = useParams();
 
   const methods = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      salutation: staff.salutation,
-      name: staff.name,
-      email: staff.email,
-      mobileNo: staff.mobileNo,
-      phoneNo: staff.phoneNo,
-      gender: staff.gender,
-      dateOfBirth: dayjs(staff.dateOfBirth),
-      employmentType: staff.employmentType,
-      address: staff.address
+      salutation: staff?.salutation,
+      name: staff?.name,
+      email: staff?.email,
+      mobileNo: staff?.mobileNo,
+      phoneNo: staff?.phoneNo,
+      gender: staff?.gender,
+      dateOfBirth: dayjs(staff?.dateOfBirth),
+      employmentType: staff?.employmentType,
+      address: staff?.address
     }
   });
 

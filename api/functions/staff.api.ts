@@ -35,10 +35,10 @@ export const getStaffSettings = async (id: string) => {
   return res.data;
 };
 
-export const getStaffNotes = async (id: string) => {
-  const res = await axiosInstance.get(`${endpoints.staff.staff_note}/${id}`);
-  return res.data;
-};
+// export const getStaffNotes = async (id: string) => {
+//   const res = await axiosInstance.get(`${endpoints.staff.staff_note}/${id}`);
+//   return res.data;
+// };
 
 export const getStaffCompliance = async (id: string) => {
   const res = await axiosInstance.get(

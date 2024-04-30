@@ -34,3 +34,18 @@ export interface IStaff {
   verified: boolean;
   deleted: boolean;
 }
+
+export interface ISettings {
+  id: number;
+  roleId: string;
+  teamIds: number[];
+  isNotifyTimesheetApproval: boolean;
+  isSubscribeToNotifications: boolean;
+  subscribedEmailCategories: number[];
+  isAvailableForRostering: boolean;
+  isReadAndWriteClientPrivateNotes: boolean;
+  isReadAndWriteStaffPrivateNotes: boolean;
+  isAccess: boolean;
+  isAccountOwner: boolean;
+  employeeId: number;
+}

@@ -1,10 +1,15 @@
-import { getStaff, getStaffSettings } from "@/api/functions/staff.api";
+import {
+  getStaff,
+  getStaffCompliance,
+  getStaffSettings
+} from "@/api/functions/staff.api";
+import { getLastSignin } from "@/api/functions/user.api";
 import Iconify from "@/components/Iconify/Iconify";
 import Compliance from "@/components/staff-compliance/compliance";
 import Details from "@/components/staff-details/details";
 import Notes from "@/components/staff-notes/notes";
 import Settings from "@/components/staff-settings/settings";
-import { IStaff } from "@/interface/staff.interfaces";
+import { ISettings, IStaff } from "@/interface/staff.interfaces";
 import assets from "@/json/assets";
 import DashboardLayout from "@/layout/dashboard/DashboardLayout";
 import Loader from "@/ui/Loader/Loder";
@@ -20,6 +25,7 @@ import {
 } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import { useIsFetching, useQueries, useQuery } from "@tanstack/react-query";
+import moment from "moment";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
@@ -29,25 +35,19 @@ const StyledViewPage = styled(Grid)`
   h4 {
     margin-bottom: 40px;
   }
-  .back-link {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    font-size: 14px;
-  }
 `;
 
 interface QueryResult {
   staff: IStaff;
+  settings: ISettings;
   compliance: any;
+  last_login: number;
+  isLoading: boolean;
 }
 
 export default function Index() {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const { id } = useParams();
-  const isLoading = useIsFetching({
-    predicate: (query) => query.state.status === "pending"
-  });
 
   const data: QueryResult = useQueries({
     queries: [
@@ -58,17 +58,30 @@ export default function Index() {
       {
         queryKey: ["staff-settings", id],
         queryFn: () => getStaffSettings(id as string)
+      },
+      {
+        queryKey: ["staff-compliance", id],
+        queryFn: () => getStaffCompliance(id as string)
+      },
+      {
+        queryKey: ["last-login", id],
+        queryFn: () => getLastSignin(id as string)
       }
     ],
     combine: (results) => {
       return {
         staff: results[0].data,
-        compliance: results[1].data
+        settings: results[1].data,
+        compliance: results[2].data,
+        last_login: results[3].data,
+        isLoading:
+          results[0].isLoading ||
+          results[1].isLoading ||
+          results[2].isLoading ||
+          results[3].isLoading
       };
     }
   });
-
-  console.log(data);
 
   const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl((prev) => (prev ? null : event.currentTarget));
@@ -80,19 +93,27 @@ export default function Index() {
 
   const open = Boolean(anchorEl);
 
-  if (isLoading) return <Loader />;
+  if (data.isLoading) return <Loader />;
 
   return (
     <DashboardLayout>
-      <></>
-      {/* <Box sx={{ padding: "0px 10px 20px 10px" }}>
-        <Link href="/staff/list" className="back-link">
+      <Box sx={{ padding: "0px 10px 20px 10px" }}>
+        <Link
+          href="/staff/list"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            textDecoration: "none",
+            fontSize: "14px"
+          }}
+        >
           <Iconify
             icon="eva:arrow-back-fill"
             sx={{
               width: 17,
               height: 17,
-              marginRight: "5px"
+              marginRight: "5px",
+              marginBottom: "2px"
             }}
           />{" "}
           Back to Staff List
@@ -220,19 +241,31 @@ export default function Index() {
                   gap={1}
                 >
                   <Typography variant="h5">Login</Typography>
-                  <Typography variant="body2">a few seconds ago</Typography>
+                  <Typography variant="body2">
+                    {moment().diff(data.last_login, "hours") < 23
+                      ? moment(data.last_login).fromNow()
+                      : moment(data.last_login).calendar(null, {
+                          sameDay: (now) =>
+                            `[Today], ${moment(now?.toString()).fromNow()}`,
+                          nextDay: "[Tomorrow]",
+                          nextWeek: "dddd",
+                          lastDay: "[Yesterday], hh:mm a",
+                          lastWeek: "[Last] dddd, hh:mm a",
+                          sameElse: "DD/MM/YYYY hh:mm:a"
+                        })}
+                  </Typography>
                 </Stack>
               </StyledPaper>
             </Grid>
             <Grid item lg={12} md={12} sm={12} xs={12}>
-              <Settings />
+              <Settings settings={data.settings} />
             </Grid>
             <Grid item lg={12} md={12} sm={12} xs={12}>
               <Notes />
             </Grid>
           </Grid>
         </Grid>
-      </StyledViewPage> */}
+      </StyledViewPage>
     </DashboardLayout>
   );
 }

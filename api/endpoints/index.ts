@@ -15,7 +15,8 @@ export const endpoints = {
     set_password: "/auth/set-password",
     forgot_password: "/auth/forgot-password",
     reset_password: "/auth/reset-password",
-    change_password: "/auth/change-password"
+    change_password: "/auth/change-password",
+    last_signin: (id: string) => `/auth/${id}/last-signin`
   },
   cms: {
     about: "/aboutpolicy/details",
@@ -27,8 +28,7 @@ export const endpoints = {
     getStaff: "/user",
     update_profile_photo: "/user/photo",
     get_staff_settings: "/employeeSettings/employees",
-    staff_note: "/",
-    staff_compliance: "/"
+    staff_compliance: "/document-subcategories/by-category"
   },
   user: {
     profile: "/user/profile",

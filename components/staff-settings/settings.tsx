@@ -17,6 +17,7 @@ import React, { useState } from "react";
 import Iconify from "../Iconify/Iconify";
 import { getRoles } from "@/api/functions/cms.api";
 import { useQuery } from "@tanstack/react-query";
+import { ISettings } from "@/interface/staff.interfaces";
 
 const StyledBox = styled(Box)`
   padding-top: 15px;
@@ -25,7 +26,7 @@ const StyledBox = styled(Box)`
   }
 `;
 
-export default function Settings() {
+export default function Settings({ settings }: { settings: ISettings }) {
   const [edit, setEdit] = useState(false);
 
   const { data: roles, isLoading } = useQuery({
@@ -77,7 +78,10 @@ export default function Settings() {
             ) : (
               <Chip
                 variant="outlined"
-                label="Carer"
+                label={settings.roleId
+                  .replace("ROLE_", "")
+                  .replaceAll("_", " ")
+                  .toLowerCase()}
                 color="primary"
                 size="small"
               />
@@ -111,7 +115,11 @@ export default function Settings() {
             {edit ? (
               <FormControlLabel control={<Checkbox />} label="" />
             ) : (
-              <Iconify icon="eva:checkmark-fill"></Iconify>
+              <Iconify
+                icon={`eva:${
+                  settings.isNotifyTimesheetApproval ? "checkmark" : "close"
+                }-fill`}
+              ></Iconify>
             )}
           </Grid>
           <Grid item lg={5} md={6} sm={12} xs={12}>
@@ -121,7 +129,11 @@ export default function Settings() {
             {edit ? (
               <FormControlLabel control={<Checkbox />} label="" />
             ) : (
-              <Iconify icon="eva:checkmark-fill"></Iconify>
+              <Iconify
+                icon={`eva:${
+                  settings.isAvailableForRostering ? "checkmark" : "close"
+                }-fill`}
+              ></Iconify>
             )}
           </Grid>
           <Grid item lg={5} md={6} sm={12} xs={12}>
@@ -142,14 +154,28 @@ export default function Settings() {
                   display="flex"
                   alignItems="center"
                 >
-                  Client Notes<Iconify icon="eva:close-fill"></Iconify>
+                  Client Notes
+                  <Iconify
+                    icon={`eva:${
+                      settings.isReadAndWriteClientPrivateNotes
+                        ? "checkmark"
+                        : "close"
+                    }-fill`}
+                  ></Iconify>
                 </Typography>
                 <Typography
                   variant="subtitle2"
                   display="flex"
                   alignItems="center"
                 >
-                  Staff Notes<Iconify icon="eva:close-fill"></Iconify>
+                  Staff Notes
+                  <Iconify
+                    icon={`eva:${
+                      settings.isReadAndWriteStaffPrivateNotes
+                        ? "checkmark"
+                        : "close"
+                    }-fill`}
+                  ></Iconify>
                 </Typography>
               </>
             )}
@@ -161,7 +187,9 @@ export default function Settings() {
             {edit ? (
               <FormControlLabel control={<Checkbox />} label="" />
             ) : (
-              <Iconify icon="eva:close-fill"></Iconify>
+              <Iconify
+                icon={`eva:${settings.isAccess ? "checkmark" : "close"}-fill`}
+              ></Iconify>
             )}
           </Grid>
           <Grid item lg={5} md={6} sm={12} xs={12}>
@@ -171,7 +199,11 @@ export default function Settings() {
             {edit ? (
               <FormControlLabel control={<Checkbox />} label="" />
             ) : (
-              <Iconify icon="eva:close-fill"></Iconify>
+              <Iconify
+                icon={`eva:${
+                  settings.isAccountOwner ? "checkmark" : "close"
+                }-fill`}
+              ></Iconify>
             )}
           </Grid>
         </Grid>

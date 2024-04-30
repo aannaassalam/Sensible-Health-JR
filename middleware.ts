@@ -19,7 +19,7 @@ export function middleware(request: NextRequest) {
     const response = NextResponse.redirect(url);
     response.headers.set("x-middleware-cache", "no-cache");
     return response;
-  } else if (has_token && request.nextUrl.pathname.startsWith("/auth/s")) {
+  } else if (has_token && request.nextUrl.pathname.startsWith("/auth/")) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
     const response = NextResponse.redirect(url);

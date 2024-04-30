@@ -91,7 +91,7 @@ export default function Index() {
           RowComponent={UserTableRow}
           data={data?.map((_data: IStaff) => ({
             ..._data,
-            role: _data.rolesName[0]
+            role: _data.rolesName?.[0]
               .replace("ROLE_", "")
               .replaceAll("_", " ")
               .toLowerCase()

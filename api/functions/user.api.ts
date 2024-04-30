@@ -93,3 +93,8 @@ export const updateProfileDetails = async (body: updateProfilePayload) => {
   const res = await axiosInstance.put(endpoints.user.update, body);
   return res.data;
 };
+
+export const getLastSignin = async (id: string) => {
+  const res = await axiosInstance.get(endpoints.auth.last_signin(id));
+  return res.data;
+};

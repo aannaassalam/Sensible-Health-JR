@@ -22,7 +22,7 @@ export default function Home() {
         <Grid container spacing={4}>
           <Grid item xs={12} sm={6} md={3}>
             <AppWidgetSummaryCard
-              title="Weekly Sales"
+              title="Participants"
               total={714000}
               color="success"
               icon={
@@ -33,7 +33,7 @@ export default function Home() {
 
           <Grid item xs={12} sm={6} md={3}>
             <AppWidgetSummaryCard
-              title="New Users"
+              title="Employees"
               total={1352831}
               color="info"
               icon={
@@ -44,7 +44,7 @@ export default function Home() {
 
           <Grid item xs={12} sm={6} md={3}>
             <AppWidgetSummaryCard
-              title="Item Orders"
+              title="Documents"
               total={1723315}
               color="warning"
               icon={
@@ -55,7 +55,7 @@ export default function Home() {
 
           <Grid item xs={12} sm={6} md={3}>
             <AppWidgetSummaryCard
-              title="Bug Reports"
+              title="Pending Invites"
               total={234}
               color="error"
               icon={

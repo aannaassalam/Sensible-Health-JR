@@ -29,7 +29,9 @@ import * as yup from "yup";
 
 const StyledLoginPage = styled(Box)`
   height: 100vh;
-
+  h2 {
+    margin-bottom: 40px;
+  }
   h6 {
     margin-bottom: 40px;
     a {
@@ -138,9 +140,9 @@ export default function LoginView() {
 
       <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
         <Typography variant="h2">Sign in to your account</Typography>
-        <Typography variant="h6">
+        {/* <Typography variant="h6">
           Or <Link href="/auth/signup">create a new account</Link>
-        </Typography>
+        </Typography> */}
         <Card
           sx={{
             p: 5,

@@ -1,6 +1,9 @@
 /* eslint-disable react/require-default-props */
+import assets from "@/json/assets";
 import Box, { BoxProps } from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
+import { display } from "@mui/system";
+import Image from "next/image";
 import Link from "next/link";
 import { forwardRef } from "react";
 
@@ -22,14 +25,14 @@ const Logo = forwardRef<HTMLDivElement, LogoProps>(
         ref={ref}
         component="div"
         sx={{
-          width: 40,
-          height: 40,
+          // width: 220,
+          // height: 40,
           display: "inline-flex",
           ...sx
         }}
         {...other}
       >
-        <svg
+        {/* <svg
           xmlns="http://www.w3.org/2000/svg"
           width="100%"
           height="100%"
@@ -71,7 +74,17 @@ const Logo = forwardRef<HTMLDivElement, LogoProps>(
               d="M450 384c26.509 0 48-21.491 48-48s-21.491-48-48-48-48 21.491-48 48 21.491 48 48 48"
             />
           </g>
-        </svg>
+        </svg> */}
+        <Image
+          src={assets.logo}
+          alt="logo"
+          width={217}
+          height={217}
+          style={{
+            width: 140,
+            height: 140
+          }}
+        />
       </Box>
     );
 
@@ -79,7 +92,11 @@ const Logo = forwardRef<HTMLDivElement, LogoProps>(
       return logo;
     }
 
-    return <Link href="/">{logo}</Link>;
+    return (
+      <Link href="/" style={{ display: "inline-block", width: "100%" }}>
+        {logo}
+      </Link>
+    );
   }
 );
 

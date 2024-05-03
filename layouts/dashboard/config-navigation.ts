@@ -28,7 +28,7 @@ export interface NavItem {
 
 const navConfig: NavItem[] = [
   {
-    title: "Scheduler",
+    title: "Roster",
     path: "/",
     icon: DashboardIcon,
     children: [],
@@ -46,13 +46,13 @@ const navConfig: NavItem[] = [
         children: [],
         hasChild: false
       },
-      {
-        title: "Teams",
-        path: "/staff/teams",
-        icon: GroupsIcon,
-        children: [],
-        hasChild: false
-      },
+      // {
+      //   title: "Teams",
+      //   path: "/staff/teams",
+      //   icon: GroupsIcon,
+      //   children: [],
+      //   hasChild: false
+      // },
       {
         title: "Archived ",
         path: "/staff/archived",
@@ -78,34 +78,34 @@ const navConfig: NavItem[] = [
     hasChild: true
   },
   {
-    title: "Clients",
-    path: "/clients/list",
+    title: "Participant",
+    path: "/participants/list",
     icon: PeopleAltIcon,
     children: [
       {
         title: "List",
-        path: "/clients/list",
+        path: "/participants/list",
         icon: TocIcon,
         children: [],
         hasChild: false
       },
       {
         title: "Archived",
-        path: "/clients/archived",
+        path: "/participants/archived",
         icon: ArchiveIcon,
         children: [],
         hasChild: false
       },
       {
         title: "Expired Documents",
-        path: "/clients/expired-documents",
+        path: "/participants/expired-documents",
         icon: RuleFolderIcon,
         children: [],
         hasChild: false
       },
       {
         title: "New",
-        path: "/clients/new",
+        path: "/participants/new",
         icon: PersonAddIcon,
         children: [],
         hasChild: false
@@ -114,9 +114,10 @@ const navConfig: NavItem[] = [
     hasChild: true
   },
   {
-    title: "Invoices",
-    path: "/invoices/list",
-    icon: ReceiptIcon,
+    title: "Documents",
+    path: "/documents",
+    icon: FolderIcon,
+    hasChild: false,
     children: [
       {
         title: "List",
@@ -139,8 +140,57 @@ const navConfig: NavItem[] = [
         children: [],
         hasChild: false
       }
+    ]
+  },
+  {
+    title: "Shift Notes",
+    path: "/shift-notes",
+    icon: ManageAccountsIcon,
+    children: [
+      {
+        title: "Settings",
+        path: "/shift-notes/settings",
+        icon: SettingsIcon,
+        children: [],
+        hasChild: false
+      },
+      {
+        title: "Invoice Settings",
+        path: "/shift-notes/invoice-settings",
+        icon: ContentPasteGoIcon,
+        children: [],
+        hasChild: false
+      },
+      {
+        title: "Prices",
+        path: "/shift-notes/prices",
+        icon: AttachMoneyIcon,
+        children: [],
+        hasChild: false
+      },
+      {
+        title: "Pay Items",
+        path: "/shift-notes/pay-items",
+        icon: RequestQuoteIcon,
+        children: [],
+        hasChild: false
+      },
+      {
+        title: "Reminders",
+        path: "/shift-notes/reminders",
+        icon: UpdateIcon,
+        children: [],
+        hasChild: false
+      },
+      {
+        title: "Subscription",
+        path: "/shift-notes/subscription",
+        icon: SubscriptionsIcon,
+        children: [],
+        hasChild: false
+      }
     ],
-    hasChild: true
+    hasChild: false
   },
   {
     title: "Reports",
@@ -150,20 +200,6 @@ const navConfig: NavItem[] = [
       {
         title: "Activity",
         path: "/reports/activity",
-        icon: SettingsIcon,
-        children: [],
-        hasChild: false
-      },
-      {
-        title: "Billing",
-        path: "/reports/billing",
-        icon: SettingsIcon,
-        children: [],
-        hasChild: false
-      },
-      {
-        title: "Fund Balances",
-        path: "/reports/fund-balances",
         icon: SettingsIcon,
         children: [],
         hasChild: false
@@ -228,56 +264,6 @@ const navConfig: NavItem[] = [
         title: "Events",
         path: "/reports/events",
         icon: SettingsIcon,
-        children: [],
-        hasChild: false
-      }
-    ],
-    hasChild: true
-  },
-  {
-    title: "Account",
-    path: "/account/settings",
-    icon: ManageAccountsIcon,
-    children: [
-      {
-        title: "Settings",
-        path: "/account/settings",
-        icon: SettingsIcon,
-        children: [],
-        hasChild: false
-      },
-      {
-        title: "Invoice Settings",
-        path: "/account/invoice-settings",
-        icon: ContentPasteGoIcon,
-        children: [],
-        hasChild: false
-      },
-      {
-        title: "Prices",
-        path: "/account/prices",
-        icon: AttachMoneyIcon,
-        children: [],
-        hasChild: false
-      },
-      {
-        title: "Pay Items",
-        path: "/account/pay-items",
-        icon: RequestQuoteIcon,
-        children: [],
-        hasChild: false
-      },
-      {
-        title: "Reminders",
-        path: "/account/reminders",
-        icon: UpdateIcon,
-        children: [],
-        hasChild: false
-      },
-      {
-        title: "Subscription",
-        path: "/account/subscription",
-        icon: SubscriptionsIcon,
         children: [],
         hasChild: false
       }

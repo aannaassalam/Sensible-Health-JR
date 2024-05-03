@@ -58,6 +58,7 @@ export default function CustomApp({
         <QueryClientProvider client={queryClient}>
           <CacheProvider value={emotionCache}>
             <MuiThemeProvider>
+              <title>Sensible Health</title>
               <CssBaseline />
               <EventListeners />
               <Toaster richColors position="bottom-left" />

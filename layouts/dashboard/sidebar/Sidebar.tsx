@@ -83,7 +83,12 @@ export default function Sidebar({ openNav, onCloseNav }: SidebarProps) {
       }}
       ref={ref}
     >
-      <Logo sx={{ mt: 3, ml: 4 }} />
+      <Logo
+        sx={{
+          width: "100%",
+          justifyContent: "center"
+        }}
+      />
 
       {renderAccount}
 
@@ -97,7 +102,10 @@ export default function Sidebar({ openNav, onCloseNav }: SidebarProps) {
     <Box
       sx={{
         flexShrink: { lg: 0 },
-        width: { lg: NAV.WIDTH }
+        width: { lg: NAV.WIDTH },
+        // backgroundColor: "#fdfdf6"
+        backgroundColor: "#7483bd20"
+        // backgroundColor: "#c0855b20"
       }}
     >
       {upLg ? (

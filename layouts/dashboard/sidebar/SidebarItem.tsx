@@ -72,13 +72,7 @@ function SidebarItem({ item }: SidebarItemProps) {
         >
           <Box component="span">{item.title} </Box>
 
-          {item?.children?.length ? (
-            open ? (
-              <ExpandLess />
-            ) : (
-              <ExpandMore />
-            )
-          ) : null}
+          {item?.hasChild ? open ? <ExpandLess /> : <ExpandMore /> : null}
         </Stack>
       </ListItemButton>
 

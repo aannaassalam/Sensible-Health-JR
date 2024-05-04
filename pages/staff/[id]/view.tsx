@@ -40,7 +40,7 @@ const StyledViewPage = styled(Grid)`
 interface QueryResult {
   staff: IStaff;
   settings: ISettings;
-  compliance: any;
+  compliance?: any;
   last_login: { "Last Login": number };
   isLoading: boolean;
 }

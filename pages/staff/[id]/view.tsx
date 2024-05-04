@@ -41,7 +41,7 @@ interface QueryResult {
   staff: IStaff;
   settings: ISettings;
   compliance: any;
-  last_login: number;
+  last_login: { "Last Login": number };
   isLoading: boolean;
 }
 
@@ -59,10 +59,10 @@ export default function Index() {
         queryKey: ["staff-settings", id],
         queryFn: () => getStaffSettings(id as string)
       },
-      {
-        queryKey: ["staff-compliance", id],
-        queryFn: () => getStaffCompliance(id as string)
-      },
+      // {
+      //   queryKey: ["staff-compliance", id],
+      //   queryFn: () => getStaffCompliance(id as string)
+      // },
       {
         queryKey: ["last-login", id],
         queryFn: () => getLastSignin(id as string)
@@ -72,13 +72,10 @@ export default function Index() {
       return {
         staff: results[0].data,
         settings: results[1].data,
-        compliance: results[2].data,
-        last_login: results[3].data,
+        // compliance: results[2].data,
+        last_login: results[2].data,
         isLoading:
-          results[0].isLoading ||
-          results[1].isLoading ||
-          results[2].isLoading ||
-          results[3].isLoading
+          results[0].isLoading || results[1].isLoading || results[2].isLoading
       };
     }
   });
@@ -242,9 +239,9 @@ export default function Index() {
                 >
                   <Typography variant="h5">Login</Typography>
                   <Typography variant="body2">
-                    {moment().diff(data.last_login, "hours") < 23
-                      ? moment(data.last_login).fromNow()
-                      : moment(data.last_login).calendar(null, {
+                    {moment().diff(data.last_login["Last Login"], "hours") < 23
+                      ? moment(data.last_login["Last Login"]).fromNow()
+                      : moment(data.last_login["Last Login"]).calendar(null, {
                           sameDay: (now) =>
                             `[Today], ${moment(now?.toString()).fromNow()}`,
                           nextDay: "[Tomorrow]",

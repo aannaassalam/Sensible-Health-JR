@@ -10,6 +10,8 @@ const validationText = {
     enter_password: "Enter password",
     passwordTooShort: "Password too short",
     company_name: "Please enter your company name",
+    notes: "Please enter a note",
+    file: "Please upload a file",
     isValidPass:
       "Password must include a number or symbol and be at least 8 characters long",
     phone: "Please enter phone number",
@@ -40,7 +42,12 @@ const validationText = {
     dob: "Please enter date of birth.",
     employment_type: "Please select employment type.",
     address: "Please enter address.",
-    role: "Please select a role."
+    role: "Please select a role.",
+    apartment: "Please Enter Unit/Apartment Number",
+    religion: "Please Enter you religion",
+    maritalStatus: "Please Select a Marital status",
+    nationality: "Please enter you nationality",
+    language: "Please Select a language"
   },
   warn: {},
   info: {}

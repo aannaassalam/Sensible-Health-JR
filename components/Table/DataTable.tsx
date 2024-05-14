@@ -32,11 +32,13 @@ import {
 export default function DataTable({
   data,
   columns,
-  RowComponent
+  RowComponent,
+  noCheckbox
 }: {
   data: any[];
   columns: HeadLabelType[];
   RowComponent: React.ElementType;
+  noCheckbox?: boolean;
 }) {
   const ref = useRef(null);
   const [page, setPage] = useState(0);
@@ -136,20 +138,23 @@ export default function DataTable({
               onRequestSort={handleSort}
               onSelectAllClick={handleSelectAllClick}
               headLabel={columns}
+              noCheckbox={noCheckbox}
             />
             <TableBody>
               {dataFiltered
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => (
-                  <RowComponent
-                    key={row.id}
-                    {...row}
-                    selected={selected.indexOf(row.id) !== -1}
-                    handleClick={(event: React.ChangeEvent<HTMLInputElement>) =>
-                      handleClick(event, row.id)
-                    }
-                  />
-                ))}
+                .map((row) => {
+                  return (
+                    <RowComponent
+                      key={row.id}
+                      {...row}
+                      selected={selected.indexOf(row.id) !== -1}
+                      handleClick={(
+                        event: React.ChangeEvent<HTMLInputElement>
+                      ) => handleClick(event, row.id)}
+                    />
+                  );
+                })}
 
               <TableEmptyRows
                 height={77}

@@ -60,13 +60,13 @@ const navConfig: NavItem[] = [
         children: [],
         hasChild: false
       },
-      {
-        title: "Document Hub",
-        path: "/staff/document-hub",
-        icon: FolderIcon,
-        children: [],
-        hasChild: false
-      },
+      // {
+      //   title: "Document Hub",
+      //   path: "/staff/document-hub",
+      //   icon: FolderIcon,
+      //   children: [],
+      //   hasChild: false
+      // },
       {
         title: "New",
         path: "/staff/new",

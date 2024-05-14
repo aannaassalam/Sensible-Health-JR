@@ -10,34 +10,26 @@ import SimpleBar from "simplebar-react";
 import DataTable from "@/components/Table/DataTable";
 import UserTableRow from "pages/staff/staff-table-row";
 import Loader from "@/ui/Loader/Loder";
+import { getAllClients } from "@/api/functions/client.api";
+import { IClient } from "@/interface/client.interface";
+import ClientTableRow from "./client-table.row";
 
-const StyledUserPage = styled(Box)`
+const StyledClientPage = styled(Box)`
   padding: 20px 10px;
   h4 {
     margin-bottom: 40px;
   }
-  /* .MuiPaper-root {
-    overflow: hidden;
-    position: relative;
-    box-shadow: rgba(145, 158, 171, 0.2) 0px 0px 2px 0px,
-      rgba(145, 158, 171, 0.12) 0px 12px 24px -4px;
-    border-radius: 16px;
-    z-index: 0;
-    .MuiDataGrid-columnHeader {
-      outline: none;
-    }
-  } */
 `;
 
-export default function Index() {
+export default function List() {
   const { data = [], isLoading } = useQuery({
-    queryKey: ["user_list"],
-    queryFn: getStaffList
+    queryKey: ["client_list"],
+    queryFn: getAllClients
   });
 
   const columns = [
     {
-      id: "name",
+      id: "displayName",
       label: "Name"
     },
     {
@@ -45,29 +37,49 @@ export default function Index() {
       label: "Gender"
     },
     {
-      id: "role",
-      label: "Role"
+      id: "age",
+      label: "Age"
     },
     {
-      id: "email",
-      label: "Email"
+      id: "ndis",
+      label: "NDIS"
+    },
+    {
+      id: "recipient_id",
+      label: "Recipient ID"
     },
     {
       id: "mobileNo",
       label: "Mobile"
     },
     {
+      id: "phoneNo",
+      label: "Phone"
+    },
+    {
+      id: "email",
+      label: "Email"
+    },
+    {
       id: "address",
       label: "Address"
     },
     {
-      id: "employmentType",
-      label: "Employment Type"
+      id: "type",
+      label: "Type"
+    },
+    {
+      id: "pricebook",
+      label: "Pricebook"
+    },
+    {
+      id: "review",
+      label: "Review"
     }
   ];
 
   const rows =
-    data?.map((_item: IStaff) => ({
+    data?.map((_item: IClient) => ({
       ..._item
     })) || [];
 
@@ -75,8 +87,8 @@ export default function Index() {
 
   return (
     <DashboardLayout>
-      <StyledUserPage>
-        <Typography variant="h4">Staff List</Typography>
+      <StyledClientPage>
+        <Typography variant="h4">Client List</Typography>
         {/* <SimpleBar scrollableNodeProps={{ ref: ref }}> */}
         {/* <Paper>
           <DataGridTable
@@ -88,18 +100,12 @@ export default function Index() {
         </Paper> */}
         <DataTable
           columns={columns}
-          RowComponent={UserTableRow}
-          data={data?.map((_data: IStaff, index: number) => ({
-            ..._data,
-            role: _data.rolesName?.[0]
-              .replace("ROLE_", "")
-              .replaceAll("_", " ")
-              .toLowerCase(),
-            index
-          }))}
+          RowComponent={ClientTableRow}
+          data={data}
+          noCheckbox
         />
         {/* </SimpleBar> */}
-      </StyledUserPage>
+      </StyledClientPage>
     </DashboardLayout>
   );
 }

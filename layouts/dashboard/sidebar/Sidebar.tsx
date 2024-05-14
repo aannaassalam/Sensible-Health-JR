@@ -102,9 +102,9 @@ export default function Sidebar({ openNav, onCloseNav }: SidebarProps) {
     <Box
       sx={{
         flexShrink: { lg: 0 },
-        width: { lg: NAV.WIDTH },
+        width: { lg: NAV.WIDTH }
         // backgroundColor: "#fdfdf6"
-        backgroundColor: "#7483bd20"
+        // backgroundColor: "#7483bd20"
         // backgroundColor: "#c0855b20"
       }}
     >
@@ -114,6 +114,7 @@ export default function Sidebar({ openNav, onCloseNav }: SidebarProps) {
             height: 1,
             position: "fixed",
             width: NAV.WIDTH,
+            backgroundColor: "#eeeff7",
             borderRight: (theme) => `dashed 1px ${theme.palette.divider}`
           }}
         >
@@ -125,7 +126,8 @@ export default function Sidebar({ openNav, onCloseNav }: SidebarProps) {
           onClose={onCloseNav}
           PaperProps={{
             sx: {
-              width: NAV.WIDTH
+              width: NAV.WIDTH,
+              backgroundColor: "#eeeff7"
             }
           }}
         >

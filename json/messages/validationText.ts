@@ -47,7 +47,12 @@ const validationText = {
     religion: "Please Enter you religion",
     maritalStatus: "Please Select a Marital status",
     nationality: "Please enter you nationality",
-    language: "Please Select a language"
+    language: "Please Select a language",
+    pricebook_name: "Please Enter Price Book Name",
+    fund_name: "Please enter a Fund name",
+    fund_amount: "Please enter a Fund Amount",
+    starts: "Please select a Start Date",
+    expires: "Pelase select an Expiry Date"
   },
   warn: {},
   info: {}

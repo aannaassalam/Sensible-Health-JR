@@ -44,8 +44,28 @@ export const endpoints = {
     delete_document: "/document"
   },
   client: {
-    get_all: "/client/getAll/by-company",
-    add_client: "/client/add"
+    get_all: "/client/by-company/active",
+    get_archieved_clients: "/client/by-company/inactive",
+    add_client: "/client/add",
+    delete_client: "/client/softDelete",
+    unarchive_client: "/client/unarchived",
+    get_client: (id: string) => `/client/${id}`,
+    get_client_settngs: (id: string) => `/clientSettings/client/${id}`,
+    get_client_funds: (id: string) => `/funds/client/${id}`,
+    get_client_documents: (id: string) => `/document/client/${id}`,
+    get_client_additional_information: (id: string) =>
+      `/client/${id}/additionalInformation`,
+    get_client_contacts: (id: string) =>
+      `/client/${id}/getAll/additional-contacts`,
+    add_client_contacts: (id: string) => `/client/${id}/additional-contacts`,
+    update_profile_pic: (id: string) => `/client/photo/${id}`,
+    update_profile: (id: string) => `/client/editClient/${id}`,
+    update_settings: (id: string) => `/clientSettings/update/${id}`,
+    update_additional_information: (id: string) =>
+      `/client/${id}/additionalInformation`,
+    update_client_contact: (id: string) => `/client/${id}/additional-contacts`,
+    delete_client_contact: (id: string, contact_id: number) =>
+      `/client/${id}/additional-contacts/${contact_id}`
   },
   teams: {
     get_all: "/teams/allTeams",
@@ -61,6 +81,31 @@ export const endpoints = {
   },
   roles: {
     all: "/roles/all"
+  },
+  funds: {
+    add_fund: (id: string) => `/funds/add/${id}`
+  },
+  settings: {
+    pricebook: {
+      get_pricebooks: "/priceBook/getAll/priceBook",
+      get_all_pricebooks: "/priceBook/listAll/priceBook",
+      add_pricebook: "/priceBook/add",
+      edit_pricebook: (id: number) => `/priceBook/${id}`,
+      delte_pricebook: (id: number) => `/priceBook/softDelete/${id}`,
+      copy_pricebook: (id: number) => `/priceBook/copy/${id}`
+    },
+    prices: {
+      update_prices: (id: number) => `/prices/update/${id}`
+    },
+    pay_groups: {
+      add_paygroup: "/payGroup/add",
+      update_paygroup: (id: number) => `/payGroup/update/${id}`,
+      delete_paygroup: (id: number) => `/payGroup/softDelete/${id}`,
+      get_all_paygroup: "/payGroup/getAll/payGroup"
+    },
+    price_items: {
+      update_price_items: (id: number) => `/payItems/update/${id}`
+    }
   }
 };
 
@@ -83,5 +128,6 @@ export const sucessNotificationEndPoints = [
   endpoints.teams.create_team,
   endpoints.teams.delete_team,
   endpoints.teams.edit_team,
-  endpoints.client.add_client
+  endpoints.client.add_client,
+  endpoints.settings.pricebook.add_pricebook
 ];

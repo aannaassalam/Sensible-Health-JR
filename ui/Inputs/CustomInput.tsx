@@ -6,7 +6,7 @@ type CustomInputProps = {
   name: string;
 } & TextFieldProps;
 
-function CustomInput(props: CustomInputProps) {
+function CustomInput({ size = "small", ...props }: CustomInputProps) {
   const { control } = useFormContext();
 
   return (
@@ -26,8 +26,9 @@ function CustomInput(props: CustomInputProps) {
             </InputLabel>
           )}
           <TextField
-            {...props}
             {...field}
+            {...props}
+            size={size}
             label=""
             fullWidth
             error={invalid}

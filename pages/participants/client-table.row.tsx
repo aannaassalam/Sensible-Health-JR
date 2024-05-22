@@ -17,6 +17,7 @@ import DeleteModal from "@/components/deleteModal/deleteModal";
 import { useMutation } from "@tanstack/react-query";
 import { deleteStaff } from "@/api/functions/staff.api";
 import { queryClient } from "pages/_app";
+import { deleteClient } from "@/api/functions/client.api";
 
 // ----------------------------------------------------------------------
 
@@ -72,9 +73,9 @@ export default function ClientTableRow({
   };
 
   const { mutate, isPending } = useMutation({
-    mutationFn: deleteStaff,
+    mutationFn: deleteClient,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user_list"] });
+      queryClient.invalidateQueries({ queryKey: ["client_list"] });
       setDeleteModal(false);
     }
   });
@@ -135,7 +136,9 @@ export default function ClientTableRow({
           }
         }}
       >
-        <MenuItem onClick={(e) => handleCloseMenu(e, `/staff/${id}/view`)}>
+        <MenuItem
+          onClick={(e) => handleCloseMenu(e, `/participants/${id}/view`)}
+        >
           <Iconify icon="eva:file-text-outline" sx={{ mr: 2 }} />
           View
         </MenuItem>
@@ -156,8 +159,8 @@ export default function ClientTableRow({
         </MenuItem>
       </Popover>
       <DeleteModal
-        title="Delete Staff"
-        description="Are you sure, you want to delete this staff?"
+        title="Delete Client"
+        description="Are you sure, you want to delete this Client?"
         open={deleteModal}
         onClose={() => setDeleteModal(false)}
         agreeBtnText="Yes, Delete"

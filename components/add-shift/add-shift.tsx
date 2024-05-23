@@ -50,7 +50,7 @@ import dayjs from "dayjs";
 import { useRouter } from "next/router";
 import { useParams } from "next/navigation";
 import RichTextEditor from "../RichTextEditor/RichTextEditor";
-import { ShiftBody } from "@/interface/shift.api";
+import { ShiftBody, Task } from "@/interface/shift.api";
 import { createShift } from "@/api/functions/shift.api";
 import { LoadingButton } from "@mui/lab";
 import { useCurrentEditor } from "@tiptap/react";
@@ -345,7 +345,7 @@ const TaskSection = () => {
     }
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: Task) => {
     append(data);
     reset();
   };
@@ -407,7 +407,7 @@ const TaskSection = () => {
             Task
           </Button>
         </Stack>
-        {watch("tasks").map((_task, index: number) => (
+        {watch("tasks").map((_task: Task, index: number) => (
           <Stack
             key={index}
             direction="row"

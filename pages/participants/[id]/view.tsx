@@ -1,4 +1,5 @@
 import {
+  getAllClients,
   getClient,
   getClientAdditionalInformation,
   getClientContacts,
@@ -10,6 +11,7 @@ import {
   getNotes,
   getStaff,
   getStaffCompliance,
+  getStaffList,
   getStaffSettings
 } from "@/api/functions/staff.api";
 import { getLastSignin, resendInvite } from "@/api/functions/user.api";
@@ -34,6 +36,10 @@ import {
 } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import {
+  DehydratedState,
+  HydrationBoundary,
+  QueryClient,
+  dehydrate,
   useIsFetching,
   useMutation,
   useQueries,
@@ -47,6 +53,26 @@ import Settings from "@/components/client-settings/settings";
 import ClientDocuments from "@/components/client-docuements/documents";
 import ClientContacts from "@/components/client-contacts/client-contacts";
 import ClientAdditionalContacts from "@/components/client-additional-contacts/client-additional-contacts";
+import AddShift from "@/components/add-shift/add-shift";
+
+export const getServerSideProps = async () => {
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ["user_list"],
+    queryFn: getStaffList
+  });
+  await queryClient.prefetchQuery({
+    queryKey: ["client_list"],
+    queryFn: getAllClients
+  });
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient)
+    }
+  };
+};
 
 const StyledViewPage = styled(Grid)`
   padding: 20px 10px;
@@ -66,9 +92,14 @@ interface QueryResult {
   isLoading: boolean;
 }
 
-export default function Index() {
+export default function Index({
+  dehydratedState
+}: {
+  dehydratedState: DehydratedState;
+}) {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const { id } = useParams();
+  const [addShiftModal, setAddShiftModal] = useState(false);
 
   const data = useQueries({
     queries: [
@@ -211,7 +242,10 @@ export default function Index() {
           >
             <MenuItem
               // key={option.label}
-              onClick={handlePopoverClose}
+              onClick={() => {
+                handlePopoverClose();
+                setAddShiftModal(true);
+              }}
             >
               Add Shift
             </MenuItem>
@@ -286,6 +320,12 @@ export default function Index() {
           </Grid>
         </Grid>
       </StyledViewPage>
+      <HydrationBoundary state={dehydratedState}>
+        <AddShift
+          open={addShiftModal}
+          onClose={() => setAddShiftModal(false)}
+        />
+      </HydrationBoundary>
     </DashboardLayout>
   );
 }

@@ -78,11 +78,6 @@ export default function List() {
     }
   ];
 
-  const rows =
-    data?.map((_item: IClient) => ({
-      ..._item
-    })) || [];
-
   if (isLoading) return <Loader />;
 
   return (

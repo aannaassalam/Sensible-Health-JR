@@ -85,6 +85,9 @@ export const endpoints = {
   funds: {
     add_fund: (id: string) => `/funds/add/${id}`
   },
+  shift: {
+    create_shift: "/shift/createMultiple/with-available-employee"
+  },
   settings: {
     pricebook: {
       get_pricebooks: "/priceBook/getAll/priceBook",
@@ -129,5 +132,6 @@ export const sucessNotificationEndPoints = [
   endpoints.teams.delete_team,
   endpoints.teams.edit_team,
   endpoints.client.add_client,
-  endpoints.settings.pricebook.add_pricebook
+  endpoints.settings.pricebook.add_pricebook,
+  endpoints.shift.create_shift
 ];

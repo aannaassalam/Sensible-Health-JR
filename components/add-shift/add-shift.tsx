@@ -1072,9 +1072,9 @@ export default function AddShift({ ...props }: AddShiftProps) {
       ...data,
       startDate: dayjs(data.startDate).format("YYYY-MM-DD"),
       endDate: dayjs(data.endDate).format("YYYY-MM-DD"),
-      shiftEndDate: data.isShiftEndsNextDay
-        ? dayjs(data.startDate).add(1, "day").format("YYYY-MM-DD")
-        : dayjs(data.startDate).format("YYYY-MM-DD"),
+      // shiftEndDate: data.isShiftEndsNextDay
+      //   ? dayjs(data.startDate).add(1, "day").format("YYYY-MM-DD")
+      //   : dayjs(data.startDate).format("YYYY-MM-DD"),
       breakTimeInMins: data.breakTimeInMins || 0,
       startTime: dayjs(data.startTime).format("HH:mm"),
       endTime: dayjs(data.endTime).format("HH:mm"),

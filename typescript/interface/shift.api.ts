@@ -12,7 +12,7 @@ export interface ShiftBody {
   startTime: Dayjs;
   endTime: Dayjs;
   breakTimeInMins: number | null;
-  shiftEndDate?: Dayjs;
+  // shiftEndDate?: Dayjs;
   isRepeated: boolean;
   address: string;
   apartmentNumber: string;
@@ -41,7 +41,7 @@ export interface ShiftType {
   startTime: string;
   endTime: string;
   breakTimeInMins: number;
-  shiftEndDate: string;
+  shiftEndDate?: string;
   isRepeated: boolean;
   address: string;
   apartmentNumber: string;

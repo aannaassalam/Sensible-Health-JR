@@ -20,9 +20,9 @@ export const getServerSideProps = async () => {
   };
 };
 
-export default function Home({ shifts }) {
+export default function Home() {
   const localizer = momentLocalizer(moment);
-  console.log(shifts);
+  // console.log(shifts);
   return (
     <DashboardLayout>
       <Container maxWidth="xl">

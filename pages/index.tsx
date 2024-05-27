@@ -10,15 +10,15 @@ import moment from "moment";
 import { Box } from "@mui/system";
 import { getAllShifts } from "@/api/functions/shift.api";
 
-export const getServerSideProps = async () => {
-  const data = await getAllShifts();
+// export const getServerSideProps = async () => {
+//   const data = await getAllShifts();
 
-  return {
-    props: {
-      shifts: data
-    }
-  };
-};
+//   return {
+//     props: {
+//       shifts: data
+//     }
+//   };
+// };
 
 export default function Home() {
   const localizer = momentLocalizer(moment);

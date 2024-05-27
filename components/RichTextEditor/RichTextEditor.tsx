@@ -122,13 +122,22 @@ const Toolbar = () => {
   );
 };
 
-const RichTextEditor = ({ value = "" }: { value?: string }) => {
+const RichTextEditor = ({
+  value = "",
+  onChange
+}: {
+  value?: string;
+  onChange: (value: string) => void;
+}) => {
   const content = value;
   return (
     <EditorProvider
       extensions={extensions}
       content={content}
       slotBefore={<Toolbar />}
+      onUpdate={({ editor }) => {
+        onChange(editor.getHTML().toString());
+      }}
     ></EditorProvider>
   );
 };

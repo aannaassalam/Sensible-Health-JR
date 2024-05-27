@@ -30,8 +30,7 @@ export interface ShiftBody {
   tasks: Task[];
   instruction: string;
   clientId: number | string | null;
-  employeeId?: number | string | null;
-  employeeIds?: number[];
+  employeeIds: number[];
 }
 
 export interface ShiftType {

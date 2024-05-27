@@ -86,7 +86,8 @@ export const endpoints = {
     add_fund: (id: string) => `/funds/add/${id}`
   },
   shift: {
-    create_shift: "/shift/createMultiple/with-available-employee"
+    create_shift: "/shift/createMultiple/with-available-employee",
+    get_all_shifts: "/shift/getAllShift"
   },
   settings: {
     pricebook: {

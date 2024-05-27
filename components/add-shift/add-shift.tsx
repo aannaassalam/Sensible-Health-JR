@@ -288,31 +288,42 @@ const StaffSection = () => {
         <Grid item lg={8} md={6} sm={12} xs={12}>
           <Controller
             control={control}
-            name="employeeId"
-            render={({ field, fieldState: { error, invalid } }) => (
-              <Box>
-                <Select
-                  fullWidth
-                  size="small"
-                  {...field}
-                  displayEmpty
-                  renderValue={
-                    field.value !== "" ? undefined : () => "Select Carer"
-                  }
-                >
-                  {isLoading ? (
-                    <MenuItem disabled>Loading...</MenuItem>
-                  ) : (
-                    data?.map((_data: IStaff) => (
-                      <MenuItem value={_data.id} key={_data.id}>
-                        {_data.name}
-                      </MenuItem>
-                    ))
-                  )}
-                </Select>
-                {invalid && <FormHelperText>{error?.message}</FormHelperText>}
-              </Box>
-            )}
+            name="employeeIds"
+            render={({ field, fieldState: { error, invalid } }) => {
+              return (
+                <Box>
+                  <Select
+                    fullWidth
+                    size="small"
+                    {...field}
+                    onChange={(e) => {
+                      const _value = e.target.value;
+                      field.onChange(
+                        typeof _value === "string" ? _value.split(",") : _value
+                      );
+                    }}
+                    displayEmpty
+                    renderValue={
+                      field.value?.length !== 0
+                        ? undefined
+                        : () => "Select Carer"
+                    }
+                    multiple
+                  >
+                    {isLoading ? (
+                      <MenuItem disabled>Loading...</MenuItem>
+                    ) : (
+                      data?.map((_data: IStaff) => (
+                        <MenuItem value={_data.id} key={_data.id}>
+                          {_data.name}
+                        </MenuItem>
+                      ))
+                    )}
+                  </Select>
+                  {invalid && <FormHelperText>{error?.message}</FormHelperText>}
+                </Box>
+              );
+            }}
           />
         </Grid>
       </Grid>
@@ -455,6 +466,8 @@ const TaskSection = () => {
 };
 
 const InstructionSection = () => {
+  const { control } = useFormContext();
+
   return (
     <StyledPaper>
       <Stack direction="row" alignItems="center" gap={2}>
@@ -468,7 +481,13 @@ const InstructionSection = () => {
         <Typography variant="h6">Instructions</Typography>
       </Stack>
       <Divider sx={{ marginBlock: "10px" }} />
-      <RichTextEditor />
+      <Controller
+        name="instruction"
+        control={control}
+        render={({ field }) => (
+          <RichTextEditor value={field.value} onChange={field.onChange} />
+        )}
+      />
     </StyledPaper>
   );
 };
@@ -1019,7 +1038,7 @@ const schema = yup.object().shape({
   ),
   instruction: yup.string(),
   clientId: yup.number().nullable().required("Please Select a Paricipant"),
-  employeeId: yup.number().nullable().required("Please Select a Carer")
+  employeeIds: yup.array().of(yup.number()).required("Please Select a Carer")
 });
 
 export default function AddShift({ ...props }: AddShiftProps) {
@@ -1055,7 +1074,9 @@ export default function AddShift({ ...props }: AddShiftProps) {
       clientId: router.pathname.includes("participants")
         ? (id as string)
         : null,
-      employeeId: router.pathname.includes("staff") ? (id as string) : null
+      employeeIds: router.pathname.includes("staff")
+        ? [parseInt(id as string)]
+        : []
     }
   });
 
@@ -1078,9 +1099,8 @@ export default function AddShift({ ...props }: AddShiftProps) {
       breakTimeInMins: data.breakTimeInMins || 0,
       startTime: dayjs(data.startTime).format("HH:mm"),
       endTime: dayjs(data.endTime).format("HH:mm"),
-      clientId: parseInt(data.clientId as string),
-      employeeIds: [parseInt(data.employeeId as string)],
-      instruction: JSON.stringify(editor?.getJSON(), null, 2)
+      clientId: parseInt(data.clientId as string)
+      // instruction: JSON.stringify(editor?.getJSON(), null, 2)
     };
     mutate(newData);
   };

@@ -623,6 +623,7 @@ const TimeAndLocation = () => {
                     fullWidth: true
                   }
                 }}
+                minDate={dayjs()}
                 format="DD/MM/YYYY"
                 {...field}
                 onChange={(e) => {
@@ -919,6 +920,7 @@ const TimeAndLocation = () => {
                         fullWidth: true
                       }
                     }}
+                    minDate={dayjs(watch("startDate"))}
                     format="DD/MM/YYYY"
                     {...field}
                   />
@@ -1044,8 +1046,6 @@ const schema = yup.object().shape({
 export default function AddShift({ ...props }: AddShiftProps) {
   const router = useRouter();
   const { id } = useParams();
-
-  const { editor } = useCurrentEditor();
 
   const methods = useForm({
     resolver: yupResolver(schema),

@@ -60,3 +60,41 @@ export interface ShiftType {
   clientId: number;
   employeeIds: number[];
 }
+
+export interface ShiftUser {
+  id: number;
+  displayName: string;
+}
+
+export interface Shift {
+  id: number;
+  startDate: number;
+  isShiftEndsNextDay: boolean;
+  startTime: number[];
+  endTime: number[];
+  breakTimeInMins: number;
+  shiftEndDate: number;
+  shiftHours: number;
+  isRepeated: boolean;
+  address: string;
+  apartmentNumber: string;
+  shiftType: string;
+  recurrance: string;
+  repeatNoOfDays: number;
+  repeatNoOfWeeks: number;
+  occursOnDays: string[];
+  repeatNoOfMonths: number;
+  occursOnDayOfMonth: number;
+  endDate: number;
+  isDropOffAddress: boolean;
+  dropOffAddress: string;
+  dropOffApartmentNumber: string;
+  tasks: Task[];
+  instruction: string;
+  client: ShiftUser;
+  employee: ShiftUser;
+  employeeStartTime: number[];
+  employeeEndTime: number[];
+  clientStartTime: number[];
+  clientEndTime: number[];
+}

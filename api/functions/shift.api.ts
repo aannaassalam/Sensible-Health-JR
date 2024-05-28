@@ -7,7 +7,13 @@ export const createShift = async (body: ShiftType) => {
   return res.data;
 };
 
-export const getAllShifts = async () => {
-  const res = await axiosInstance.get(endpoints.shift.get_all_shifts);
+export const getAllShifts = async (token?: string) => {
+  const res = await axiosInstance.get(endpoints.shift.get_all_shifts, {
+    headers: token
+      ? {
+          Authorization: `Bearer ${token}`
+        }
+      : {}
+  });
   return res.data;
 };

@@ -58,17 +58,12 @@ export default function Settings({ settings }: { settings: ISettings }) {
       {
         queryKey: ["roles"],
         queryFn: getRoles
-      },
-      {
-        queryKey: ["teams"],
-        queryFn: getAllTeams
       }
     ],
     combine: (result) => {
       return {
         roles: result[0].data,
-        teams: result[1].data,
-        loading: result[0].isLoading || result[1].isLoading
+        loading: result[0].isLoading
       };
     }
   });

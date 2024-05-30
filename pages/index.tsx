@@ -11,46 +11,57 @@ import { Box } from "@mui/system";
 import { getAllShifts } from "@/api/functions/shift.api";
 import { GetServerSidePropsContext } from "next";
 import { Shift } from "@/interface/shift.api";
+import Timesheet from "@/components/Timesheet/Timesheet";
+import {
+  DehydratedState,
+  HydrationBoundary,
+  QueryClient,
+  dehydrate
+} from "@tanstack/react-query";
+import { getAllClients } from "@/api/functions/client.api";
+import { getStaffList } from "@/api/functions/staff.api";
 
 export const getServerSideProps = async ({
   req
 }: GetServerSidePropsContext) => {
+  const queryClient = new QueryClient();
+
   const cookie = req.cookies;
   const data = await getAllShifts(cookie?.token);
 
+  await queryClient.prefetchQuery({
+    queryKey: ["user_list"],
+    queryFn: getStaffList
+  });
+  await queryClient.prefetchQuery({
+    queryKey: ["client_list"],
+    queryFn: getAllClients
+  });
+
   return {
     props: {
-      shifts: data
+      shifts: data,
+      dehydratedState: dehydrate(queryClient)
     }
   };
 };
 
-export default function Home({ shifts }: { shifts: Shift[] }) {
-  const localizer = momentLocalizer(moment);
-  console.log(shifts);
+export default function Home({
+  shifts,
+  dehydratedState
+}: {
+  shifts: Shift[];
+  dehydratedState: DehydratedState;
+}) {
   return (
     <DashboardLayout>
       <Container maxWidth="xl">
         <Box
           sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
         >
-          <Calendar
-            localizer={localizer}
-            startAccessor="start"
-            endAccessor="end"
-            events={shifts.map((_shift) => ({
-              start: moment(_shift.startDate)
-                .add(_shift.startTime[0], "hours")
-                .add(_shift.startTime[1], "minutes")
-                .toDate(),
-              end: moment(_shift.shiftEndDate)
-                .add(_shift.endTime[0], "hours")
-                .add(_shift.endTime[1], "minutes")
-                .toDate(),
-              title: _shift.employee.displayName
-            }))}
-            style={{ flex: 1 }}
-          />
+          <HydrationBoundary state={dehydratedState}>
+            <Timesheet shifts={shifts} />
+          </HydrationBoundary>
         </Box>
       </Container>
     </DashboardLayout>

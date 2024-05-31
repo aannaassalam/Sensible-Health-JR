@@ -17,7 +17,7 @@ import {
   TextField,
   Typography
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Iconify from "../Iconify/Iconify";
 import { Box, Stack } from "@mui/system";
 import StyledPaper from "@/ui/Paper/Paper";
@@ -54,6 +54,7 @@ import { ShiftBody, Task } from "@/interface/shift.api";
 import { createShift } from "@/api/functions/shift.api";
 import { LoadingButton } from "@mui/lab";
 import { useCurrentEditor } from "@tiptap/react";
+import { Moment } from "moment";
 
 const StyledDrawer = styled(Drawer)`
   > .drawer {
@@ -1010,6 +1011,7 @@ const TimeAndLocation = () => {
 interface AddShiftProps extends DrawerProps {
   isClient?: boolean;
   onClose: () => void;
+  selectedDate?: Moment | null;
 }
 
 const schema = yup.object().shape({
@@ -1046,6 +1048,7 @@ const schema = yup.object().shape({
 export default function AddShift({ ...props }: AddShiftProps) {
   const router = useRouter();
   const { id } = useParams();
+  const { staff, client } = router.query;
 
   const methods = useForm({
     resolver: yupResolver(schema),
@@ -1073,12 +1076,28 @@ export default function AddShift({ ...props }: AddShiftProps) {
       instruction: "",
       clientId: router.pathname.includes("participants")
         ? (id as string)
+        : client
+        ? (client as string)
         : null,
       employeeIds: router.pathname.includes("staff")
         ? [parseInt(id as string)]
+        : staff
+        ? [parseInt(staff as string)]
         : []
     }
   });
+
+  useEffect(() => {
+    if (client) {
+      methods.setValue("clientId", client as string);
+    }
+    if (staff) {
+      methods.setValue("employeeIds", [parseInt(staff as string)]);
+    }
+    if (props.selectedDate) {
+      methods.setValue("startDate", dayjs(props.selectedDate?.toDate()));
+    }
+  }, [staff, client]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: createShift,

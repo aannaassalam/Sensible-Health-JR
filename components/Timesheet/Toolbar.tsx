@@ -1,4 +1,11 @@
-import { Button, Paper, Popover, Typography } from "@mui/material";
+import {
+  Button,
+  MenuItem,
+  Paper,
+  Popover,
+  Select,
+  Typography
+} from "@mui/material";
 import { Stack } from "@mui/system";
 import moment, { Moment } from "moment";
 import React, { SetStateAction, useState } from "react";
@@ -25,13 +32,18 @@ const StyledButton = styled(Button)`
 export default function Toolbar({
   week,
   date,
-  setDate
+  setDate,
+  type,
+  setType
 }: {
   week: Moment[];
   date: Moment;
   setDate: React.Dispatch<SetStateAction<Moment>>;
+  type: string;
+  setType: React.Dispatch<SetStateAction<string>>;
 }) {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
   const [shiftModal, setShiftModal] = useState(false);
 
   const open = Boolean(anchorEl);
@@ -41,6 +53,7 @@ export default function Toolbar({
       direction="row"
       alignItems="center"
       justifyContent="space-between"
+      gap={2}
       sx={{ paddingBottom: "30px" }}
     >
       <Stack direction="row" marginRight="auto" gap={1}>
@@ -94,10 +107,20 @@ export default function Toolbar({
         </Popover>
       </Stack>
       <Typography variant="h5" marginRight="auto">
-        {week[0].format("M") === week[1].format("M")
-          ? week[0].format("MMMM YYYY")
-          : `${week[0].format("MMMM")} - ${week[1].format("MMMM YYYY")}`}
+        {type === "weekly"
+          ? week[0].format("M") === week[1].format("M")
+            ? week[0].format("MMMM YYYY")
+            : `${week[0].format("MMMM")} - ${week[1].format("MMMM YYYY")}`
+          : date.format("DD MMMM, YYYY")}
       </Typography>
+      <Select
+        size="small"
+        value={type}
+        onChange={(e) => setType(e.target.value)}
+      >
+        <MenuItem value="weekly">Weekly</MenuItem>
+        <MenuItem value="daily">Daily</MenuItem>
+      </Select>
       <Button
         variant="contained"
         startIcon={<AddIcon />}

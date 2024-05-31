@@ -83,12 +83,12 @@ const salutation_list = [
 ];
 
 const gender_list = [
-  "Male",
-  "Female",
-  "Intersex",
-  "Non-binary",
-  "Unspecified",
-  "Prefer not to say"
+  { label: "Male", value: "Male" },
+  { label: "Female", value: "Female" },
+  { label: "Intersex", value: "Intersex" },
+  { label: "Non-binary", value: "NonBinary" },
+  { label: "Unspecified", value: "Unspecified" },
+  { label: "Prefer not to say", value: "PreferNotToSay" }
 ];
 
 const employment_list = ["Employee", "Contractor"];
@@ -134,7 +134,7 @@ export default function Index() {
       mobileNo: "",
       phoneNo: "",
       typeOfUser: "",
-      role: -1,
+      role: 7,
       gender: "",
       dateOfBirth: null,
       employmentType: "",
@@ -174,7 +174,7 @@ export default function Index() {
             className="header"
           >
             <Typography variant="h5">Staff detail</Typography>
-            <FormControlLabel
+            {/* <FormControlLabel
               control={<Checkbox size="small" />}
               label={
                 <Stack direction="row" alignItems="center" gap={1}>
@@ -187,7 +187,7 @@ export default function Index() {
                   </Tooltip>
                 </Stack>
               }
-            />
+            /> */}
           </Stack>
           <Divider />
           <FormProvider {...methods}>
@@ -227,6 +227,7 @@ export default function Index() {
                             onChange={onChange}
                             disabled={!salutation}
                             defaultValue={salutation ? salutation_list[0] : ""}
+                            size="small"
                           >
                             {salutation_list.map((_salutation) => (
                               <MenuItem value={_salutation} key={_salutation}>
@@ -304,7 +305,7 @@ export default function Index() {
                       }}
                     />
                   </Grid>
-                  <Grid item lg={6} md={12} sm={12} xs={12}>
+                  {/* <Grid item lg={6} md={12} sm={12} xs={12}>
                     <Controller
                       control={methods.control}
                       name="typeOfUser"
@@ -362,6 +363,7 @@ export default function Index() {
                                 value={value.toString()}
                                 onChange={onChange}
                                 defaultValue={""}
+                                size="small"
                               >
                                 {roles.map(
                                   (role: { id: number; name: string }) => (
@@ -389,7 +391,7 @@ export default function Index() {
                         />
                       </Stack>
                     )}
-                  </Grid>
+                  </Grid> */}
                 </Grid>
               </Grid>
               <Grid item lg={6} md={12} sm={12} xs={12}>
@@ -415,10 +417,14 @@ export default function Index() {
                             value={value}
                             onChange={onChange}
                             defaultValue={""}
+                            size="small"
                           >
                             {gender_list.map((_salutation) => (
-                              <MenuItem value={_salutation} key={_salutation}>
-                                {_salutation}
+                              <MenuItem
+                                value={_salutation.value}
+                                key={_salutation.value}
+                              >
+                                {_salutation.label}
                               </MenuItem>
                             ))}
                           </Select>
@@ -460,6 +466,11 @@ export default function Index() {
                             value={value}
                             onChange={onChange}
                             maxDate={dayjs().subtract(18, "years")}
+                            slotProps={{
+                              textField: {
+                                size: "small"
+                              }
+                            }}
                           />
                           {invalid && (
                             <FormHelperText sx={{ color: "#FF5630" }}>
@@ -495,6 +506,7 @@ export default function Index() {
                         value={value}
                         onChange={onChange}
                         defaultValue={""}
+                        size="small"
                       >
                         {employment_list.map((_salutation) => (
                           <MenuItem value={_salutation} key={_salutation}>

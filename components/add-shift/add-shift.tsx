@@ -291,8 +291,6 @@ export const daysOfWeek = [
   }
 ];
 
-const TimeAndLocation = () => {};
-
 interface AddShiftProps extends DrawerProps {
   isClient?: boolean;
   view?: boolean;

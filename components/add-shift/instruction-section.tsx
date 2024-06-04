@@ -33,7 +33,7 @@ export default function InstructionSection({
       </Stack>
       <Divider sx={{ marginBlock: "10px" }} />
       {view ? (
-        <Box dangerouslySetInnerHTML={{ __html: shift?.instruction }} />
+        <Box dangerouslySetInnerHTML={{ __html: shift?.instruction || "" }} />
       ) : (
         <Controller
           name="instruction"

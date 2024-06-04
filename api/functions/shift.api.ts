@@ -7,13 +7,38 @@ export const createShift = async (body: ShiftType) => {
   return res.data;
 };
 
-export const getAllShifts = async (token?: string) => {
+export const editShift = async (body: ShiftType) => {
+  const res = await axiosInstance.put(
+    endpoints.shift.edit_shift(body.id),
+    body
+  );
+  return res.data;
+};
+
+export const cancelShift = async (id: number) => {
+  const res = await axiosInstance.put(endpoints.shift.cancel_shift(id));
+  return res.data;
+};
+
+export const getAllShifts = async ({
+  token,
+  startDate = "",
+  endDate = ""
+}: {
+  token?: string;
+  startDate?: string;
+  endDate?: string;
+}) => {
   const res = await axiosInstance.get(endpoints.shift.get_all_shifts, {
     headers: token
       ? {
           Authorization: `Bearer ${token}`
         }
-      : {}
+      : {},
+    params: {
+      startDate,
+      endDate
+    }
   });
   return res.data;
 };

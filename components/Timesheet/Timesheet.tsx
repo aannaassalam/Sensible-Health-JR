@@ -4,6 +4,8 @@ import moment from "moment";
 import { useMemo, useState } from "react";
 import TimeSheetTable from "./TimeSheetTable";
 import Toolbar from "./Toolbar";
+import { useQuery } from "@tanstack/react-query";
+import { getAllShifts } from "@/api/functions/shift.api";
 
 export default function Timesheet({ shifts }: { shifts: Shift[] }) {
   const [date, setDate] = useState(moment());
@@ -12,6 +14,23 @@ export default function Timesheet({ shifts }: { shifts: Shift[] }) {
     [date]
   );
   const [type, setType] = useState("weekly");
+
+  const { data } = useQuery({
+    queryKey: ["all_shifts", week[0], week[1], type, date],
+    queryFn: () =>
+      getAllShifts(
+        type === "weekly"
+          ? {
+              startDate: week[0].format("X"),
+              endDate: week[1].format("X")
+            }
+          : {
+              startDate: date.startOf("day").format("X"),
+              endDate: date.endOf("day").format("X")
+            }
+      ),
+    initialData: shifts
+  });
 
   // const shiftsByCarer = useMemo(() => {
   //   const _shifts: {
@@ -35,7 +54,11 @@ export default function Timesheet({ shifts }: { shifts: Shift[] }) {
         type={type}
         setType={setType}
       />
-      <TimeSheetTable day={week[0]} type={type} shifts={shifts} />
+      <TimeSheetTable
+        day={type === "daily" ? date : week[0]}
+        type={type}
+        shifts={data}
+      />
     </Box>
   );
 }

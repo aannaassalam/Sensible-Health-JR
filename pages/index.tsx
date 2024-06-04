@@ -16,7 +16,8 @@ import {
   DehydratedState,
   HydrationBoundary,
   QueryClient,
-  dehydrate
+  dehydrate,
+  useQuery
 } from "@tanstack/react-query";
 import { getAllClients } from "@/api/functions/client.api";
 import { getStaffList } from "@/api/functions/staff.api";
@@ -27,7 +28,9 @@ export const getServerSideProps = async ({
   const queryClient = new QueryClient();
 
   const cookie = req.cookies;
-  const data = await getAllShifts(cookie?.token);
+  const startDate = moment().startOf("isoWeek").format("X");
+  const endDate = moment().endOf("isoWeek").format("X");
+  const data = await getAllShifts({ token: cookie?.token, startDate, endDate });
 
   await queryClient.prefetchQuery({
     queryKey: ["user_list"],

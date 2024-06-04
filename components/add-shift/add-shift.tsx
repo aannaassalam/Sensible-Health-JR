@@ -17,7 +17,7 @@ import {
   TextField,
   Typography
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { SetStateAction, useEffect, useState } from "react";
 import Iconify from "../Iconify/Iconify";
 import { Box, Stack } from "@mui/system";
 import StyledPaper from "@/ui/Paper/Paper";
@@ -50,13 +50,23 @@ import dayjs from "dayjs";
 import { useRouter } from "next/router";
 import { useParams } from "next/navigation";
 import RichTextEditor from "../RichTextEditor/RichTextEditor";
-import { ShiftBody, Task } from "@/interface/shift.api";
-import { createShift } from "@/api/functions/shift.api";
+import { Shift, ShiftBody, Task } from "@/interface/shift.api";
+import { cancelShift, createShift, editShift } from "@/api/functions/shift.api";
 import { LoadingButton } from "@mui/lab";
 import { useCurrentEditor } from "@tiptap/react";
 import { Moment } from "moment";
+import ClientSection from "./client-section";
+import StaffSection from "./staff-section";
+import TaskSection from "./task-section";
+import InstructionSection from "./instruction-section";
+import TimeLocation from "./time-location";
+import { queryClient } from "pages/_app";
 
-const StyledDrawer = styled(Drawer)`
+interface DrawerInterface extends DrawerProps {
+  open?: boolean;
+}
+
+export const StyledDrawer = styled(Drawer)<DrawerInterface>`
   > .drawer {
     width: 700px;
     background-color: #f0f0f0;
@@ -77,14 +87,14 @@ const StyledDrawer = styled(Drawer)`
   }
 `;
 
-const StyledInputRoot = styled(Box)`
+export const StyledInputRoot = styled(Box)`
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
   align-items: center;
 `;
 
-const StyledInput = styled("input")`
+export const StyledInput = styled("input")`
   height: 40px;
   width: 100%;
   padding: 8.5px 14px;
@@ -98,7 +108,7 @@ const StyledInput = styled("input")`
   font-family: "Inter", sans-serif;
 `;
 
-const StyledButton = styled("button")`
+export const StyledButton = styled("button")`
   padding: 8.7px;
   background-color: #f0f0f0;
   border-top-left-radius: 4px;
@@ -118,7 +128,7 @@ const StyledButton = styled("button")`
   }
 `;
 
-const CustomStepperInput = (
+export const CustomStepperInput = (
   props: NumberInputProps & {
     onChange: (value: number | null) => void;
   }
@@ -201,299 +211,7 @@ const AddressInput = ({ ...props }: CustomAutoCompleteProps) => {
   );
 };
 
-const ClientSection = () => {
-  const { control } = useFormContext();
-
-  const { data, isLoading } = useQuery({
-    queryKey: ["client_list"],
-    queryFn: getAllClients
-  });
-
-  return (
-    <StyledPaper>
-      <Stack direction="row" alignItems="center" gap={2}>
-        <Image
-          src={assets.client_img}
-          alt="Client"
-          width={512}
-          height={512}
-          className="icon"
-        />
-        <Typography variant="h6">Paritcipant</Typography>
-      </Stack>
-      <Divider sx={{ marginBlock: "10px" }} />
-      <Grid container alignItems="center">
-        <Grid item lg={4} md={6} sm={12} xs={12}>
-          <Typography>Choose Participant</Typography>
-        </Grid>
-        <Grid item lg={8} md={6} sm={12} xs={12}>
-          <Controller
-            control={control}
-            name="clientId"
-            render={({ field, fieldState: { error, invalid } }) => (
-              <Box>
-                <Select
-                  fullWidth
-                  size="small"
-                  {...field}
-                  displayEmpty
-                  renderValue={
-                    field.value !== "" ? undefined : () => "Select Participant"
-                  }
-                >
-                  {isLoading ? (
-                    <MenuItem disabled>Loading...</MenuItem>
-                  ) : (
-                    data?.map((_data: IClient) => (
-                      <MenuItem value={_data.id} key={_data.id}>
-                        {_data.firstName} {_data.lastName}
-                      </MenuItem>
-                    ))
-                  )}
-                </Select>
-                {invalid && <FormHelperText>{error?.message}</FormHelperText>}
-              </Box>
-            )}
-          />
-        </Grid>
-      </Grid>
-    </StyledPaper>
-  );
-};
-
-const StaffSection = () => {
-  const { control } = useFormContext();
-
-  const { data, isLoading } = useQuery({
-    queryKey: ["user_list"],
-    queryFn: getStaffList
-  });
-
-  return (
-    <StyledPaper>
-      <Stack direction="row" alignItems="center" gap={2}>
-        <Image
-          src={assets.nurse}
-          alt="Carer"
-          width={512}
-          height={512}
-          className="icon"
-        />
-        <Typography variant="h6">Carer</Typography>
-      </Stack>
-      <Divider sx={{ marginBlock: "10px" }} />
-      <Grid container alignItems="center">
-        <Grid item lg={4} md={6} sm={12} xs={12}>
-          <Typography>Choose Carer</Typography>
-        </Grid>
-        <Grid item lg={8} md={6} sm={12} xs={12}>
-          <Controller
-            control={control}
-            name="employeeIds"
-            render={({ field, fieldState: { error, invalid } }) => {
-              return (
-                <Box>
-                  <Select
-                    fullWidth
-                    size="small"
-                    {...field}
-                    onChange={(e) => {
-                      const _value = e.target.value;
-                      field.onChange(
-                        typeof _value === "string" ? _value.split(",") : _value
-                      );
-                    }}
-                    displayEmpty
-                    renderValue={
-                      field.value?.length !== 0
-                        ? undefined
-                        : () => "Select Carer"
-                    }
-                    multiple
-                  >
-                    {isLoading ? (
-                      <MenuItem disabled>Loading...</MenuItem>
-                    ) : (
-                      data?.map((_data: IStaff) => (
-                        <MenuItem value={_data.id} key={_data.id}>
-                          {_data.name}
-                        </MenuItem>
-                      ))
-                    )}
-                  </Select>
-                  {invalid && <FormHelperText>{error?.message}</FormHelperText>}
-                </Box>
-              );
-            }}
-          />
-        </Grid>
-      </Grid>
-    </StyledPaper>
-  );
-};
-
-const TaskSection = () => {
-  const { control, watch } = useFormContext();
-
-  const { append, remove } = useFieldArray({
-    name: "tasks",
-    control: control
-  });
-
-  const shortSchema = yup.object().shape({
-    task: yup.string().required("Please enter a task"),
-    isTaskMandatory: yup.boolean()
-  });
-
-  const {
-    control: shortControl,
-    handleSubmit,
-    reset
-  } = useForm({
-    resolver: yupResolver(shortSchema),
-    defaultValues: {
-      task: "",
-      isTaskMandatory: false
-    }
-  });
-
-  const onSubmit = (data: Task) => {
-    append(data);
-    reset();
-  };
-
-  return (
-    <StyledPaper>
-      <Stack direction="row" alignItems="center" gap={2}>
-        <Image
-          src={assets.task}
-          alt="tasks"
-          width={512}
-          height={512}
-          className="icon"
-        />
-        <Typography variant="h6">Tasks</Typography>
-      </Stack>
-      <Divider sx={{ marginBlock: "10px" }} />
-      <Box>
-        <Stack
-          direction="row"
-          alignItems="flex-start"
-          gap={2}
-          justifyContent="space-between"
-          marginBottom={2}
-        >
-          <Controller
-            name="task"
-            control={shortControl}
-            render={({ field, fieldState: { invalid, error } }) => (
-              <TextField
-                size="small"
-                fullWidth
-                placeholder="Task Description"
-                {...field}
-                error={invalid}
-                helperText={error?.message}
-              />
-            )}
-          />
-          <Controller
-            name="isTaskMandatory"
-            control={shortControl}
-            render={({ field }) => (
-              <FormControlLabel
-                control={<Checkbox size="small" />}
-                label="Mandatory"
-                {...field}
-                checked={field.value}
-              />
-            )}
-          />
-          <Button
-            startIcon={<AddIcon fontSize="small" />}
-            variant="contained"
-            size="small"
-            sx={{ minWidth: "auto", marginTop: "5px" }}
-            onClick={handleSubmit(onSubmit)}
-          >
-            Task
-          </Button>
-        </Stack>
-        {watch("tasks").map((_task: Task, index: number) => (
-          <Stack
-            key={index}
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-            gap={2}
-            padding={1}
-            paddingRight={5}
-            marginBottom={2}
-            position="relative"
-            sx={{ backgroundColor: "#f5f5f5", borderRadius: 2 }}
-          >
-            <Typography>{_task.task}</Typography>
-            <Typography>
-              <strong>Mandatory: </strong>
-              {_task.isTaskMandatory ? "Yes" : "No"}
-            </Typography>
-            <button
-              style={{
-                borderRadius: "50%",
-                backgroundColor: "#fff",
-                color: "#fff",
-                border: "2px solid #fff",
-                position: "absolute",
-                top: -10,
-                right: -10,
-                boxShadow: "0 1px 2px 0 rgba(0,0,0,.3)",
-                cursor: "pointer"
-              }}
-              onClick={() => remove(index)}
-            >
-              <Image
-                src={assets.delete}
-                alt="delete"
-                width={512}
-                height={512}
-                style={{ width: 25, height: 25 }}
-              />
-            </button>
-          </Stack>
-        ))}
-      </Box>
-    </StyledPaper>
-  );
-};
-
-const InstructionSection = () => {
-  const { control } = useFormContext();
-
-  return (
-    <StyledPaper>
-      <Stack direction="row" alignItems="center" gap={2}>
-        <Image
-          src={assets.notes}
-          alt="notes"
-          width={512}
-          height={512}
-          className="icon"
-        />
-        <Typography variant="h6">Instructions</Typography>
-      </Stack>
-      <Divider sx={{ marginBlock: "10px" }} />
-      <Controller
-        name="instruction"
-        control={control}
-        render={({ field }) => (
-          <RichTextEditor value={field.value} onChange={field.onChange} />
-        )}
-      />
-    </StyledPaper>
-  );
-};
-
-const repeatPeriods = {
+export const repeatPeriods = {
   Daily: {
     repeats: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
     name: "Day",
@@ -511,7 +229,7 @@ const repeatPeriods = {
   }
 };
 
-const shiftTypeArray = [
+export const shiftTypeArray = [
   {
     id: "PersonalCare",
     name: "Personal Care"
@@ -542,7 +260,7 @@ const shiftTypeArray = [
   }
 ];
 
-const daysOfWeek = [
+export const daysOfWeek = [
   {
     id: "SUNDAY",
     name: "Sun"
@@ -573,443 +291,15 @@ const daysOfWeek = [
   }
 ];
 
-const TimeAndLocation = () => {
-  const { control, watch, setValue } = useFormContext();
-
-  return (
-    <StyledPaper>
-      <Stack direction="row" alignItems="center" gap={2}>
-        <Image
-          src={assets.calendar}
-          alt="Calendar"
-          width={512}
-          height={512}
-          style={{ width: 25, height: 25 }}
-          className="icon"
-        />
-        <Typography variant="h6">Time & Location</Typography>
-      </Stack>
-      <Divider sx={{ marginBlock: "10px" }} />
-      <Grid container rowSpacing={2} columnSpacing={1} alignItems="center">
-        <Grid item lg={4} md={6} sm={12} xs={12}>
-          <Typography>Shift Type</Typography>
-        </Grid>
-        <Grid item lg={8} md={6} sm={12} xs={12}>
-          <Controller
-            name="shiftType"
-            control={control}
-            render={({ field }) => (
-              <Select fullWidth size="small" {...field}>
-                {shiftTypeArray.map((_shift) => (
-                  <MenuItem value={_shift.id} key={_shift.id}>
-                    {_shift.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            )}
-          />
-        </Grid>
-        <Grid item lg={4} md={6} sm={12} xs={12}>
-          Date
-        </Grid>
-        <Grid item lg={8} md={6} sm={12} xs={12}>
-          <Controller
-            name="startDate"
-            control={control}
-            render={({ field }) => (
-              <DatePicker
-                slotProps={{
-                  textField: {
-                    size: "small",
-                    fullWidth: true
-                  }
-                }}
-                minDate={dayjs()}
-                format="DD/MM/YYYY"
-                {...field}
-                onChange={(e) => {
-                  field.onChange(e);
-                  setValue("occursOnDays", [e.format("dddd").toUpperCase()]);
-                }}
-              />
-            )}
-          />
-        </Grid>
-        <Grid
-          item
-          lg={12}
-          md={12}
-          sm={12}
-          xs={12}
-          display="flex"
-          justifyContent="flex-end"
-        >
-          <Controller
-            control={control}
-            name="isShiftEndsNextDay"
-            render={({ field }) => (
-              <FormControlLabel
-                control={<Checkbox size="small" />}
-                label="Shift finishes the next day"
-                checked={field.value}
-                {...field}
-              />
-            )}
-          />
-        </Grid>
-        <Grid item lg={4} md={6} sm={12} xs={12}>
-          Time
-        </Grid>
-        <Grid item lg={8} md={6} sm={12} xs={12}>
-          <Stack direction="row" alignItems="center" gap={1}>
-            <Controller
-              name="startTime"
-              control={control}
-              render={({ field }) => (
-                <TimePicker
-                  slotProps={{
-                    textField: {
-                      size: "small"
-                    }
-                  }}
-                  views={["hours", "minutes"]}
-                  minutesStep={15}
-                  skipDisabled
-                  {...field}
-                />
-              )}
-            />
-            -
-            <Controller
-              name="endTime"
-              control={control}
-              render={({ field }) => (
-                <TimePicker
-                  slotProps={{
-                    textField: {
-                      size: "small"
-                    }
-                  }}
-                  views={["hours", "minutes"]}
-                  minutesStep={15}
-                  skipDisabled
-                  {...field}
-                />
-              )}
-            />
-          </Stack>
-          {watch("isShiftEndsNextDay") && (
-            <Typography variant="body2" marginTop={2}>
-              This shift is{" "}
-              {dayjs(watch("endTime").add(1, "day")).diff(
-                watch("startTime"),
-                "hours"
-              )}{" "}
-              hours, finishing next day,{" "}
-              {watch("startDate").add(1, "day").format("DD/MM/YYYY")}
-            </Typography>
-          )}
-        </Grid>
-        <Grid item lg={4} md={6} sm={12} xs={12}>
-          Break time in minutes
-        </Grid>
-        <Grid item lg={8} md={6} sm={12} xs={12}>
-          <Controller
-            name="breakTimeInMins"
-            control={control}
-            render={({ field }) => <CustomStepperInput {...field} />}
-          />
-        </Grid>
-        <Grid
-          item
-          lg={12}
-          md={12}
-          sm={12}
-          xs={12}
-          display="flex"
-          justifyContent="flex-end"
-        >
-          <Controller
-            name="isRepeated"
-            control={control}
-            render={({ field }) => (
-              <FormControlLabel
-                control={<Checkbox size="small" />}
-                label="Repeat"
-                checked={field.value}
-                {...field}
-              />
-            )}
-          />
-        </Grid>
-        {watch("isRepeated") && (
-          <>
-            <Grid item lg={4} md={6} sm={12} xs={12}>
-              <Typography>Recurrance</Typography>
-            </Grid>
-            <Grid item lg={8} md={6} sm={12} xs={12}>
-              <Controller
-                control={control}
-                name="recurrance"
-                render={({ field }) => (
-                  <Select
-                    fullWidth
-                    size="small"
-                    defaultValue="Weekly"
-                    {...field}
-                  >
-                    <MenuItem value="Daily">Daily</MenuItem>
-                    <MenuItem value="Weekly">Weekly</MenuItem>
-                    <MenuItem value="Monthly">Monthly</MenuItem>
-                  </Select>
-                )}
-              />
-            </Grid>
-            <Grid item lg={4} md={6} sm={12} xs={12}>
-              <Typography>Repeat Every</Typography>
-            </Grid>
-            <Grid
-              item
-              lg={8}
-              md={6}
-              sm={12}
-              xs={12}
-              display="flex"
-              alignItems="center"
-            >
-              <Controller
-                control={control}
-                name={
-                  watch("recurrance") === "Daily"
-                    ? "repeatNoOfDays"
-                    : watch("recurrance") === "Weekly"
-                    ? "repeatNoOfWeeks"
-                    : "repeatNoOfMonths"
-                }
-                render={({ field }) => (
-                  <Select
-                    fullWidth
-                    size="small"
-                    defaultValue="Weekly"
-                    {...field}
-                  >
-                    {repeatPeriods[
-                      watch("recurrance") as keyof typeof repeatPeriods
-                    ].repeats.map((_value: number) => (
-                      <MenuItem value={_value} key={_value}>
-                        {_value}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                )}
-              />
-              <Typography paddingLeft={2}>
-                {
-                  repeatPeriods[
-                    watch("recurrance") as keyof typeof repeatPeriods
-                  ].name
-                }
-              </Typography>
-            </Grid>
-            {repeatPeriods[watch("recurrance") as keyof typeof repeatPeriods]
-              .display !== "" && (
-              <>
-                <Grid item lg={4} md={6} sm={12} xs={12}>
-                  <Typography>Occurs on</Typography>
-                </Grid>
-                <Grid
-                  item
-                  lg={8}
-                  md={6}
-                  sm={12}
-                  xs={12}
-                  display="flex"
-                  alignItems="center"
-                >
-                  {repeatPeriods[
-                    watch("recurrance") as keyof typeof repeatPeriods
-                  ].display === "days" ? (
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      flexWrap="wrap"
-                      gap={1}
-                    >
-                      {daysOfWeek.map((_day) => {
-                        return (
-                          <FormControlLabel
-                            key={_day.id}
-                            control={<Checkbox />}
-                            checked={watch("occursOnDays").includes(_day.id)}
-                            onChange={() =>
-                              setValue(
-                                "occursOnDays",
-                                watch("occursOnDays").includes(_day.id)
-                                  ? watch("occursOnDays").filter(
-                                      (_item: string) => _item !== _day.id
-                                    )
-                                  : [...watch("occursOnDays"), _day.id]
-                              )
-                            }
-                            label={_day.name}
-                          />
-                        );
-                      })}
-                    </Stack>
-                  ) : (
-                    <>
-                      <Typography paddingRight={1}>Day</Typography>
-                      <Controller
-                        name="occursOnDayOfMonth"
-                        control={control}
-                        render={({ field }) => (
-                          <Select fullWidth size="small" {...field}>
-                            <MenuItem value={1}>1</MenuItem>
-                            <MenuItem value={2}>2</MenuItem>
-                            <MenuItem value={3}>3</MenuItem>
-                            <MenuItem value={4}>4</MenuItem>
-                            <MenuItem value={5}>5</MenuItem>
-                            <MenuItem value={6}>6</MenuItem>
-                            <MenuItem value={7}>7</MenuItem>
-                            <MenuItem value={8}>8</MenuItem>
-                            <MenuItem value={9}>9</MenuItem>
-                            <MenuItem value={10}>10</MenuItem>
-                            <MenuItem value={11}>11</MenuItem>
-                            <MenuItem value={12}>12</MenuItem>
-                            <MenuItem value={13}>13</MenuItem>
-                            <MenuItem value={14}>14</MenuItem>
-                            <MenuItem value={15}>15</MenuItem>
-                            <MenuItem value={16}>16</MenuItem>
-                            <MenuItem value={17}>17</MenuItem>
-                            <MenuItem value={18}>18</MenuItem>
-                            <MenuItem value={19}>19</MenuItem>
-                            <MenuItem value={20}>20</MenuItem>
-                            <MenuItem value={21}>21</MenuItem>
-                            <MenuItem value={22}>22</MenuItem>
-                            <MenuItem value={23}>23</MenuItem>
-                            <MenuItem value={24}>24</MenuItem>
-                            <MenuItem value={25}>25</MenuItem>
-                            <MenuItem value={26}>26</MenuItem>
-                            <MenuItem value={27}>27</MenuItem>
-                            <MenuItem value={28}>28</MenuItem>
-                            <MenuItem value={29}>29</MenuItem>
-                            <MenuItem value={30}>30</MenuItem>
-                            <MenuItem value={31}>31</MenuItem>
-                          </Select>
-                        )}
-                      />
-                      <Typography paddingLeft={2} whiteSpace="nowrap">
-                        of the Month
-                      </Typography>
-                    </>
-                  )}
-                </Grid>
-              </>
-            )}
-            <Grid item lg={4} md={6} sm={12} xs={12}>
-              End Date
-            </Grid>
-            <Grid item lg={8} md={6} sm={12} xs={12}>
-              <Controller
-                name="endDate"
-                control={control}
-                render={({ field }) => (
-                  <DatePicker
-                    slotProps={{
-                      textField: {
-                        size: "small",
-                        fullWidth: true
-                      }
-                    }}
-                    minDate={dayjs(watch("startDate"))}
-                    format="DD/MM/YYYY"
-                    {...field}
-                  />
-                )}
-              />
-            </Grid>
-          </>
-        )}
-        <Grid item lg={4} md={6} sm={12} xs={12}>
-          Address
-        </Grid>
-        <Grid item lg={8} md={6} sm={12} xs={12}>
-          <CustomInput name="address" placeholder="Enter Address here" />
-        </Grid>
-        <Grid item lg={4} md={6} sm={12} xs={12}>
-          Unit/Apartment Number
-        </Grid>
-        <Grid item lg={8} md={6} sm={12} xs={12}>
-          <CustomInput
-            name="apartmentNumber"
-            placeholder="Enter Unit/Apartment Number"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Iconify icon="bxs:building" color="#c0c4cc" />
-                </InputAdornment>
-              )
-            }}
-          />
-        </Grid>
-        <Grid
-          item
-          lg={12}
-          md={12}
-          sm={12}
-          xs={12}
-          display="flex"
-          justifyContent="flex-end"
-        >
-          <Controller
-            name="isDropOffAddress"
-            control={control}
-            render={({ field }) => (
-              <FormControlLabel
-                control={<Checkbox size="small" />}
-                checked={field.value}
-                {...field}
-                label="Drop off address"
-              />
-            )}
-          />
-        </Grid>
-        {watch("isDropOffAddress") && (
-          <>
-            <Grid item lg={4} md={6} sm={12} xs={12}>
-              Drop off address
-            </Grid>
-            <Grid item lg={8} md={6} sm={12} xs={12}>
-              <CustomInput
-                name="dropOffAddress"
-                placeholder="Enter Address here"
-              />
-            </Grid>
-            <Grid item lg={4} md={6} sm={12} xs={12}>
-              Drop off Unit/Aparment number
-            </Grid>
-            <Grid item lg={8} md={6} sm={12} xs={12}>
-              <CustomInput
-                name="dropOffApartmentNumber"
-                placeholder="Enter Unit/Apartment Number"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Iconify icon="bxs:building" color="#c0c4cc" />
-                    </InputAdornment>
-                  )
-                }}
-              />
-            </Grid>
-          </>
-        )}
-      </Grid>
-    </StyledPaper>
-  );
-};
+const TimeAndLocation = () => {};
 
 interface AddShiftProps extends DrawerProps {
   isClient?: boolean;
+  view?: boolean;
+  edit?: boolean;
+  setViewModal?: React.Dispatch<SetStateAction<boolean>>;
+  setEditModal?: React.Dispatch<SetStateAction<boolean>>;
+  shift?: Shift;
   onClose: () => void;
   selectedDate?: Moment | null;
 }
@@ -1019,7 +309,7 @@ const schema = yup.object().shape({
   isShiftEndsNextDay: yup.boolean(),
   startTime: yup.date().required("Please select a start time"),
   endTime: yup.date().required("Please select an end time"),
-  breakTimeInMins: yup.number().nullable(),
+  breakTimeInMins: yup.number(),
   isRepeated: yup.boolean(),
   address: yup.string(),
   apartmentNumber: yup.string(),
@@ -1045,7 +335,14 @@ const schema = yup.object().shape({
   employeeIds: yup.array().of(yup.number()).required("Please Select a Carer")
 });
 
-export default function AddShift({ ...props }: AddShiftProps) {
+export default function AddShift({
+  view,
+  edit,
+  setViewModal,
+  setEditModal,
+  shift,
+  ...props
+}: AddShiftProps) {
   const router = useRouter();
   const { id } = useParams();
   const { staff, client } = router.query;
@@ -1057,7 +354,7 @@ export default function AddShift({ ...props }: AddShiftProps) {
       isShiftEndsNextDay: false,
       startTime: dayjs().set("hour", 10).set("minute", 0),
       endTime: dayjs().set("hour", 11).set("minute", 0),
-      breakTimeInMins: null,
+      breakTimeInMins: 0,
       isRepeated: false,
       address: "",
       apartmentNumber: "",
@@ -1072,7 +369,12 @@ export default function AddShift({ ...props }: AddShiftProps) {
       endDate: dayjs().add(1, "day"),
       dropOffAddress: "",
       dropOffApartmentNumber: "",
-      tasks: [],
+      tasks: [
+        {
+          task: "Sample task",
+          isTaskMandatory: false
+        }
+      ],
       instruction: "",
       clientId: router.pathname.includes("participants")
         ? (id as string)
@@ -1099,9 +401,62 @@ export default function AddShift({ ...props }: AddShiftProps) {
     }
   }, [staff, client]);
 
+  useEffect(() => {
+    if (edit) {
+      methods.reset({
+        startDate: dayjs(shift?.startDate),
+        isShiftEndsNextDay: shift?.isShiftEndsNextDay,
+        startTime: dayjs()
+          .set("hour", shift?.startTime[0] || 0)
+          .set("minute", shift?.startTime[1] || 0),
+        endTime: dayjs()
+          .set("hour", shift?.endTime[0] || 0)
+          .set("minute", shift?.endTime[1] || 0),
+        breakTimeInMins: shift?.breakTimeInMins,
+        isRepeated: shift?.isRepeated,
+        address: shift?.address,
+        apartmentNumber: shift?.apartmentNumber,
+        isDropOffAddress: shift?.isDropOffAddress,
+        shiftType: shift?.shiftType,
+        recurrance: shift?.recurrance,
+        repeatNoOfDays: shift?.repeatNoOfDays.toString(),
+        repeatNoOfWeeks: shift?.repeatNoOfWeeks.toString(),
+        occursOnDays: [],
+        repeatNoOfMonths: shift?.repeatNoOfMonths.toString(),
+        occursOnDayOfMonth: shift?.occursOnDayOfMonth.toString(),
+        endDate: dayjs(shift?.endDate),
+        dropOffAddress: shift?.dropOffAddress,
+        dropOffApartmentNumber: shift?.dropOffApartmentNumber,
+        tasks: shift?.tasks,
+        instruction: shift?.instruction,
+        clientId: shift?.client.id.toString(),
+        employeeIds: [shift?.employee.id]
+      });
+    }
+  }, [edit]);
+
   const { mutate, isPending } = useMutation({
     mutationFn: createShift,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["all_shifts"] });
+      methods.reset();
+      props.onClose();
+    }
+  });
+
+  const { mutate: editMutate, isPending: isEditPending } = useMutation({
+    mutationFn: editShift,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["all_shifts"] });
+      methods.reset();
+      props.onClose();
+    }
+  });
+
+  const { mutate: cancelMutate, isPending: isShiftCancelling } = useMutation({
+    mutationFn: cancelShift,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["all_shifts"] });
       methods.reset();
       props.onClose();
     }
@@ -1118,16 +473,19 @@ export default function AddShift({ ...props }: AddShiftProps) {
       breakTimeInMins: data.breakTimeInMins || 0,
       startTime: dayjs(data.startTime).format("HH:mm"),
       endTime: dayjs(data.endTime).format("HH:mm"),
-      clientId: parseInt(data.clientId as string)
+      clientId: parseInt(data.clientId as string),
+      id: shift?.id
       // instruction: JSON.stringify(editor?.getJSON(), null, 2)
     };
-    mutate(newData);
+    if (edit) editMutate(newData);
+    else mutate(newData);
   };
 
   return (
     <StyledDrawer
       anchor="right"
       {...props}
+      open={props.open || view || edit}
       PaperProps={{
         className: "drawer"
       }}
@@ -1140,22 +498,66 @@ export default function AddShift({ ...props }: AddShiftProps) {
         gap={2}
         className="header"
       >
-        <Button
-          variant="outlined"
-          startIcon={<Iconify icon="mingcute:close-fill" />}
-          onClick={props.onClose}
-          disabled={isPending}
-        >
-          Close
-        </Button>
-        <LoadingButton
-          variant="contained"
-          startIcon={<Iconify icon="ic:baseline-save" />}
-          onClick={methods.handleSubmit(onSubmit)}
-          loading={isPending}
-        >
-          Save
-        </LoadingButton>
+        {!edit ? (
+          <Button
+            variant="outlined"
+            startIcon={<Iconify icon="mingcute:close-fill" />}
+            onClick={props.onClose}
+            disabled={isPending}
+          >
+            Close
+          </Button>
+        ) : (
+          <Button
+            variant="outlined"
+            startIcon={<Iconify icon="ion:chevron-back-outline" />}
+            onClick={() => {
+              if (setEditModal && setViewModal) {
+                setEditModal(false);
+                setViewModal(true);
+              }
+            }}
+            disabled={isPending}
+          >
+            Back
+          </Button>
+        )}
+        {!view ? (
+          <LoadingButton
+            variant="contained"
+            startIcon={<Iconify icon="ic:baseline-save" />}
+            onClick={methods.handleSubmit(onSubmit)}
+            loading={isPending || isEditPending}
+          >
+            Save
+          </LoadingButton>
+        ) : (
+          <Stack direction="row" alignItems="center" gap={1}>
+            <LoadingButton
+              variant="contained"
+              color="error"
+              startIcon={
+                <Iconify icon="iconamoon:trash-duotone" fontSize={14} />
+              }
+              loading={isShiftCancelling}
+              onClick={() => cancelMutate(shift?.id as number)}
+            >
+              Cancel Shift
+            </LoadingButton>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="basil:edit-outline" fontSize={14} />}
+              onClick={() => {
+                if (setEditModal && setViewModal) {
+                  setEditModal(true);
+                  setViewModal(false);
+                }
+              }}
+            >
+              Edit
+            </Button>
+          </Stack>
+        )}
       </Stack>
       <Divider />
       <Stack
@@ -1170,11 +572,11 @@ export default function AddShift({ ...props }: AddShiftProps) {
         }}
       >
         <FormProvider {...methods}>
-          <ClientSection />
-          <StaffSection />
-          <TaskSection />
-          <InstructionSection />
-          <TimeAndLocation />
+          <ClientSection view={view} edit={edit} shift={shift} />
+          <StaffSection view={view} edit={edit} shift={shift} />
+          {!view && <TaskSection edit={edit} />}
+          <InstructionSection view={view} edit={edit} shift={shift} />
+          <TimeLocation view={view} edit={edit} shift={shift} />
         </FormProvider>
       </Stack>
     </StyledDrawer>

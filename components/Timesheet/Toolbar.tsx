@@ -61,13 +61,25 @@ export default function Toolbar({
           Today
         </StyledButton>
         <StyledButton
-          onClick={() => setDate((prev) => moment(prev.subtract(1, "week")))}
+          onClick={() =>
+            setDate((prev) =>
+              type === "daily"
+                ? moment(prev.subtract(1, "day"))
+                : moment(prev.subtract(1, "week"))
+            )
+          }
           variant="contained"
         >
           <ArrowBackIosNewIcon />
         </StyledButton>
         <StyledButton
-          onClick={() => setDate((prev) => moment(prev.add(1, "week")))}
+          onClick={() =>
+            setDate((prev) =>
+              type === "daily"
+                ? moment(prev.add(1, "day"))
+                : moment(prev.add(1, "week"))
+            )
+          }
           variant="contained"
         >
           <ArrowForwardIosIcon />
@@ -117,6 +129,7 @@ export default function Toolbar({
         size="small"
         value={type}
         onChange={(e) => setType(e.target.value)}
+        sx={{ backgroundColor: "#fff" }}
       >
         <MenuItem value="weekly">Weekly</MenuItem>
         <MenuItem value="daily">Daily</MenuItem>

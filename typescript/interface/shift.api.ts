@@ -97,4 +97,5 @@ export interface Shift {
   employeeEndTime: number[];
   clientStartTime: number[];
   clientEndTime: number[];
+  occurrenceCounter?: boolean;
 }

@@ -37,7 +37,13 @@ const StyledTable = styled(Table)`
   }
   tbody {
     td {
+      &.named-cell {
+        min-width: 200px;
+        max-width: 200px;
+      }
       &:not(.named-cell) {
+        min-width: 160px;
+        max-width: 160px;
         padding: 0;
         padding-block: 5px;
       }
@@ -142,7 +148,7 @@ export default function TimeSheetTable({
 
   const times = [
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-    21, 22, 23, 24
+    21, 22, 23
   ];
 
   const dates = useMemo(
@@ -196,74 +202,162 @@ export default function TimeSheetTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {staffs?.map((_carer: IStaff) => (
-              <TableRow key={_carer.id}>
-                <TableCell width={100} className="named-cell">
-                  {_carer.name}
-                </TableCell>
-                {type === "daily"
-                  ? times.map((_time) => <TableCell key={_time}></TableCell>)
-                  : dates.map((_date, index) => {
-                      const carerShiftsByDate = shifts.filter(
-                        (_shift) =>
-                          moment(_shift.startDate).format("DD/MM/YYYY") ===
-                            _date.format("DD/MM/YYYY") &&
-                          _carer.id === _shift.employee.id
-                      );
-                      const prevCarerShiftsByDate = shifts.filter(
-                        (_shift) =>
-                          moment(_shift.startDate).format("DD/MM/YYYY") ===
-                            dates[index !== 0 ? index - 1 : 0].format(
-                              "DD/MM/YYYY"
-                            ) && _carer.id === _shift.employee.id
-                      );
+            {staffs?.map((_carer: IStaff) => {
+              let hours = 0;
+              shifts.forEach((_shift) => {
+                if (type === "daily") {
+                  if (
+                    day.format("DD/MM/YYYY") ===
+                      moment(_shift.startDate).format("DD/MM/YYYY") &&
+                    _shift.employee.id === _carer.id
+                  ) {
+                    hours += _shift.shiftHours;
+                  }
+                } else {
+                  const startOfWeek = parseInt(day.format("x"));
+                  const endOfWeek = parseInt(
+                    moment(day).endOf("isoWeek").format("x")
+                  );
+                  const currentDay = _shift.startDate;
 
-                      return prevCarerShiftsByDate[0]?.isShiftEndsNextDay &&
-                        prevCarerShiftsByDate[0]?.id !==
-                          carerShiftsByDate[0]?.id ? null : (
-                        <TableCell
-                          width={100}
-                          key={_date.unix()}
-                          height={120}
-                          sx={{ position: "relative", minHeight: "100px" }}
-                          colSpan={
-                            carerShiftsByDate[0]?.isShiftEndsNextDay &&
-                            index !== dates.length - 1
-                              ? 2
-                              : 1
-                          }
-                        >
-                          {carerShiftsByDate.length > 0 ? (
-                            <ShiftBox shifts={carerShiftsByDate} />
-                          ) : (
-                            <Box
-                              className="add-shift-box"
-                              onClick={() => {
-                                router.replace(
-                                  {
-                                    query: {
-                                      staff: _carer.id
-                                    }
-                                  },
-                                  undefined,
-                                  { shallow: true }
-                                );
-                                setSelectedDate(_date);
-                              }}
-                            >
-                              <Typography
-                                variant="body1"
-                                className="add-shift-text"
+                  if (
+                    startOfWeek <= currentDay &&
+                    currentDay <= endOfWeek &&
+                    _shift.employee.id === _carer.id
+                  ) {
+                    hours += _shift.shiftHours;
+                  }
+                }
+              });
+              return (
+                <TableRow key={_carer.id}>
+                  <TableCell className="named-cell">
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontWeight: "500",
+                        fontSize: "15px",
+                        marginBottom: "5px"
+                      }}
+                    >
+                      {_carer.name}
+                    </Typography>
+                    {hours} Hours
+                  </TableCell>
+                  {type === "daily"
+                    ? times.map((_time) => {
+                        const shifts_based_on_time = shifts.find(
+                          (_shift) =>
+                            moment(_shift.startDate).format("DD/MM/YYYY") ===
+                              day.format("DD/MM/YYYY") &&
+                            _time >= _shift.startTime[0] &&
+                            (_shift.isShiftEndsNextDay ||
+                              _time < _shift.endTime[0]) &&
+                            _carer.id === _shift.employee.id
+                        );
+
+                        const pastDayOverflowingShift = shifts.find(
+                          (_shift) =>
+                            moment(_shift.shiftEndDate).format("DD/MM/YYYY") ===
+                              day.format("DD/MM/YYYY") &&
+                            _shift.isShiftEndsNextDay &&
+                            _time < _shift.endTime[0] &&
+                            _carer.id === _shift.employee.id
+                        );
+
+                        const exactShift = shifts.find(
+                          (_shift) =>
+                            moment(_shift.startDate).format("DD/MM/YYYY") ===
+                              day.format("DD/MM/YYYY") &&
+                            _shift.startTime[0] === _time &&
+                            _carer.id === _shift.employee.id
+                        );
+
+                        const colSpanByShift = exactShift
+                          ? (exactShift?.isShiftEndsNextDay
+                              ? 24
+                              : exactShift?.endTime[0]) -
+                            exactShift?.startTime[0]
+                          : 1;
+
+                        return !shifts_based_on_time || exactShift ? (
+                          <TableCell
+                            key={_time}
+                            colSpan={colSpanByShift}
+                            sx={{ minWidth: "150px" }}
+                          >
+                            {exactShift ? (
+                              <Shift
+                                shift={exactShift}
+                                key={exactShift?.id}
+                                type={"comfortable"}
+                              />
+                            ) : null}
+                          </TableCell>
+                        ) : null;
+                      })
+                    : dates.map((_date, index) => {
+                        const carerShiftsByDate = shifts.filter(
+                          (_shift) =>
+                            moment(_shift.startDate).format("DD/MM/YYYY") ===
+                              _date.format("DD/MM/YYYY") &&
+                            _carer.id === _shift.employee.id
+                        );
+                        const prevCarerShiftsByDate = shifts.filter(
+                          (_shift) =>
+                            moment(_shift.startDate).format("DD/MM/YYYY") ===
+                              dates[index !== 0 ? index - 1 : 0].format(
+                                "DD/MM/YYYY"
+                              ) && _carer.id === _shift.employee.id
+                        );
+
+                        return prevCarerShiftsByDate[0]?.isShiftEndsNextDay &&
+                          prevCarerShiftsByDate[0]?.id !==
+                            carerShiftsByDate[0]?.id ? null : (
+                          <TableCell
+                            width={100}
+                            key={_date.unix()}
+                            height={120}
+                            sx={{ position: "relative", minHeight: "100px" }}
+                            colSpan={
+                              carerShiftsByDate[0]?.isShiftEndsNextDay &&
+                              index !== dates.length - 1
+                                ? 2
+                                : 1
+                            }
+                          >
+                            {carerShiftsByDate.length > 0 ? (
+                              <ShiftBox shifts={carerShiftsByDate} />
+                            ) : (
+                              <Box
+                                className="add-shift-box"
+                                onClick={() => {
+                                  router.replace(
+                                    {
+                                      query: {
+                                        staff: _carer.id
+                                      }
+                                    },
+                                    undefined,
+                                    { shallow: true }
+                                  );
+                                  setSelectedDate(_date);
+                                }}
                               >
-                                <AddIcon sx={{ marginRight: "10px" }} /> Shift
-                              </Typography>
-                            </Box>
-                          )}
-                        </TableCell>
-                      );
-                    })}
-              </TableRow>
-            ))}
+                                <Typography
+                                  variant="body1"
+                                  className="add-shift-text"
+                                >
+                                  <AddIcon sx={{ marginRight: "10px" }} /> Shift
+                                </Typography>
+                              </Box>
+                            )}
+                          </TableCell>
+                        );
+                      })}
+                </TableRow>
+              );
+            })}
             <TableRow>
               <TableCell height="100%" />
               <TableCell />
@@ -275,7 +369,6 @@ export default function TimeSheetTable({
               <TableCell />
               {type === "daily" && (
                 <>
-                  <TableCell />
                   <TableCell />
                   <TableCell />
                   <TableCell />

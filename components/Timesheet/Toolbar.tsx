@@ -34,13 +34,17 @@ export default function Toolbar({
   date,
   setDate,
   type,
-  setType
+  setType,
+  view,
+  setView
 }: {
   week: Moment[];
   date: Moment;
   setDate: React.Dispatch<SetStateAction<Moment>>;
   type: string;
   setType: React.Dispatch<SetStateAction<string>>;
+  view: string;
+  setView: React.Dispatch<SetStateAction<string>>;
 }) {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -127,9 +131,18 @@ export default function Toolbar({
       </Typography>
       <Select
         size="small"
+        value={view}
+        onChange={(e) => setView(e.target.value)}
+        sx={{ backgroundColor: "#fff", minWidth: "150px" }}
+      >
+        <MenuItem value="staff">Staff</MenuItem>
+        <MenuItem value="client">Client</MenuItem>
+      </Select>
+      <Select
+        size="small"
         value={type}
         onChange={(e) => setType(e.target.value)}
-        sx={{ backgroundColor: "#fff" }}
+        sx={{ backgroundColor: "#fff", minWidth: "150px" }}
       >
         <MenuItem value="weekly">Weekly</MenuItem>
         <MenuItem value="daily">Daily</MenuItem>

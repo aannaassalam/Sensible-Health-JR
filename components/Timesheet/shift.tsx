@@ -26,10 +26,12 @@ const ShiftBox = styled(Box)`
 
 export default function Shift({
   shift,
-  type = "comfortable"
+  type = "comfortable",
+  isClient
 }: {
   shift: IShift;
   type?: "comfortable" | "compact";
+  isClient?: boolean;
 }) {
   const [viewModal, setViewModal] = useState(false);
   const [editMddal, setEditModal] = useState(false);
@@ -76,7 +78,9 @@ export default function Shift({
               gap={1}
             >
               <Typography variant="body1">
-                {shift.client.displayName}
+                {isClient
+                  ? shift.employee.displayName
+                  : shift.client.displayName}
               </Typography>
               <LoopIcon color="disabled" fontSize="small" />
             </Stack>
@@ -85,7 +89,7 @@ export default function Shift({
           <Stack direction="row" alignItems="center" gap={1}>
             <Box className="border" />
             <Typography variant="caption" sx={{ marginRight: "auto" }}>
-              {shift.client.displayName}
+              {isClient ? shift.employee.displayName : shift.client.displayName}
             </Typography>
             <Typography variant="caption">
               {moment()

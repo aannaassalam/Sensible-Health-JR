@@ -67,6 +67,7 @@ interface DrawerInterface extends DrawerProps {
 }
 
 export const StyledDrawer = styled(Drawer)<DrawerInterface>`
+  z-index: 9999;
   > .drawer {
     width: 700px;
     background-color: #f0f0f0;

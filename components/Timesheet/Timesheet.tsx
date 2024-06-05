@@ -14,6 +14,7 @@ export default function Timesheet({ shifts }: { shifts: Shift[] }) {
     [date]
   );
   const [type, setType] = useState("weekly");
+  const [view, setView] = useState("staff");
 
   const { data } = useQuery({
     queryKey: ["all_shifts", week[0], week[1], type, date],
@@ -53,11 +54,14 @@ export default function Timesheet({ shifts }: { shifts: Shift[] }) {
         date={date}
         type={type}
         setType={setType}
+        view={view}
+        setView={setView}
       />
       <TimeSheetTable
         day={type === "daily" ? date : week[0]}
         type={type}
         shifts={data}
+        view={view}
       />
     </Box>
   );

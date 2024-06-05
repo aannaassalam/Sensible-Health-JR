@@ -295,7 +295,15 @@ export default function TimeSheetTable({
                   width={100}
                   key={_date.unix()}
                   height={120}
-                  sx={{ position: "relative", minHeight: "100px" }}
+                  sx={{
+                    position: "relative",
+                    minHeight: "100px",
+                    backgroundColor:
+                      moment().format("DD/MM/YYYY") ===
+                      _date.format("DD/MM/YYYY")
+                        ? "rgba(0, 169, 169, 0.08)"
+                        : "rgb(249, 250, 251)"
+                  }}
                   colSpan={
                     carerShiftsByDate[0]?.isShiftEndsNextDay &&
                     index !== dates.length - 1
@@ -401,7 +409,7 @@ export default function TimeSheetTable({
                     ? 24
                     : exactShift?.endTime[0]) - exactShift?.startTime[0]
                 : 1;
-              console.log(!shifts_based_on_time || exactShift);
+
               return !shifts_based_on_time || exactShift ? (
                 <TableCell
                   key={_time}
@@ -440,7 +448,15 @@ export default function TimeSheetTable({
                   width={100}
                   key={_date.unix()}
                   height={120}
-                  sx={{ position: "relative", minHeight: "100px" }}
+                  sx={{
+                    position: "relative",
+                    minHeight: "100px",
+                    backgroundColor:
+                      moment().format("DD/MM/YYYY") ===
+                      _date.format("DD/MM/YYYY")
+                        ? "rgba(0, 169, 169, 0.08)"
+                        : "rgb(249, 250, 251)"
+                  }}
                   colSpan={
                     carerShiftsByDate[0]?.isShiftEndsNextDay &&
                     index !== dates.length - 1
@@ -502,16 +518,49 @@ export default function TimeSheetTable({
                   ))
                 : dates.map((_date: Moment) => {
                     return (
-                      <TableCell align="center" key={_date.toISOString()}>
+                      <TableCell
+                        align="center"
+                        key={_date.toISOString()}
+                        sx={
+                          moment().format("DD/MM/YYYY") ===
+                          _date.format("DD/MM/YYYY")
+                            ? { backgroundColor: "#00a9a9", color: "#fff" }
+                            : {}
+                        }
+                      >
                         <Typography
                           variant="body1"
-                          sx={{ fontSize: "14px", fontWeight: "500" }}
+                          sx={{
+                            fontSize: "14px",
+                            fontWeight:
+                              moment().format("DD/MM/YYYY") ===
+                              _date.format("DD/MM/YYYY")
+                                ? "700"
+                                : "500",
+                            color:
+                              moment().format("DD/MM/YYYY") ===
+                              _date.format("DD/MM/YYYY")
+                                ? "#fff"
+                                : "#333"
+                          }}
                         >
                           {_date.format("dddd")}
                         </Typography>
                         <Typography
                           variant="body1"
-                          sx={{ fontSize: "14px", fontWeight: "500" }}
+                          sx={{
+                            fontSize: "14px",
+                            fontWeight:
+                              moment().format("DD/MM/YYYY") ===
+                              _date.format("DD/MM/YYYY")
+                                ? "700"
+                                : "500",
+                            color:
+                              moment().format("DD/MM/YYYY") ===
+                              _date.format("DD/MM/YYYY")
+                                ? "#fff"
+                                : "#333"
+                          }}
                         >
                           {_date.format("DD MMM, YYYY")}
                         </Typography>
@@ -523,35 +572,22 @@ export default function TimeSheetTable({
           <TableBody>
             {view === "staff" ? renderStaffs : renderClients}
             <TableRow>
-              <TableCell height="100%" />
               <TableCell />
-              <TableCell />
-              <TableCell />
-              <TableCell />
-              <TableCell />
-              <TableCell />
-              <TableCell />
-              {type === "daily" && (
-                <>
-                  <TableCell />
-                  <TableCell />
-                  <TableCell />
-                  <TableCell />
-                  <TableCell />
-                  <TableCell />
-                  <TableCell />
-                  <TableCell />
-                  <TableCell />
-                  <TableCell />
-                  <TableCell />
-                  <TableCell />
-                  <TableCell />
-                  <TableCell />
-                  <TableCell />
-                  <TableCell />
-                  <TableCell />
-                </>
-              )}
+              {type === "daily"
+                ? times.map((_time) => <TableCell height="100%" key={_time} />)
+                : dates.map((_date) => (
+                    <TableCell
+                      height="100%"
+                      key={_date.toString()}
+                      sx={{
+                        backgroundColor:
+                          moment().format("DD/MM/YYYY") ===
+                          _date.format("DD/MM/YYYY")
+                            ? "rgba(0, 169, 169, 0.08)"
+                            : "rgb(249, 250, 251)"
+                      }}
+                    />
+                  ))}
             </TableRow>
           </TableBody>
         </StyledTable>

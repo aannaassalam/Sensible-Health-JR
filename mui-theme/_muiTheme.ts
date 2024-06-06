@@ -84,7 +84,7 @@ export const MuiThemeOptions = (mode: PaletteMode): ThemeOptions => {
           },
           sizeMedium: {
             letterSpacing: "normal",
-            minHeight: 45
+            minHeight: 38
           },
           sizeLarge: {
             letterSpacing: "normal",

@@ -99,3 +99,20 @@ export interface Shift {
   clientEndTime: number[];
   occurrenceCounter?: boolean;
 }
+
+export interface ShiftNotes {
+  id: number;
+  shiftNotesCategories: string;
+  date: number[];
+  createdAt: number[];
+  notes: string;
+  addedByEmployee: string;
+  subject: string;
+  clientId: number;
+  shiftId: number;
+  documentDownloadUrls: string[];
+  epochDate: number;
+  createdAtEpoch: number;
+  email: boolean;
+  notePrivate: boolean;
+}

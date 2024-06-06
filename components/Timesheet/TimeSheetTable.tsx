@@ -39,6 +39,7 @@ const StyledTable = styled(Table)`
   }
   tbody {
     td {
+      background-color: #fff;
       &.named-cell {
         min-width: 200px;
         max-width: 200px;
@@ -301,7 +302,7 @@ export default function TimeSheetTable({
                     backgroundColor:
                       moment().format("DD/MM/YYYY") ===
                       _date.format("DD/MM/YYYY")
-                        ? "rgba(0, 169, 169, 0.08)"
+                        ? "rgba(0, 169, 169, 0.08) !important"
                         : "rgb(249, 250, 251)"
                   }}
                   colSpan={
@@ -454,7 +455,7 @@ export default function TimeSheetTable({
                     backgroundColor:
                       moment().format("DD/MM/YYYY") ===
                       _date.format("DD/MM/YYYY")
-                        ? "rgba(0, 169, 169, 0.08)"
+                        ? "rgba(0, 169, 169, 0.08) !important"
                         : "rgb(249, 250, 251)"
                   }}
                   colSpan={
@@ -583,7 +584,7 @@ export default function TimeSheetTable({
                         backgroundColor:
                           moment().format("DD/MM/YYYY") ===
                           _date.format("DD/MM/YYYY")
-                            ? "rgba(0, 169, 169, 0.08)"
+                            ? "rgba(0, 169, 169, 0.08) !important"
                             : "rgb(249, 250, 251)"
                       }}
                     />

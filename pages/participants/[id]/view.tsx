@@ -54,6 +54,7 @@ import ClientDocuments from "@/components/client-docuements/documents";
 import ClientContacts from "@/components/client-contacts/client-contacts";
 import ClientAdditionalContacts from "@/components/client-additional-contacts/client-additional-contacts";
 import AddShift from "@/components/add-shift/add-shift";
+import { useRouter } from "next/router";
 
 export const getServerSideProps = async () => {
   const queryClient = new QueryClient();
@@ -100,6 +101,7 @@ export default function Index({
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const { id } = useParams();
   const [addShiftModal, setAddShiftModal] = useState(false);
+  const router = useRouter();
 
   const data = useQueries({
     queries: [
@@ -257,7 +259,10 @@ export default function Index({
             </MenuItem>
             <MenuItem
               // key={option.label}
-              onClick={handlePopoverClose}
+              onClick={() => {
+                router.push(`/participants/${id}/communications`);
+                handlePopoverClose();
+              }}
             >
               Communications
             </MenuItem>

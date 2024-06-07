@@ -1,6 +1,6 @@
 import { getAllClients } from "@/api/functions/client.api";
 import { IClient } from "@/interface/client.interface";
-import { Shift } from "@/interface/shift.api";
+import { Shift } from "@/interface/shift.interface";
 import assets from "@/json/assets";
 import StyledPaper from "@/ui/Paper/Paper";
 import {

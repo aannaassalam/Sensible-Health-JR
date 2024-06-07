@@ -1,4 +1,4 @@
-import { Shift } from "@/interface/shift.api";
+import { Shift } from "@/interface/shift.interface";
 import { Box } from "@mui/system";
 import moment from "moment";
 import { useMemo, useState } from "react";

@@ -1,5 +1,5 @@
 import { getStaffList } from "@/api/functions/staff.api";
-import { Shift } from "@/interface/shift.api";
+import { Shift } from "@/interface/shift.interface";
 import { IStaff } from "@/interface/staff.interfaces";
 import assets from "@/json/assets";
 import StyledPaper from "@/ui/Paper/Paper";

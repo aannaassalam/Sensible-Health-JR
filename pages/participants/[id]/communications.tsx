@@ -1,22 +1,51 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import DashboardLayout from "@/layout/dashboard/DashboardLayout";
 import styled from "@emotion/styled";
-import { Button, Chip, Divider, Typography } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  Chip,
+  Divider,
+  FormControlLabel,
+  FormHelperText,
+  Grid,
+  Popover,
+  Select,
+  Typography
+} from "@mui/material";
 import { Box, Stack } from "@mui/system";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { DatePicker } from "antd";
+import { DatePicker as Datepicker } from "@mui/x-date-pickers";
 import StyledPaper from "@/ui/Paper/Paper";
 import Iconify from "@/components/Iconify/Iconify";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { getAllShiftNotes } from "@/api/functions/client.api";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { RangePickerProps } from "antd/lib/date-picker";
 import moment from "moment";
-import { ShiftNotes } from "@/interface/shift.interface";
+import { ShiftNoteBody, ShiftNotes } from "@/interface/shift.interface";
+import { Controller, FormProvider, useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import MenuItem from "@mui/material/MenuItem";
+import CustomInput from "@/ui/Inputs/CustomInput";
+import RichTextEditor from "@/components/RichTextEditor/RichTextEditor";
+import { addShiftNote, exportShiftNotes } from "@/api/functions/shift.api";
+import { LoadingButton } from "@mui/lab";
+import { useCurrentEditor } from "@tiptap/react";
+import { useRouter } from "next/router";
+import MuiModalWrapper from "@/ui/Modal/MuiModalWrapper";
 
 const { RangePicker } = DatePicker;
 
-const StyledBox = styled(Box)``;
+const StyledBox = styled(Box)`
+  .tiptap {
+    height: 400px;
+    overflow: auto;
+  }
+`;
 
 const StyledCommunication = styled(Box)`
   padding-inline: 40px;
@@ -27,16 +56,16 @@ const StyledCommunication = styled(Box)`
     position: relative;
 
     .floating-element {
-      width: 28px;
-      height: 28px;
-      padding: 3px;
+      width: 30px;
+      height: 30px;
+      /* padding: 3px; */
       display: flex;
       align-items: center;
       border-radius: 50%;
       justify-content: center;
       position: absolute;
-      top: 25px;
-      left: -10.5px;
+      top: 20px;
+      left: -15.5px;
       color: #fff;
     }
   }
@@ -47,7 +76,7 @@ const getIcon = (noteType: string) => {
     case "Enquiry":
       return (
         <Box className="floating-element" sx={{ backgroundColor: "#ff851b" }}>
-          <Iconify icon="mdi:magnify" />
+          <Iconify icon="iconamoon:search-bold" />
         </Box>
       );
     case "Notes":
@@ -84,65 +113,178 @@ const EachCommunication = ({
   note: ShiftNotes;
   lastElement?: boolean;
 }) => {
+  const [isEdit, setIsEdit] = useState(false);
+  // const schema = yup.object().shape({
+  //   shiftNoteCategories: yup.string(),
+  //   date: yup.date(),
+  //   subject: yup.string().required("Please enter a Subject"),
+  //   notes: yup.string().required("Please enter a note")
+  // });
+
+  // const methods = useForm({
+  //   resolver: yupResolver(schema),
+  //   defaultValues: {
+  //     shiftNoteCategories: note.shiftNotesCategories,
+  //     date: note.date,
+  //     subject: note.subject,
+  //     notes:note.notes
+  //   }
+  // });
+
   return (
-    <StyledCommunication>
-      <Box
-        className="mainBox"
-        paddingBottom={lastElement ? "80px !important" : "10px"}
-      >
-        <Stack
-          direction="row"
-          gap={2}
-          alignItems="flex-end"
-          justifyContent="space-between"
+    <>
+      <StyledCommunication>
+        <Box
+          className="mainBox"
+          paddingBottom={lastElement ? "80px !important" : "10px"}
         >
-          {getIcon(note.shiftNotesCategories)}
-          <Typography variant="body1">
-            <strong>{note.addedByEmployee}</strong> added{" "}
-            {note.shiftNotesCategories} dated{" "}
-            {moment.unix(note.epochDate).format("DD/MM/YYYY")}
-          </Typography>
-          <Stack alignItems="flex-end">
-            <Typography
-              variant="caption"
-              display="flex"
-              alignItems="center"
-              gap={0.5}
-            >
-              <Iconify icon="bi:clock" width={13} height={13} />
-              {moment.unix(note.createdAtEpoch).fromNow()}
+          <Stack
+            direction="row"
+            gap={2}
+            alignItems="flex-end"
+            justifyContent="space-between"
+          >
+            {getIcon(note.shiftNotesCategories)}
+            <Typography variant="body1">
+              <strong>{note.addedByEmployee}</strong> added{" "}
+              {note.shiftNotesCategories} dated{" "}
+              {moment.unix(note.epochDate).format("DD/MM/YYYY")}
             </Typography>
-            <Typography variant="caption">
-              {moment.unix(note.createdAtEpoch).format("LLL")}
-            </Typography>
+            <Stack alignItems="flex-end">
+              <Typography
+                variant="caption"
+                display="flex"
+                alignItems="center"
+                gap={0.5}
+              >
+                <Iconify icon="bi:clock" width={13} height={13} />
+                {moment.unix(note.createdAtEpoch).fromNow()}
+              </Typography>
+              <Typography variant="caption">
+                {moment.unix(note.createdAtEpoch).format("LLL")}
+              </Typography>
+            </Stack>
           </Stack>
-        </Stack>
-        <Divider sx={{ marginBlock: "10px 15px" }} />
-        <Stack
-          direction="row"
-          alignItems="flex-start"
-          justifyContent="space-between"
-          gap={2}
-        >
-          <Box>
-            <Typography variant="body1" marginBottom={1}>
-              <strong>{note.subject}</strong>
-            </Typography>
-            <Typography variant="body1">{note.notes}</Typography>
-          </Box>
-          <Button>Edit</Button>
-        </Stack>
-        <Divider sx={{ marginTop: "80px", borderColor: "#ccc" }} />
-      </Box>
-    </StyledCommunication>
+          <Divider sx={{ marginBlock: "10px 15px" }} />
+          <Stack
+            direction="row"
+            alignItems="flex-start"
+            justifyContent="space-between"
+            gap={2}
+          >
+            <Box>
+              <Typography variant="body1" marginBottom={1}>
+                <strong>{note.subject}</strong>
+              </Typography>
+              <Box dangerouslySetInnerHTML={{ __html: note.notes }} />
+            </Box>
+            {/* <Button>Edit</Button> */}
+          </Stack>
+          <Divider sx={{ marginTop: "80px", borderColor: "#ccc" }} />
+        </Box>
+      </StyledCommunication>
+      {/* <MuiModalWrapper
+        title="Edit Shift Notes"
+        open={isEdit}
+        onClose={() => setIsEdit(false)}
+      >
+        <FormProvider {...methods}>
+          <Grid container spacing={2}>
+            <Grid item lg={6} md={6} sm={12} xs={12}>
+              <Controller
+                control={methods.control}
+                name="shiftNoteCategories"
+                render={({ field }) => (
+                  <Select {...field} fullWidth size="small">
+                    <MenuItem value="Notes">Notes</MenuItem>
+                    <MenuItem value="Feedback">Feedback</MenuItem>
+                    <MenuItem value="Enquiry">Enquiry</MenuItem>
+                    <MenuItem value="Incident">Incident</MenuItem>
+                    <MenuItem value="Injury">Injury</MenuItem>
+                  </Select>
+                )}
+              />
+            </Grid>
+            <Grid item lg={6} md={6} sm={12} xs={12}>
+              <Controller
+                control={methods.control}
+                name="date"
+                render={({ field }) => (
+                  <Datepicker
+                    {...field}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        size: "small"
+                      }
+                    }}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item lg={6} md={6} sm={12} xs={12}>
+              <CustomInput name="subject" placeholder="Enter Notes" />
+            </Grid>
+            <Grid item lg={12} md={12} sm={12} xs={12}>
+              <Box
+                padding={1}
+                paddingInline={1.5}
+                border="1px solid #ededed"
+                borderRadius={1}
+              >
+                <Controller
+                  control={methods.control}
+                  name="notes"
+                  render={({ field, fieldState: { invalid, error } }) => (
+                    <Box>
+                      <RichTextEditor {...field} />
+                      {invalid && (
+                        <FormHelperText>{error?.message}</FormHelperText>
+                      )}
+                    </Box>
+                  )}
+                />
+              </Box>
+            </Grid>
+          </Grid>
+        </FormProvider>
+      </MuiModalWrapper> */}
+    </>
   );
 };
+
+const schema = yup.object().shape({
+  shiftNoteCategories: yup.string(),
+  date: yup.date(),
+  subject: yup.string().required("Please enter a Subject"),
+  notes: yup.string().required("Please enter a note")
+});
 
 export default function Communications() {
   const [dates, setDates] = useState<
     [Dayjs | null | undefined, Dayjs | null | undefined] | null | undefined
   >([null, null]);
+  const [documents, setDocuments] = useState<File | null | undefined>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [filterValues, setFilterValues] = useState([
+    "Enquiry",
+    "Injury",
+    "Incident",
+    "Notes",
+    "Feedback"
+  ]);
   const { id } = useParams();
+  const router = useRouter();
+
+  const methods = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      shiftNoteCategories: "Notes",
+      date: dayjs(),
+      subject: "",
+      notes: ""
+    }
+  });
 
   const { data, isLoading } = useQuery({
     queryKey: ["all_shift_notes", id, dates],
@@ -154,6 +296,31 @@ export default function Communications() {
       })
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: addShiftNote,
+    onSuccess: router.reload
+  });
+
+  const onSubmit = (
+    data: Omit<ShiftNoteBody, "documents" | "date"> & { date: Dayjs }
+  ) => {
+    const formData = new FormData();
+    formData.append("shiftNotesCategories", data.shiftNoteCategories);
+    formData.append("date", dayjs(data.date).format("YYYY-MM-DD"));
+    formData.append("notes", data.notes);
+    formData.append("subject", data.subject);
+    formData.append("clientId", id.toString());
+    if (documents) formData.append("files", documents);
+    mutate(formData);
+  };
+
+  const { mutate: exportShiftNotesMutation, isPending: isExporting } =
+    useMutation({
+      mutationFn: exportShiftNotes
+    });
+
+  const open = Boolean(anchorEl);
+
   return (
     <DashboardLayout isLoading={isLoading}>
       <StyledBox>
@@ -164,40 +331,227 @@ export default function Communications() {
           flexWrap="wrap"
           marginBottom={5}
         >
-          <Button role="a" href="#add-noted" variant="contained">
+          <Button role="a" href="#add-notes" variant="contained">
             Add Note
           </Button>
           <Stack direction="row" gap={2} flexWrap="wrap">
-            <Button variant="contained">Export</Button>
+            <LoadingButton
+              variant="contained"
+              onClick={() => exportShiftNotesMutation(id as string)}
+              loading={isExporting}
+            >
+              Export
+            </LoadingButton>
             <RangePicker
               allowClear
               format="DD/MM/YYYY"
               value={dates}
               onChange={(dates: RangePickerProps["value"]) => setDates(dates)}
             />
-            <Button variant="outlined">Filter Categories</Button>
+            <Box>
+              <Button
+                variant="outlined"
+                onClick={(e) => setAnchorEl(e.currentTarget)}
+              >
+                Filter Categories
+              </Button>
+              <Popover
+                open={open}
+                anchorEl={anchorEl}
+                onClose={() => setAnchorEl(null)}
+                anchorOrigin={{
+                  horizontal: "center",
+                  vertical: "bottom"
+                }}
+                transformOrigin={{
+                  horizontal: "center",
+                  vertical: "top"
+                }}
+                sx={{
+                  ".MuiPaper-root": {
+                    paddingBlock: "10px",
+                    paddingInline: "15px"
+                  }
+                }}
+              >
+                <Stack>
+                  <FormControlLabel
+                    control={<Checkbox size="small" />}
+                    checked={filterValues.includes("Notes")}
+                    onChange={() =>
+                      setFilterValues((prev) =>
+                        prev.includes("Notes")
+                          ? prev.filter((_prev) => _prev !== "Notes")
+                          : [...prev, "Notes"]
+                      )
+                    }
+                    label="Notes"
+                  />
+                  <FormControlLabel
+                    control={<Checkbox size="small" />}
+                    checked={filterValues.includes("Feedback")}
+                    onChange={() =>
+                      setFilterValues((prev) =>
+                        prev.includes("Feedback")
+                          ? prev.filter((_prev) => _prev !== "Feedback")
+                          : [...prev, "Feedback"]
+                      )
+                    }
+                    label="Feedback"
+                  />
+                  <FormControlLabel
+                    control={<Checkbox size="small" />}
+                    checked={filterValues.includes("Enquiry")}
+                    onChange={() =>
+                      setFilterValues((prev) =>
+                        prev.includes("Enquiry")
+                          ? prev.filter((_prev) => _prev !== "Enquiry")
+                          : [...prev, "Enquiry"]
+                      )
+                    }
+                    label="Enquiry"
+                  />
+                  <FormControlLabel
+                    control={<Checkbox size="small" />}
+                    checked={filterValues.includes("Incident")}
+                    onChange={() =>
+                      setFilterValues((prev) =>
+                        prev.includes("Incident")
+                          ? prev.filter((_prev) => _prev !== "Incident")
+                          : [...prev, "Incident"]
+                      )
+                    }
+                    label="Incident"
+                  />
+                  <FormControlLabel
+                    control={<Checkbox size="small" />}
+                    checked={filterValues.includes("Injury")}
+                    onChange={() =>
+                      setFilterValues((prev) =>
+                        prev.includes("Injury")
+                          ? prev.filter((_prev) => _prev !== "Injury")
+                          : [...prev, "Injury"]
+                      )
+                    }
+                    label="Injury"
+                  />
+                </Stack>
+              </Popover>
+            </Box>
           </Stack>
         </Stack>
         <StyledPaper>
           {Object.entries(data || {}).map((_item) => {
             return (
-              <Box key={_item[0]}>
-                <Chip
-                  label={moment.unix(parseInt(_item[0])).format("D MMM, YYYY")}
-                  variant="filled"
-                />
-                {(_item[1] as ShiftNotes[]).map((_note, index: number) => (
-                  <EachCommunication
-                    key={_note.id}
-                    note={_note}
-                    lastElement={
-                      index === (_item[1] as ShiftNotes[]).length - 1
-                    }
+              (_item[1] as ShiftNotes[]).some((_data) =>
+                filterValues.includes(_data.shiftNotesCategories)
+              ) && (
+                <Box key={_item[0]}>
+                  <Chip
+                    label={moment
+                      .unix(parseInt(_item[0]))
+                      .format("D MMM, YYYY")}
+                    variant="filled"
+                    color="error"
                   />
-                ))}
-              </Box>
+                  {(_item[1] as ShiftNotes[])
+                    .filter((_note) =>
+                      filterValues.includes(_note.shiftNotesCategories)
+                    )
+                    .map((_note, index: number) => (
+                      <EachCommunication
+                        key={_note.id}
+                        note={_note}
+                        lastElement={
+                          index === (_item[1] as ShiftNotes[]).length - 1
+                        }
+                      />
+                    ))}
+                </Box>
+              )
             );
           })}
+          <Box paddingLeft={8} paddingRight={5} id="add-notes">
+            <FormProvider {...methods}>
+              <Grid container spacing={2}>
+                <Grid item lg={6} md={6} sm={12} xs={12}>
+                  <Controller
+                    control={methods.control}
+                    name="shiftNoteCategories"
+                    render={({ field }) => (
+                      <Select {...field} fullWidth size="small">
+                        <MenuItem value="Notes">Notes</MenuItem>
+                        <MenuItem value="Feedback">Feedback</MenuItem>
+                        <MenuItem value="Enquiry">Enquiry</MenuItem>
+                        <MenuItem value="Incident">Incident</MenuItem>
+                        <MenuItem value="Injury">Injury</MenuItem>
+                      </Select>
+                    )}
+                  />
+                </Grid>
+                <Grid item lg={6} md={6} sm={12} xs={12}>
+                  <Controller
+                    control={methods.control}
+                    name="date"
+                    render={({ field }) => (
+                      <Datepicker
+                        {...field}
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            size: "small"
+                          }
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item lg={6} md={6} sm={12} xs={12}>
+                  <CustomInput name="subject" placeholder="Enter Notes" />
+                </Grid>
+                <Grid item lg={12} md={12} sm={12} xs={12}>
+                  <Box
+                    padding={1}
+                    paddingInline={1.5}
+                    border="1px solid #ededed"
+                    borderRadius={1}
+                  >
+                    <Controller
+                      control={methods.control}
+                      name="notes"
+                      render={({ field, fieldState: { invalid, error } }) => (
+                        <Box>
+                          <RichTextEditor {...field} />
+                          {invalid && (
+                            <FormHelperText>{error?.message}</FormHelperText>
+                          )}
+                        </Box>
+                      )}
+                    />
+                  </Box>
+                </Grid>
+              </Grid>
+            </FormProvider>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              marginTop={3}
+              marginBottom={5}
+            >
+              <input
+                type="file"
+                onChange={(e) => setDocuments(e.target.files?.[0])}
+              />
+              <LoadingButton
+                variant="contained"
+                onClick={methods.handleSubmit(onSubmit)}
+                loading={isPending}
+              >
+                Add
+              </LoadingButton>
+            </Stack>
+          </Box>
         </StyledPaper>
       </StyledBox>
     </DashboardLayout>

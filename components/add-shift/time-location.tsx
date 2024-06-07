@@ -25,7 +25,7 @@ import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import CustomInput from "@/ui/Inputs/CustomInput";
 import Iconify from "../Iconify/Iconify";
-import { Shift } from "@/interface/shift.api";
+import { Shift } from "@/interface/shift.interface";
 import moment from "moment";
 
 export default function TimeLocation({

@@ -1,4 +1,4 @@
-import { ShiftType } from "@/interface/shift.api";
+import { ShiftType } from "@/interface/shift.interface";
 import axiosInstance from "../axiosInstance";
 import { endpoints } from "../endpoints";
 
@@ -40,5 +40,15 @@ export const getAllShifts = async ({
       endDate
     }
   });
+  return res.data;
+};
+
+export const addShiftNote = async (body: FormData) => {
+  const res = await axiosInstance.post(endpoints.shift.notes.add_note, body);
+  return res.data;
+};
+
+export const exportShiftNotes = async (id: string) => {
+  const res = await axiosInstance.get(endpoints.shift.notes.export(id));
   return res.data;
 };

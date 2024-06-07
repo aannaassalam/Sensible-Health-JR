@@ -42,6 +42,7 @@ import {
 import moment from "moment";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 
 export const getServerSideProps = async () => {
@@ -87,8 +88,9 @@ export default function Index({
   dehydratedState: DehydratedState;
 }) {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const { id } = useParams();
   const [addShiftModal, setAddShiftModal] = useState(false);
+  const { id } = useParams();
+  const router = useRouter();
 
   const data: QueryResult = useQueries({
     queries: [
@@ -240,21 +242,24 @@ export default function Index({
             >
               Add Shift
             </MenuItem>
-            <MenuItem
+            {/* <MenuItem
               // key={option.label}
               onClick={handlePopoverClose}
             >
               Communications
-            </MenuItem>
-            <MenuItem
+            </MenuItem> */}
+            {/* <MenuItem
               // key={option.label}
               onClick={handlePopoverClose}
             >
               Timesheet
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem
               // key={option.label}
-              onClick={handlePopoverClose}
+              onClick={() => {
+                router.push(`/staff/${id}/calendar`);
+                handlePopoverClose();
+              }}
             >
               Calendar
             </MenuItem>

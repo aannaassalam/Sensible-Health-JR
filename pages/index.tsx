@@ -10,7 +10,7 @@ import moment from "moment";
 import { Box } from "@mui/system";
 import { getAllShifts } from "@/api/functions/shift.api";
 import { GetServerSidePropsContext } from "next";
-import { Shift } from "@/interface/shift.api";
+import { Shift } from "@/interface/shift.interface";
 import Timesheet from "@/components/Timesheet/Timesheet";
 import {
   DehydratedState,

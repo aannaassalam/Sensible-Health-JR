@@ -1,4 +1,4 @@
-import { Task } from "@/interface/shift.api";
+import { Task } from "@/interface/shift.interface";
 import assets from "@/json/assets";
 import StyledPaper from "@/ui/Paper/Paper";
 import { yupResolver } from "@hookform/resolvers/yup";

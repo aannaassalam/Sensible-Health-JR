@@ -91,7 +91,9 @@ export const endpoints = {
     edit_shift: (id?: number) => `/shift/update/${id}`,
     cancel_shift: (id?: number) => `/shift/cancelShift/${id}`,
     notes: {
-      get_all_notes: (id?: string) => `/shiftNote/getAllForClient/${id}`
+      get_all_notes: (id?: string) => `/shiftNote/getAllForClient/${id}`,
+      add_note: `/shiftNote/add`,
+      export: (id: string) => `/shiftNote/exportShiftNotesToPdf/email/${id}`
     }
   },
   settings: {
@@ -139,5 +141,6 @@ export const sucessNotificationEndPoints = [
   endpoints.teams.edit_team,
   endpoints.client.add_client,
   endpoints.settings.pricebook.add_pricebook,
-  endpoints.shift.create_shift
+  endpoints.shift.create_shift,
+  endpoints.shift.notes.add_note
 ];

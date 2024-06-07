@@ -36,6 +36,11 @@ body {
   color: #ff5630;
 }
 
+.MuiMenu-root,
+.MuiPickersPopper-root {
+  z-index: 9999;
+}
+
 .tiptap {
   border: 1px solid #ddd;
   margin-top: 10px;

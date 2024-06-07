@@ -50,7 +50,7 @@ import dayjs from "dayjs";
 import { useRouter } from "next/router";
 import { useParams } from "next/navigation";
 import RichTextEditor from "../RichTextEditor/RichTextEditor";
-import { Shift, ShiftBody, Task } from "@/interface/shift.api";
+import { Shift, ShiftBody, Task } from "@/interface/shift.interface";
 import { cancelShift, createShift, editShift } from "@/api/functions/shift.api";
 import { LoadingButton } from "@mui/lab";
 import { useCurrentEditor } from "@tiptap/react";
@@ -67,10 +67,11 @@ interface DrawerInterface extends DrawerProps {
 }
 
 export const StyledDrawer = styled(Drawer)<DrawerInterface>`
-  z-index: 9999;
+  z-index: 3000;
   > .drawer {
     width: 700px;
     background-color: #f0f0f0;
+    z-index: 3000;
     @media (width<=699px) {
       width: 100%;
     }

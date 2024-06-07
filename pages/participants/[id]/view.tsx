@@ -251,12 +251,12 @@ export default function Index({
             >
               Add Shift
             </MenuItem>
-            <MenuItem
+            {/* <MenuItem
               // key={option.label}
               onClick={handlePopoverClose}
             >
               Add Expense
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem
               // key={option.label}
               onClick={() => {
@@ -266,12 +266,12 @@ export default function Index({
             >
               Communications
             </MenuItem>
-            <MenuItem
+            {/* <MenuItem
               // key={option.label}
               onClick={handlePopoverClose}
             >
               Billing Report
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem
               // key={option.label}
               onClick={handlePopoverClose}
@@ -284,12 +284,12 @@ export default function Index({
             >
               Documents
             </MenuItem>
-            <MenuItem
+            {/* <MenuItem
               // key={option.label}
               onClick={handlePopoverClose}
             >
               Print Roaster
-            </MenuItem>
+            </MenuItem> */}
           </Popover>
         </Stack>
       </Box>

@@ -16,7 +16,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import Shift from "./shift";
 import styled from "@emotion/styled";
 import moment, { Moment } from "moment";
-import { Shift as IShift } from "@/interface/shift.api";
+import { Shift as IShift } from "@/interface/shift.interface";
 import { Box, Stack } from "@mui/system";
 import AddIcon from "@mui/icons-material/Add";
 import AddShift from "../add-shift/add-shift";

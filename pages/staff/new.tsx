@@ -32,6 +32,7 @@ import { Box, Stack } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import { useRouter } from "next/router";
 import { SyntheticEvent, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -103,11 +104,6 @@ const schema = yup.object().shape({
     .required(validationText.error.enter_email),
   mobileNo: yup.string().trim().required(validationText.error.mobile),
   phoneNo: yup.string().trim().required(validationText.error.phone),
-  typeOfUser: yup.string().trim().required(validationText.error.type_of_user),
-  role: yup.number().when("typeOfUser", {
-    is: "office_user",
-    then: yup.number().required(validationText.error.role)
-  }),
   gender: yup.string().trim().required(validationText.error.gender),
   dateOfBirth: yup.date().nullable().required(validationText.error.dob),
   employmentType: yup
@@ -125,6 +121,8 @@ export default function Index() {
     queryFn: getRoles
   });
 
+  const router = useRouter();
+
   const methods = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -133,7 +131,7 @@ export default function Index() {
       email: "",
       mobileNo: "",
       phoneNo: "",
-      typeOfUser: "",
+      typeOfUser: "carer",
       role: 7,
       gender: "",
       dateOfBirth: null,
@@ -153,12 +151,14 @@ export default function Index() {
   };
 
   const { mutate, isPending } = useMutation({
-    mutationFn: addStaff
+    mutationFn: addStaff,
+    onSuccess: router.back
   });
 
   const onSubmit = (data: IStaffPost) => {
     // data.dateOfBirth = dayjs(data.dateOfBirth).toISOString();
     data.roleIds = data.typeOfUser === "carer" ? [7] : [data.role];
+    // data.isSalutation = salutation;
     mutate(data);
   };
 

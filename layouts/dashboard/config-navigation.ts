@@ -142,56 +142,56 @@ const navConfig: NavItem[] = [
       }
     ]
   },
-  {
-    title: "Shift Notes",
-    path: "/shift-notes",
-    icon: ManageAccountsIcon,
-    children: [
-      {
-        title: "Settings",
-        path: "/shift-notes/settings",
-        icon: SettingsIcon,
-        children: [],
-        hasChild: false
-      },
-      {
-        title: "Invoice Settings",
-        path: "/shift-notes/invoice-settings",
-        icon: ContentPasteGoIcon,
-        children: [],
-        hasChild: false
-      },
-      {
-        title: "Prices",
-        path: "/shift-notes/prices",
-        icon: AttachMoneyIcon,
-        children: [],
-        hasChild: false
-      },
-      {
-        title: "Pay Items",
-        path: "/shift-notes/pay-items",
-        icon: RequestQuoteIcon,
-        children: [],
-        hasChild: false
-      },
-      {
-        title: "Reminders",
-        path: "/shift-notes/reminders",
-        icon: UpdateIcon,
-        children: [],
-        hasChild: false
-      },
-      {
-        title: "Subscription",
-        path: "/shift-notes/subscription",
-        icon: SubscriptionsIcon,
-        children: [],
-        hasChild: false
-      }
-    ],
-    hasChild: false
-  },
+  // {
+  //   title: "Shift Notes",
+  //   path: "/shift-notes",
+  //   icon: ManageAccountsIcon,
+  //   children: [
+  //     {
+  //       title: "Settings",
+  //       path: "/shift-notes/settings",
+  //       icon: SettingsIcon,
+  //       children: [],
+  //       hasChild: false
+  //     },
+  //     {
+  //       title: "Invoice Settings",
+  //       path: "/shift-notes/invoice-settings",
+  //       icon: ContentPasteGoIcon,
+  //       children: [],
+  //       hasChild: false
+  //     },
+  //     {
+  //       title: "Prices",
+  //       path: "/shift-notes/prices",
+  //       icon: AttachMoneyIcon,
+  //       children: [],
+  //       hasChild: false
+  //     },
+  //     {
+  //       title: "Pay Items",
+  //       path: "/shift-notes/pay-items",
+  //       icon: RequestQuoteIcon,
+  //       children: [],
+  //       hasChild: false
+  //     },
+  //     {
+  //       title: "Reminders",
+  //       path: "/shift-notes/reminders",
+  //       icon: UpdateIcon,
+  //       children: [],
+  //       hasChild: false
+  //     },
+  //     {
+  //       title: "Subscription",
+  //       path: "/shift-notes/subscription",
+  //       icon: SubscriptionsIcon,
+  //       children: [],
+  //       hasChild: false
+  //     }
+  //   ],
+  //   hasChild: false
+  // },
   {
     title: "Reports",
     path: "/reports/activity",

@@ -83,12 +83,12 @@ export default function Sidebar({ openNav, onCloseNav }: SidebarProps) {
       }}
       ref={ref}
     >
-      <Logo
+      {/* <Logo
         sx={{
           width: "100%",
           justifyContent: "center"
         }}
-      />
+      /> */}
 
       {renderAccount}
 

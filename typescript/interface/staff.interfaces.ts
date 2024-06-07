@@ -1,4 +1,5 @@
 export interface IStaffPost {
+  isSalutation?: boolean;
   salutation: string;
   name: string;
   email: string;

@@ -6,7 +6,7 @@ import Image from "next/image";
 import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import RichTextEditor from "../RichTextEditor/RichTextEditor";
-import { Shift } from "@/interface/shift.api";
+import { Shift } from "@/interface/shift.interface";
 
 export default function InstructionSection({
   view,

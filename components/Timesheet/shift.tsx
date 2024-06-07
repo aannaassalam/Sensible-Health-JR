@@ -3,7 +3,7 @@ import { Box, Stack } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import LoopIcon from "@mui/icons-material/Loop";
 import { Typography } from "@mui/material";
-import { Shift as IShift } from "@/interface/shift.api";
+import { Shift as IShift } from "@/interface/shift.interface";
 import moment from "moment";
 import AddShift from "../add-shift/add-shift";
 

@@ -116,3 +116,11 @@ export interface ShiftNotes {
   email: boolean;
   notePrivate: boolean;
 }
+
+export interface ShiftNoteBody {
+  shiftNoteCategories: string;
+  date: string;
+  notes: string;
+  subject: string;
+  documents: string[];
+}

@@ -264,7 +264,7 @@ export default function Index({
                 handlePopoverClose();
               }}
             >
-              Communications
+              Shift Notes
             </MenuItem>
             {/* <MenuItem
               // key={option.label}

@@ -90,12 +90,14 @@ const StyledTooltip = styled(({ className, ...props }: TooltipProps) => (
   }
 }));
 
-const ShiftBox = ({
+export const ShiftBox = ({
   shifts,
-  isClient
+  isClient,
+  isMonthly
 }: {
   shifts: IShift[];
   isClient?: boolean;
+  isMonthly?: boolean;
 }) => {
   const otherShifts = (
     <Stack spacing={1.5} sx={{ padding: "10px 5px" }}>
@@ -113,7 +115,7 @@ const ShiftBox = ({
   return (
     <Box
       sx={{
-        position: "absolute",
+        position: isMonthly ? "static" : "absolute",
         top: "5px",
         left: 0,
         width: "100%"

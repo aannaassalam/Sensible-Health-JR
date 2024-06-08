@@ -1,7 +1,4 @@
-import {
-  getAllShiftsForClient,
-  getAllShiftsForStaff
-} from "@/api/functions/shift.api";
+import { getAllShiftsForClient } from "@/api/functions/shift.api";
 import CalendarComponent from "@/components/calendarComponent/calendarComponent";
 import CalendarToolbar from "@/components/calendarComponent/calendarToolbar";
 import DashboardLayout from "@/layout/dashboard/DashboardLayout";
@@ -16,12 +13,12 @@ export default function Calendar() {
 
   const { data, isLoading } = useQuery({
     queryKey: [
-      "get_shifts_for_staff",
+      "get_shifts_for_client",
       date.startOf("month").format("X"),
       date.endOf("month").format("X")
     ],
     queryFn: () =>
-      getAllShiftsForStaff({
+      getAllShiftsForClient({
         id: id as string,
         startDate: date.startOf("month").format("X"),
         endDate: date.endOf("month").format("X")

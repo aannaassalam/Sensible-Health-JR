@@ -43,6 +43,48 @@ export const getAllShifts = async ({
   return res.data;
 };
 
+export const getAllShiftsForClient = async ({
+  id,
+  startDate = "",
+  endDate = ""
+}: {
+  id: string;
+  startDate?: string;
+  endDate?: string;
+}) => {
+  const res = await axiosInstance.get(
+    endpoints.shift.get_shifts_for_client(id),
+    {
+      params: {
+        startDate,
+        endDate
+      }
+    }
+  );
+  return res.data;
+};
+
+export const getAllShiftsForStaff = async ({
+  id,
+  startDate = "",
+  endDate = ""
+}: {
+  id: string;
+  startDate?: string;
+  endDate?: string;
+}) => {
+  const res = await axiosInstance.get(
+    endpoints.shift.get_shifts_for_staff(id),
+    {
+      params: {
+        startDate,
+        endDate
+      }
+    }
+  );
+  return res.data;
+};
+
 export const addShiftNote = async (body: FormData) => {
   const res = await axiosInstance.post(endpoints.shift.notes.add_note, body);
   return res.data;

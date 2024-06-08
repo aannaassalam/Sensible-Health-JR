@@ -66,32 +66,36 @@ export default function ClientSection({
             <Controller
               control={control}
               name="clientId"
-              render={({ field, fieldState: { error, invalid } }) => (
-                <Box>
-                  <Select
-                    fullWidth
-                    size="small"
-                    {...field}
-                    displayEmpty
-                    renderValue={
-                      field.value !== ""
-                        ? undefined
-                        : () => "Select Participant"
-                    }
-                  >
-                    {isLoading ? (
-                      <MenuItem disabled>Loading...</MenuItem>
-                    ) : (
-                      data?.map((_data: IClient) => (
-                        <MenuItem value={_data.id} key={_data.id}>
-                          {_data.firstName} {_data.lastName}
-                        </MenuItem>
-                      ))
+              render={({ field, fieldState: { error, invalid } }) => {
+                return (
+                  <Box>
+                    <Select
+                      fullWidth
+                      size="small"
+                      {...field}
+                      displayEmpty
+                      renderValue={
+                        field.value === "" || !field.value
+                          ? () => "Select Participant"
+                          : undefined
+                      }
+                    >
+                      {isLoading ? (
+                        <MenuItem disabled>Loading...</MenuItem>
+                      ) : (
+                        data?.map((_data: IClient) => (
+                          <MenuItem value={_data.id} key={_data.id}>
+                            {_data.firstName} {_data.lastName}
+                          </MenuItem>
+                        ))
+                      )}
+                    </Select>
+                    {invalid && (
+                      <FormHelperText>{error?.message}</FormHelperText>
                     )}
-                  </Select>
-                  {invalid && <FormHelperText>{error?.message}</FormHelperText>}
-                </Box>
-              )}
+                  </Box>
+                );
+              }}
             />
           </Grid>
         </Grid>

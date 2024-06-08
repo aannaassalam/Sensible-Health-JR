@@ -274,7 +274,10 @@ export default function Index({
             </MenuItem> */}
             <MenuItem
               // key={option.label}
-              onClick={handlePopoverClose}
+              onClick={() => {
+                router.push(`/participants/${id}/calendar`);
+                handlePopoverClose();
+              }}
             >
               Calendar
             </MenuItem>

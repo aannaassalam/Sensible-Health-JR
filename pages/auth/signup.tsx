@@ -126,13 +126,13 @@ export default function LoginView() {
         })
       }}
     >
-      <Logo
+      {/* <Logo
         sx={{
           position: "fixed",
           top: { xs: 16, md: 24 },
           left: { xs: 16, md: 24 }
         }}
-      />
+      /> */}
 
       <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
         <Typography variant="h2">Create a new account</Typography>

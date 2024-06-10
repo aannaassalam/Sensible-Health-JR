@@ -100,6 +100,23 @@ export interface Shift {
   occurrenceCounter?: boolean;
 }
 
+export interface Document {
+  documentId: any;
+  fileName: string;
+  fileType: string;
+  fileSize: any;
+  lastUpdated: any;
+  downloadURL: string;
+  expiryDate: any;
+  expiry: boolean;
+  status: boolean;
+  employee: any;
+  documentSubCategory: any;
+  client: any;
+  clientDocumentCategory: any;
+  staffVisible: boolean;
+}
+
 export interface ShiftNotes {
   id: number;
   shiftNotesCategories: string;
@@ -107,14 +124,16 @@ export interface ShiftNotes {
   createdAt: number[];
   notes: string;
   addedByEmployee: string;
-  subject: string;
   clientId: number;
-  shiftId: number;
+  clientName: string;
   documentDownloadUrls: string[];
+  documents: Document[];
   epochDate: number;
   createdAtEpoch: number;
-  email: boolean;
+  subject: string;
   notePrivate: boolean;
+  email: boolean;
+  employeeId: number;
 }
 
 export interface ShiftNoteBody {

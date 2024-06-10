@@ -19,7 +19,6 @@ const Index = () => {
     rowLength: 100
   });
 
-  console.log(data, "data");
   return (
     <DashboardLayout>
       <Container maxWidth="xl">

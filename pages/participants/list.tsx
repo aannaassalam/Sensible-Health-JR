@@ -24,7 +24,7 @@ const StyledClientPage = styled(Box)`
 export default function List() {
   const { data = [], isLoading } = useQuery({
     queryKey: ["client_list"],
-    queryFn: getAllClients
+    queryFn: () => getAllClients()
   });
 
   const columns = [

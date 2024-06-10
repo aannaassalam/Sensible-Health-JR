@@ -8,8 +8,14 @@ import {
 import axiosInstance from "../axiosInstance";
 import { endpoints } from "../endpoints";
 
-export const getAllClients = async () => {
-  const res = await axiosInstance.get(endpoints.client.get_all);
+export const getAllClients = async (token?: string) => {
+  const res = await axiosInstance.get(endpoints.client.get_all, {
+    headers: token
+      ? {
+          Authorization: `Bearer ${token}`
+        }
+      : {}
+  });
   return res.data;
 };
 

@@ -85,6 +85,25 @@ export const getAllShiftsForStaff = async ({
   return res.data;
 };
 
+export const getAllDirectShiftsNotes = async ({
+  startDate,
+  endDate
+}: {
+  startDate?: number | null;
+  endDate?: number | null;
+}) => {
+  const res = await axiosInstance.get(
+    endpoints.shift.notes.get_all_shift_notes,
+    {
+      params: {
+        startDate,
+        endDate
+      }
+    }
+  );
+  return res.data;
+};
+
 export const addShiftNote = async (body: FormData) => {
   const res = await axiosInstance.post(endpoints.shift.notes.add_note, body);
   return res.data;

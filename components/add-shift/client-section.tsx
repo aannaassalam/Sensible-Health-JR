@@ -30,7 +30,7 @@ export default function ClientSection({
 
   const { data, isLoading } = useQuery({
     queryKey: ["client_list"],
-    queryFn: getAllClients
+    queryFn: () => getAllClients()
   });
 
   return (

@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 // If the incoming request has the "token" cookie
 export function middleware(request: NextRequest) {
   const has_token = request.cookies.get(process.env.NEXT_APP_TOKEN_NAME!);
+
+  const userRole = JSON.parse(request.cookies.get("user")?.value || "{}")
+    ?.role?.[0]?.name;
   const auth_routes = [
     "/auth/signin",
     "/auth/signup",
@@ -21,13 +24,34 @@ export function middleware(request: NextRequest) {
     return response;
   } else if (has_token && request.nextUrl.pathname.startsWith("/auth/")) {
     const url = request.nextUrl.clone();
-    url.pathname = "/";
+    url.pathname = userRole === "ROLE_ADMIN" ? "/" : "/staff-roster";
     const response = NextResponse.redirect(url);
     response.headers.set("x-middleware-cache", "no-cache");
     return response;
-  } else {
+  } else if (
+    (userRole === "ROLE_CARER" &&
+      (request.nextUrl.pathname.startsWith("/staff-roster") ||
+        request.nextUrl.pathname.startsWith("/user/profile"))) ||
+    (userRole === "ROLE_ADMIN" &&
+      !request.nextUrl.pathname.startsWith("/staff-roster"))
+  ) {
     return NextResponse.next();
+  } else if (
+    (userRole === "ROLE_CARER" &&
+      !(
+        request.nextUrl.pathname.startsWith("/staff-roster") ||
+        request.nextUrl.pathname.startsWith("/user/profile")
+      )) ||
+    (userRole === "ROLE_ADMIN" &&
+      request.nextUrl.pathname.startsWith("/staff-roster"))
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = userRole === "ROLE_CARER" ? "/staff-roster" : "/";
+    const response = NextResponse.redirect(url);
+    response.headers.set("x-middleware-cache", "no-cache");
+    return response;
   }
+  return NextResponse.next();
 }
 
 export const config = {

@@ -86,7 +86,7 @@ export default function LoginView() {
       setCookieClient(process.env.NEXT_APP_TOKEN_NAME!, data.jwtToken);
       delete data.jwtToken;
       setCookieClient("user", JSON.stringify(data));
-      router.push("/");
+      router.push(data.role[0]?.name === "ROLE_ADMIN" ? "/" : "/staff-roster");
     }
   });
 
@@ -130,13 +130,13 @@ export default function LoginView() {
         })
       }}
     >
-      <Logo
+      {/*<Logo
         sx={{
           position: "fixed",
           top: { xs: 16, md: 24 },
           left: { xs: 16, md: 24 }
         }}
-      />
+      />*/}
 
       <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
         <Typography variant="h2">Sign in to your account</Typography>

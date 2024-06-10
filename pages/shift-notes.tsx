@@ -14,33 +14,47 @@ import {
   Typography
 } from "@mui/material";
 import { Box, Stack } from "@mui/system";
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { DatePicker } from "antd";
 import { DatePicker as Datepicker } from "@mui/x-date-pickers";
 import StyledPaper from "@/ui/Paper/Paper";
 import Iconify from "@/components/Iconify/Iconify";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  QueryClient,
+  dehydrate,
+  useMutation,
+  useQuery
+} from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { getAllShiftNotes } from "@/api/functions/client.api";
+import { getAllClients, getAllShiftNotes } from "@/api/functions/client.api";
 import dayjs, { Dayjs } from "dayjs";
 import { RangePickerProps } from "antd/lib/date-picker";
 import moment from "moment";
-import { ShiftNoteBody, ShiftNotes } from "@/interface/shift.interface";
+import {
+  ShiftNotes as IShiftNotes,
+  ShiftNoteBody
+} from "@/interface/shift.interface";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import MenuItem from "@mui/material/MenuItem";
 import CustomInput from "@/ui/Inputs/CustomInput";
 import RichTextEditor from "@/components/RichTextEditor/RichTextEditor";
-import { addShiftNote, exportShiftNotes } from "@/api/functions/shift.api";
+import {
+  addShiftNote,
+  exportShiftNotes,
+  getAllDirectShiftsNotes
+} from "@/api/functions/shift.api";
 import { LoadingButton } from "@mui/lab";
 import { useCurrentEditor } from "@tiptap/react";
 import { useRouter } from "next/router";
 import MuiModalWrapper from "@/ui/Modal/MuiModalWrapper";
-import prettyBytes from "pretty-bytes";
+import { GetServerSidePropsContext } from "next";
+import { IClient } from "@/interface/client.interface";
 import Image from "next/image";
 import assets from "@/json/assets";
 import Link from "next/link";
+import prettyBytes from "pretty-bytes";
 
 const { RangePicker } = DatePicker;
 
@@ -139,11 +153,11 @@ const getIcon = (noteType: string) => {
   }
 };
 
-const EachCommunication = ({
+const EachShiftNote = ({
   note,
   lastElement
 }: {
-  note: ShiftNotes;
+  note: IShiftNotes;
   lastElement?: boolean;
 }) => {
   const [isEdit, setIsEdit] = useState(false);
@@ -180,8 +194,8 @@ const EachCommunication = ({
             {getIcon(note.shiftNotesCategories)}
             <Typography variant="body1">
               <strong>{note.addedByEmployee}</strong> added{" "}
-              {note.shiftNotesCategories} dated{" "}
-              {moment.unix(note.epochDate).format("DD/MM/YYYY")}
+              {note.shiftNotesCategories} for <strong>{note.clientName}</strong>{" "}
+              dated {moment.unix(note.epochDate).format("DD/MM/YYYY")}
             </Typography>
             <Stack alignItems="flex-end">
               <Typography
@@ -318,14 +332,28 @@ const EachCommunication = ({
   );
 };
 
+export const getServerSideProps = async ({
+  req
+}: GetServerSidePropsContext) => {
+  const cookie = req.cookies;
+  const clients = await getAllClients(cookie?.token);
+
+  return {
+    props: {
+      clients
+    }
+  };
+};
+
 const schema = yup.object().shape({
   shiftNoteCategories: yup.string(),
   date: yup.date(),
   subject: yup.string().required("Please enter a Subject"),
-  notes: yup.string().required("Please enter a note")
+  notes: yup.string().required("Please enter a note"),
+  clientId: yup.number().required("Please Select a Client")
 });
 
-export default function Communications() {
+export default function ShiftNotes({ clients }: { clients: IClient[] }) {
   const [dates, setDates] = useState<
     [Dayjs | null | undefined, Dayjs | null | undefined] | null | undefined
   >([null, null]);
@@ -338,6 +366,10 @@ export default function Communications() {
     "Notes",
     "Feedback"
   ]);
+  const [clientFilter, setClientFilter] = useState<number | undefined>(
+    undefined
+  );
+  const [staffFilter, setStaffFilter] = useState<number | undefined>(undefined);
   const { id } = useParams();
   const router = useRouter();
 
@@ -347,19 +379,43 @@ export default function Communications() {
       shiftNoteCategories: "Notes",
       date: dayjs(),
       subject: "",
-      notes: ""
+      notes: "",
+      clientId: -1
     }
   });
 
   const { data, isLoading } = useQuery({
     queryKey: ["all_shift_notes", id, dates],
     queryFn: () =>
-      getAllShiftNotes({
-        id: id as string,
+      getAllDirectShiftsNotes({
         startDate: dates?.[0]?.unix(),
         endDate: dates?.[1]?.endOf("day").unix()
       })
   });
+
+  const clientList = useMemo(() => {
+    const list: { id: number; name: string }[] = [];
+    (Object.values(data || {}).flat() as IShiftNotes[]).forEach((_data) => {
+      if (!list.find((_list) => _list.id === _data.clientId))
+        list.push({
+          id: _data.clientId,
+          name: _data.clientName
+        });
+    });
+    return list;
+  }, [data]);
+
+  const staffList = useMemo(() => {
+    const list: { id: number; name: string }[] = [];
+    (Object.values(data || {}).flat() as IShiftNotes[]).forEach((_data) => {
+      if (!list.find((_list) => _list.id === _data.employeeId))
+        list.push({
+          id: _data.employeeId,
+          name: _data.addedByEmployee
+        });
+    });
+    return list;
+  }, [data]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: addShiftNote,
@@ -367,14 +423,17 @@ export default function Communications() {
   });
 
   const onSubmit = (
-    data: Omit<ShiftNoteBody, "documents" | "date"> & { date: Dayjs }
+    data: Omit<ShiftNoteBody, "documents" | "date"> & {
+      date: Dayjs;
+      clientId: number;
+    }
   ) => {
     const formData = new FormData();
     formData.append("shiftNotesCategories", data.shiftNoteCategories);
     formData.append("date", dayjs(data.date).format("YYYY-MM-DD"));
     formData.append("notes", data.notes);
     formData.append("subject", data.subject);
-    formData.append("clientId", id.toString());
+    formData.append("clientId", data.clientId.toString());
     if (documents) formData.append("files", documents);
     mutate(formData);
   };
@@ -400,13 +459,13 @@ export default function Communications() {
             Add Note
           </Button>
           <Stack direction="row" gap={2} flexWrap="wrap">
-            <LoadingButton
+            {/* <LoadingButton
               variant="contained"
               onClick={() => exportShiftNotesMutation(id as string)}
               loading={isExporting}
             >
               Export
-            </LoadingButton>
+            </LoadingButton> */}
             <RangePicker
               allowClear
               format="DD/MM/YYYY"
@@ -503,39 +562,92 @@ export default function Communications() {
                 </Stack>
               </Popover>
             </Box>
+            <Select
+              value={clientFilter}
+              onChange={(e) =>
+                setClientFilter(
+                  e.target.value
+                    ? parseInt(e.target.value.toString())
+                    : undefined
+                )
+              }
+              size="small"
+              displayEmpty
+              // renderValue={
+              //   !clientFilter ? () => "Filter Participant" : undefined
+              // }
+              sx={{ backgroundColor: "#fff" }}
+            >
+              <MenuItem>Filter Participant</MenuItem>
+              {clientList.map((_item) => (
+                <MenuItem key={_item.id} value={_item.id}>
+                  {_item.name}
+                </MenuItem>
+              ))}
+            </Select>
+            <Select
+              value={staffFilter}
+              onChange={(e) =>
+                setStaffFilter(
+                  e.target.value
+                    ? parseInt(e.target.value.toString())
+                    : undefined
+                )
+              }
+              size="small"
+              displayEmpty
+              // renderValue={!staffFilter ? () => "Filter Staff" : undefined}
+              sx={{ backgroundColor: "#fff" }}
+            >
+              <MenuItem>Filter Staff</MenuItem>
+              {staffList.map((_item) => (
+                <MenuItem key={_item.id} value={_item.id}>
+                  {_item.name}
+                </MenuItem>
+              ))}
+            </Select>
           </Stack>
         </Stack>
         <StyledPaper>
-          {Object.entries(data || {}).map((_item) => {
-            return (
-              (_item[1] as ShiftNotes[]).some((_data) =>
-                filterValues.includes(_data.shiftNotesCategories)
-              ) && (
-                <Box key={_item[0]}>
-                  <Chip
-                    label={moment
-                      .unix(parseInt(_item[0]))
-                      .format("D MMM, YYYY")}
-                    variant="filled"
-                    color="error"
-                  />
-                  {(_item[1] as ShiftNotes[])
-                    .filter((_note) =>
-                      filterValues.includes(_note.shiftNotesCategories)
-                    )
-                    .map((_note, index: number) => (
-                      <EachCommunication
-                        key={_note.id}
-                        note={_note}
-                        lastElement={
-                          index === (_item[1] as ShiftNotes[]).length - 1
-                        }
-                      />
-                    ))}
-                </Box>
-              )
-            );
-          })}
+          {Object.keys(data || {})
+            .sort((a, b) => parseInt(b) - parseInt(a))
+            .map((_key) => {
+              const eachShiftNotesArray = data[_key] as IShiftNotes[];
+              return (
+                eachShiftNotesArray.some(
+                  (_data) =>
+                    filterValues.includes(_data.shiftNotesCategories) &&
+                    (clientFilter ? _data.clientId === clientFilter : true) &&
+                    (staffFilter ? _data.employeeId === staffFilter : true)
+                ) && (
+                  <Box key={_key}>
+                    <Chip
+                      label={moment.unix(parseInt(_key)).format("D MMM, YYYY")}
+                      variant="filled"
+                      color="error"
+                    />
+                    {eachShiftNotesArray
+                      .filter(
+                        (_note) =>
+                          filterValues.includes(_note.shiftNotesCategories) &&
+                          (clientFilter
+                            ? _note.clientId === clientFilter
+                            : true) &&
+                          (staffFilter
+                            ? _note.employeeId === staffFilter
+                            : true)
+                      )
+                      .map((_note, index: number) => (
+                        <EachShiftNote
+                          key={_note.id}
+                          note={_note}
+                          lastElement={index === eachShiftNotesArray.length - 1}
+                        />
+                      ))}
+                  </Box>
+                )
+              );
+            })}
           <Box paddingLeft={8} paddingRight={5} id="add-notes">
             <FormProvider {...methods}>
               <Grid container spacing={2}>
@@ -573,6 +685,33 @@ export default function Communications() {
                 </Grid>
                 <Grid item lg={6} md={6} sm={12} xs={12}>
                   <CustomInput name="subject" placeholder="Enter Subject" />
+                </Grid>
+                <Grid item lg={6} md={6} sm={12} xs={12}>
+                  <Controller
+                    control={methods.control}
+                    name="clientId"
+                    render={({ field }) => {
+                      return (
+                        <Select
+                          {...field}
+                          fullWidth
+                          displayEmpty
+                          size="small"
+                          renderValue={
+                            field.value === -1
+                              ? () => "Select Participant"
+                              : undefined
+                          }
+                        >
+                          {clients?.map((_client) => (
+                            <MenuItem value={_client.id} key={_client.id}>
+                              {_client.displayName}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      );
+                    }}
+                  />
                 </Grid>
                 <Grid item lg={12} md={12} sm={12} xs={12}>
                   <Box

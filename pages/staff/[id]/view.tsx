@@ -54,7 +54,7 @@ export const getServerSideProps = async () => {
   });
   await queryClient.prefetchQuery({
     queryKey: ["client_list"],
-    queryFn: getAllClients
+    queryFn: () => getAllClients()
   });
 
   return {

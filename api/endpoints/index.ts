@@ -24,6 +24,7 @@ export const endpoints = {
     faq: "/faq/all"
   },
   staff: {
+    get_all_shifts: "/shift/getAllActiveShift/ForACarer",
     new: "/user/add",
     list: "/user/employees/by-company/active",
     getStaff: "/user",
@@ -95,6 +96,7 @@ export const endpoints = {
     edit_shift: (id?: number) => `/shift/update/${id}`,
     cancel_shift: (id?: number) => `/shift/cancelShift/${id}`,
     notes: {
+      get_all_shift_notes: `/shiftNote/getAllShiftNotes`,
       get_all_notes: (id?: string) => `/shiftNote/getAllForClient/${id}`,
       add_note: `/shiftNote/add`,
       export: (id: string) => `/shiftNote/exportShiftNotesToPdf/email/${id}`

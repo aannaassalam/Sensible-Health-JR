@@ -171,7 +171,7 @@ export default function TimeSheetTable({
 
   const { data: clients, isLoading: isClientLoading } = useQuery({
     queryKey: ["client_list"],
-    queryFn: getAllClients
+    queryFn: () => getAllClients()
   });
 
   const times = [

@@ -17,5 +17,7 @@ export default {
   italic_icon: "/assets/images/italic.svg",
   list_unordered_icon: "/assets/images/list-unordered.svg",
   underline_icon: "/assets/images/underline.svg",
-  undo_icon: "/assets/images/arrow-go-back-line.svg"
+  undo_icon: "/assets/images/arrow-go-back-line.svg",
+  file_icon: "/assets/images/file.png",
+  download: "/assets/images/download.png"
 };

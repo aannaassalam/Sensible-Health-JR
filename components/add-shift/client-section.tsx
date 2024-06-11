@@ -2,6 +2,7 @@ import { getAllClients } from "@/api/functions/client.api";
 import { IClient } from "@/interface/client.interface";
 import { Shift } from "@/interface/shift.interface";
 import assets from "@/json/assets";
+import { getRole } from "@/lib/functions/_helpers.lib";
 import StyledPaper from "@/ui/Paper/Paper";
 import {
   Divider,
@@ -27,10 +28,12 @@ export default function ClientSection({
   shift?: Shift;
 }) {
   const { control } = useFormContext();
+  const role = getRole();
 
   const { data, isLoading } = useQuery({
     queryKey: ["client_list"],
-    queryFn: () => getAllClients()
+    queryFn: () => getAllClients(),
+    enabled: role === "ROLE_ADMINS"
   });
 
   return (

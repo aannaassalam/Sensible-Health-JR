@@ -181,7 +181,7 @@ export const getAllShiftNotes = async ({
   startDate,
   endDate
 }: {
-  id: string;
+  id?: string;
   startDate?: number | null;
   endDate?: number | null;
 }) => {

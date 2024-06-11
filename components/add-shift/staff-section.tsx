@@ -2,6 +2,7 @@ import { getStaffList } from "@/api/functions/staff.api";
 import { Shift } from "@/interface/shift.interface";
 import { IStaff } from "@/interface/staff.interfaces";
 import assets from "@/json/assets";
+import { getRole } from "@/lib/functions/_helpers.lib";
 import StyledPaper from "@/ui/Paper/Paper";
 import {
   Divider,
@@ -28,10 +29,12 @@ export default function StaffSection({
   shift?: Shift;
 }) {
   const { control } = useFormContext();
+  const role = getRole();
 
   const { data, isLoading } = useQuery({
     queryKey: ["user_list"],
-    queryFn: getStaffList
+    queryFn: getStaffList,
+    enabled: role === "ROLE_ADMIN"
   });
 
   return (

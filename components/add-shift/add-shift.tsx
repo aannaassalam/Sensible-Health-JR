@@ -61,6 +61,9 @@ import TaskSection from "./task-section";
 import InstructionSection from "./instruction-section";
 import TimeLocation from "./time-location";
 import { queryClient } from "pages/_app";
+import ShiftRelatedNotes from "./shift-related-notes";
+import { getRole } from "@/lib/functions/_helpers.lib";
+import AddNoteModal from "./addNoteModal";
 
 interface DrawerInterface extends DrawerProps {
   open?: boolean;
@@ -345,7 +348,10 @@ export default function AddShift({
 }: AddShiftProps) {
   const router = useRouter();
   const { id } = useParams();
+  const role = getRole();
   const { staff, client } = router.query;
+
+  const [noteModal, setNoteModal] = useState(false);
 
   const methods = useForm({
     resolver: yupResolver(schema),
@@ -522,7 +528,15 @@ export default function AddShift({
             Back
           </Button>
         )}
-        {!view ? (
+        {role === "ROLE_CARER" ? (
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="tabler:plus" fontSize={14} />}
+            onClick={() => setNoteModal(true)}
+          >
+            Add Note
+          </Button>
+        ) : !view ? (
           <LoadingButton
             variant="contained"
             startIcon={<Iconify icon="ic:baseline-save" />}
@@ -577,8 +591,15 @@ export default function AddShift({
           {!view && <TaskSection edit={edit} />}
           <InstructionSection view={view} edit={edit} shift={shift} />
           <TimeLocation view={view} edit={edit} shift={shift} />
+          {view && <ShiftRelatedNotes shift={shift} />}
         </FormProvider>
       </Stack>
+      <AddNoteModal
+        open={noteModal}
+        onClose={() => setNoteModal(false)}
+        clientId={shift?.client.id}
+        title="Add Note"
+      />
     </StyledDrawer>
   );
 }

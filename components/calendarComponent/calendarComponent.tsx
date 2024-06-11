@@ -99,7 +99,7 @@ export default function CalendarComponent({
                         >
                           {day.format("DD")}
                         </Typography>
-                        <ShiftBox shifts={filteredShifts} isClient isMonthly />
+                        <ShiftBox shifts={filteredShifts} isMonthly />
                       </TableCell>
                     );
                   })}

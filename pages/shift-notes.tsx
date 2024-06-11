@@ -637,6 +637,7 @@ export default function ShiftNotes({ clients }: { clients: IClient[] }) {
                             ? _note.employeeId === staffFilter
                             : true)
                       )
+                      .sort((a, b) => b.createdAtEpoch - a.createdAtEpoch)
                       .map((_note, index: number) => (
                         <EachShiftNote
                           key={_note.id}
@@ -679,6 +680,7 @@ export default function ShiftNotes({ clients }: { clients: IClient[] }) {
                             size: "small"
                           }
                         }}
+                        maxDate={dayjs()}
                       />
                     )}
                   />

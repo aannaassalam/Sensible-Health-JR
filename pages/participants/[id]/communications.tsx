@@ -506,36 +506,36 @@ export default function Communications() {
           </Stack>
         </Stack>
         <StyledPaper>
-          {Object.entries(data || {}).map((_item) => {
-            return (
-              (_item[1] as ShiftNotes[]).some((_data) =>
-                filterValues.includes(_data.shiftNotesCategories)
-              ) && (
-                <Box key={_item[0]}>
-                  <Chip
-                    label={moment
-                      .unix(parseInt(_item[0]))
-                      .format("D MMM, YYYY")}
-                    variant="filled"
-                    color="error"
-                  />
-                  {(_item[1] as ShiftNotes[])
-                    .filter((_note) =>
-                      filterValues.includes(_note.shiftNotesCategories)
-                    )
-                    .map((_note, index: number) => (
-                      <EachCommunication
-                        key={_note.id}
-                        note={_note}
-                        lastElement={
-                          index === (_item[1] as ShiftNotes[]).length - 1
-                        }
-                      />
-                    ))}
-                </Box>
-              )
-            );
-          })}
+          {Object.keys(data || {})
+            .sort((a, b) => parseInt(b) - parseInt(a))
+            .map((_key) => {
+              const eachShiftNotesArray = data[_key] as ShiftNotes[];
+              return (
+                eachShiftNotesArray.some((_data) =>
+                  filterValues.includes(_data.shiftNotesCategories)
+                ) && (
+                  <Box key={_key}>
+                    <Chip
+                      label={moment.unix(parseInt(_key)).format("D MMM, YYYY")}
+                      variant="filled"
+                      color="error"
+                    />
+                    {eachShiftNotesArray
+                      .filter((_note) =>
+                        filterValues.includes(_note.shiftNotesCategories)
+                      )
+                      .sort((a, b) => b.createdAtEpoch - a.createdAtEpoch)
+                      .map((_note, index: number) => (
+                        <EachCommunication
+                          key={_note.id}
+                          note={_note}
+                          lastElement={index === eachShiftNotesArray.length - 1}
+                        />
+                      ))}
+                  </Box>
+                )
+              );
+            })}
           <Box paddingLeft={8} paddingRight={5} id="add-notes">
             <FormProvider {...methods}>
               <Grid container spacing={2}>

@@ -58,6 +58,7 @@ export default function Toolbar({
       alignItems="center"
       justifyContent="space-between"
       gap={2}
+      flexWrap="wrap"
       sx={{ paddingBottom: "30px" }}
     >
       <Stack direction="row" marginRight="auto" gap={1}>

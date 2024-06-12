@@ -16,6 +16,7 @@ import { Box, Stack } from "@mui/system";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
@@ -56,9 +57,14 @@ export default function StaffSection({
             <Typography>Name</Typography>
           </Grid>
           <Grid item lg={4} md={6} sm={12} xs={12}>
-            <Typography variant="body1" textAlign="right">
-              {shift?.employee.displayName}
-            </Typography>
+            <Link
+              href={`/participants/${shift?.employee.id}/view`}
+              style={{ textDecoration: "none", color: "#333" }}
+            >
+              <Typography variant="body1" textAlign="right">
+                {shift?.employee.displayName}
+              </Typography>
+            </Link>
           </Grid>
           <Grid item lg={8} md={6} sm={12} xs={12}>
             <Typography>Time</Typography>

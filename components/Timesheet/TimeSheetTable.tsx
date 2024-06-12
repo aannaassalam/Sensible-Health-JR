@@ -27,6 +27,7 @@ import { IStaff } from "@/interface/staff.interfaces";
 import Loader from "@/ui/Loader/Loder";
 import { getAllClients } from "@/api/functions/client.api";
 import { IClient } from "@/interface/client.interface";
+import Link from "next/link";
 
 const StyledTable = styled(Table)`
   border: 1px solid #ddd;
@@ -43,6 +44,10 @@ const StyledTable = styled(Table)`
       &.named-cell {
         min-width: 200px;
         max-width: 200px;
+        a {
+          color: #333;
+          text-decoration: none;
+        }
       }
       &:not(.named-cell) {
         min-width: 160px;
@@ -91,7 +96,7 @@ const StyledTooltip = styled(({ className, ...props }: TooltipProps) => (
 }));
 
 export const ShiftBox = ({
-  shifts,
+  shifts = [],
   isClient,
   isMonthly
 }: {
@@ -215,16 +220,18 @@ export default function TimeSheetTable({
     return (
       <TableRow key={_carer.id}>
         <TableCell className="named-cell">
-          <Typography
-            variant="body1"
-            sx={{
-              fontWeight: "500",
-              fontSize: "15px",
-              marginBottom: "5px"
-            }}
-          >
-            {_carer.name}
-          </Typography>
+          <Link href={`/staff/${_carer.id}/view`}>
+            <Typography
+              variant="body1"
+              sx={{
+                fontWeight: "500",
+                fontSize: "15px",
+                marginBottom: "5px"
+              }}
+            >
+              {_carer.name}
+            </Typography>
+          </Link>
           {hours} Hours
         </TableCell>
         {type === "daily"
@@ -372,16 +379,18 @@ export default function TimeSheetTable({
     return (
       <TableRow key={_client.id}>
         <TableCell className="named-cell">
-          <Typography
-            variant="body1"
-            sx={{
-              fontWeight: "500",
-              fontSize: "15px",
-              marginBottom: "5px"
-            }}
-          >
-            {_client.displayName}
-          </Typography>
+          <Link href={`/participants/${_client.id}/view`}>
+            <Typography
+              variant="body1"
+              sx={{
+                fontWeight: "500",
+                fontSize: "15px",
+                marginBottom: "5px"
+              }}
+            >
+              {_client.displayName}
+            </Typography>
+          </Link>
           {hours} Hours
         </TableCell>
         {type === "daily"

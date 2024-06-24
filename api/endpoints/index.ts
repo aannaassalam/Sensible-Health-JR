@@ -88,7 +88,7 @@ export const endpoints = {
   },
   shift: {
     create_shift: "/shift/createMultiple/with-available-employee",
-    get_all_shifts: "/shift/getAllActiveShift",
+    get_all_shifts: "/shift/getAllActiveShiftNew",
     get_shifts_for_client: (id: string) =>
       `/shift/getAllActiveShift/ForAClient/${id}`,
     get_shifts_for_staff: (id: string) =>

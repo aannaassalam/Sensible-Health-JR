@@ -77,12 +77,19 @@ export default function Shift({
               justifyContent="space-between"
               gap={1}
             >
-              <Typography variant="body1">
+              <Typography
+                variant="body1"
+                style={{
+                  overflow: "hidden",
+                  textWrap: "nowrap",
+                  textOverflow: "ellipsis"
+                }}
+              >
                 {isClient
                   ? shift.employee.displayName
                   : shift.client.displayName}
               </Typography>
-              <LoopIcon color="disabled" fontSize="small" />
+              {/* <LoopIcon color="disabled" fontSize="small" /> */}
             </Stack>
           </>
         ) : (

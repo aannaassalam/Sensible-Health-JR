@@ -28,8 +28,8 @@ export const getServerSideProps = async ({
   const queryClient = new QueryClient();
 
   const cookie = req.cookies;
-  const startDate = moment().startOf("isoWeek").format("X");
-  const endDate = moment().endOf("isoWeek").format("X");
+  const startDate = moment().startOf("week").format("YYYY-MM-DDT00:00:00.000");
+  const endDate = moment().endOf("week").format("YYYY-MM-DDT23:59:59.999");
   const data = await getAllShifts({ token: cookie?.token, startDate, endDate });
 
   await queryClient.prefetchQuery({

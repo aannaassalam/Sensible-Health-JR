@@ -28,7 +28,7 @@ export default function ClientSection({
   edit?: boolean;
   shift?: Shift;
 }) {
-  const { control } = useFormContext();
+  const { control, setValue } = useFormContext();
   const role = getRole();
 
   const { data, isLoading } = useQuery({
@@ -82,6 +82,14 @@ export default function ClientSection({
                       fullWidth
                       size="small"
                       {...field}
+                      onChange={(e) => {
+                        const _client: IClient = data.find(
+                          (_data: IClient) => _data.id === e.target.value
+                        );
+                        field.onChange(e);
+                        setValue("address", _client.address);
+                        setValue("apartmentNumber", _client.apartmentNumber);
+                      }}
                       displayEmpty
                       renderValue={
                         field.value === "" || !field.value

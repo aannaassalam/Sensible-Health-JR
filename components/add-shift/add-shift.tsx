@@ -351,6 +351,12 @@ export default function AddShift({
   const role = getRole();
   const { staff, client } = router.query;
 
+  const { data: clients, isLoading } = useQuery({
+    queryKey: ["client_list"],
+    queryFn: () => getAllClients(),
+    enabled: Boolean(client) && role === "ROLE_ADMINS"
+  });
+
   const [noteModal, setNoteModal] = useState(false);
 
   const methods = useForm({
@@ -398,6 +404,11 @@ export default function AddShift({
   useEffect(() => {
     if (client) {
       methods.setValue("clientId", client as string);
+      const _client: IClient = clients.find(
+        (_data: IClient) => _data.id === parseInt(client as string)
+      );
+      methods.setValue("address", _client.address);
+      methods.setValue("apartmentNumber", _client.apartmentNumber);
     }
     if (staff) {
       methods.setValue("employeeIds", [parseInt(staff as string)]);
@@ -405,7 +416,7 @@ export default function AddShift({
     if (props.selectedDate) {
       methods.setValue("startDate", dayjs(props.selectedDate?.toDate()));
     }
-  }, [staff, client]);
+  }, [staff, client, isLoading]);
 
   useEffect(() => {
     if (edit) {
